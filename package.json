@@ -31,8 +31,12 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "0xsequence": "^1.9.36",
+    "@0xsequence/auth": "^1.9.36",
+    "@0xsequence/network": "^1.9.36",
     "@inquirer/prompts": "^5.1.1",
     "commander": "^12.1.0",
+    "ethers": "5.7.2",
     "figlet": "^1.7.0"
   }
 }

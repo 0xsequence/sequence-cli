@@ -1,6 +1,6 @@
 {
   "name": "@0xsequence/cli",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "bin": {
@@ -23,6 +23,7 @@
   "author": "Horizon Blockchain Games",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@commander-js/extra-typings": "^12.1.0",
     "@types/figlet": "^1.5.8",
     "@types/node": "^20.14.9",
     "tsup": "^8.1.0",
@@ -30,6 +31,7 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "@inquirer/prompts": "^5.1.1",
     "commander": "^12.1.0",
     "figlet": "^1.7.0"
   }

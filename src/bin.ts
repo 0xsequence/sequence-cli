@@ -36,6 +36,29 @@ const ORDERBOOK_ABI = [
     }
 ]
 
+const ERC1155_ABI = [
+    {
+        "type": "function",
+        "name": "setApprovalForAll",
+        "inputs": [
+            {
+                "name": "_operator",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "_approved",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "outputs": [
+
+        ],
+        "stateMutability": "nonpayable"
+    }
+]
+
 console.log(figlet.textSync("Sequence"))
 console.log("")
 
@@ -100,15 +123,45 @@ async function createListings(options: any) {
     let nodeUrl = chainConfig.rpcUrl
 
     if (options.projectAccessKey) {
-        nodeUrl += "/" + options.key
+        nodeUrl += "/" + options.projectAccessKey
     }
-    console.log(`Using network: ${network} (${chainConfig.chainId})`)
+    
+    console.log(`Using node URL: ${nodeUrl}`)
+
     const provider = new ethers.providers.JsonRpcProvider(nodeUrl)
     const wallet = new ethers.Wallet(privateKey, provider)
     const session = await Session.singleSigner({
         signer: wallet,
         projectAccessKey: options.projectAccessKey,
     })
+
+    console.log(`Using EOA Wallet: ${wallet.address}`)
+    console.log(`Using Sequence Wallet: ${session.account.address}`)
+
+    const collectionInterface = new ethers.utils.Interface(ERC1155_ABI)
+    const dataApproveToken = collectionInterface.encodeFunctionData(
+        "setApprovalForAll",
+        [
+            ethers.utils.hexlify(session.account.address),
+            true
+        ]
+    )
+
+    const approveTxn = {
+        to: collectionAddress,
+        data: dataApproveToken
+    }
+
+    try {
+        const res = await wallet.sendTransaction(approveTxn)
+        console.log(`Transaction sent: ${res.hash}`)
+
+        const receipt = await res.wait()
+        console.dir(receipt, { depth: null });
+    } catch (error) {
+        console.dir(error, { depth: null });
+        program.error('Error processing transaction, please try again.')
+    }
 
     const sequenceMarketplaceInterface = new ethers.utils.Interface(ORDERBOOK_ABI)
 
@@ -138,7 +191,7 @@ async function createListings(options: any) {
         console.log(`Transaction sent: ${res.hash}`)
 
         const receipt = await provider.getTransactionReceipt(res.hash)
-        console.log(`Transaction receipt: ${receipt.transactionHash}`)
+        console.dir(receipt, { depth: null });
     } catch (error) {
         console.dir(error, { depth: null });
         program.error('Error processing transaction, please try again.')

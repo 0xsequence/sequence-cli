@@ -140,7 +140,7 @@ async function createListings(options: any) {
         const receipt = await provider.getTransactionReceipt(res.hash)
         console.log(`Transaction receipt: ${receipt.transactionHash}`)
     } catch (error) {
-        console.log(error)
+        console.dir(error, { depth: null });
         program.error('Error processing transaction, please try again.')
     }
 }

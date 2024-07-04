@@ -4,7 +4,7 @@
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "bin": {
-    "sequence-cli": "./dist/bin.js"
+    "sequence": "./dist/bin.js"
   },
   "files": [
     "dist"
@@ -23,12 +23,14 @@
   "author": "Horizon Blockchain Games",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/figlet": "^1.5.8",
     "@types/node": "^20.14.9",
     "tsup": "^8.1.0",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "figlet": "^1.7.0"
   }
 }

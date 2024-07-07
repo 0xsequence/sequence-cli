@@ -207,6 +207,7 @@ function makeCommandMarketplace() {
 
     comm
     .command('create-listings')
+    .description('Create listings for tokens with Sequence Marketplace contracts')
     .option('-k, --key <private_key>', 'Private key for the wallet that holds the tokens')
     .option('-a, --address <collection_address>', 'Address of the collection contract')
     .option('-t, --token <token_id>', 'ID for the token to be listed', parseInt)

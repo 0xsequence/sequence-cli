@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Command } from '@commander-js/extra-typings'
+import { Command } from 'commander'
 import { input, password, number } from '@inquirer/prompts'
 import { ethers } from 'ethers'
 import { sequence } from '0xsequence';

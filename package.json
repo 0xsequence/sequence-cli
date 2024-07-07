@@ -4,7 +4,7 @@
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "bin": {
-    "sequence": "./dist/bin.js"
+    "sequence": "./dist/bin.js.mjs"
   },
   "files": [
     "dist"
@@ -12,7 +12,7 @@
   "scripts": {
     "tsc": "tsc -p tsconfig.json",
     "dev": "tsx src/bin.ts",
-    "build": "tsup",
+    "build": "tsc && vite build && chmod +x dist/bin.js.mjs",
     "upload": "pnpm build && npm publish"
   },
   "keywords": [
@@ -25,16 +25,17 @@
   "devDependencies": {
     "@commander-js/extra-typings": "^12.1.0",
     "@types/figlet": "^1.5.8",
-    "@types/node": "^20.14.9",
-    "tsup": "^8.1.0",
+    "@types/node": "^20.14.10",
+    "@types/webextension-polyfill": "^0.10.7",
     "tsx": "^4.16.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3"
   },
   "dependencies": {
     "0xsequence": "^1.9.36",
     "@0xsequence/auth": "^1.9.36",
     "@0xsequence/network": "^1.9.36",
-    "@inquirer/prompts": "^5.1.1",
+    "@inquirer/prompts": "^5.1.2",
     "commander": "^12.1.0",
     "ethers": "5.7.2",
     "figlet": "^1.7.0"

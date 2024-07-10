@@ -11,6 +11,7 @@ export function makeCommandMarketplace(program: Command) {
 
     comm
         .command("create-listings")
+        .description("Create listings for tokens in your wallet using the Sequence Marketplace contract")
         .option(
         "-k, --key <private_key>",
         "Private key for the wallet that holds the tokens"

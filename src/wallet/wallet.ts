@@ -11,6 +11,7 @@ export function makeCommandWallet(program: Command) {
 
     comm
         .command("create-single-signer")
+        .description("Generate a Sequence Wallet Single Signer using an EOA wallet (i.e. MetaMask)")
         .option(
         "-k, --key <private_key>",
         "Private key for the wallet that holds the tokens"

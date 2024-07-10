@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { input, password, number } from "@inquirer/prompts";
 import { ethers } from "ethers";
+import { findSupportedNetwork } from '@0xsequence/network';
 
 import { ERC1155_ABI } from "../abi/ERC_1155";
 import { Orderbook_ABI } from "../abi/Orderbook";
@@ -53,8 +54,23 @@ export async function createListings(program: Command, options: any) {
         message: "Enter the price per token, in the currency specified",
       });
     }
+
+    const chainConfig = findSupportedNetwork(network);
+
+    if (chainConfig === undefined) {
+        program.error("Unsupported network, please select a valid network")
+        return
+    }
+
+    let nodeUrl = chainConfig.rpcUrl
+
+    if (options.projectAccessKey) {
+        nodeUrl += "/" + options.projectAccessKey
+    }
+    
+    console.log(`Using node URL: ${nodeUrl}`)
   
-    const provider = new ethers.JsonRpcProvider("https://polygon-rpc.com");
+    const provider = new ethers.JsonRpcProvider(nodeUrl);
     const wallet = new ethers.Wallet(privateKey, provider);
   
     console.log(`Using EOA Wallet: ${wallet.address}`);

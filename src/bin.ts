@@ -2,6 +2,7 @@
 
 import { Command } from "commander";
 import { makeCommandMarketplace } from "./marketplace/marketplace";
+import { makeCommandWallet } from "./wallet/wallet";
 
 import figlet from "figlet";
 
@@ -19,5 +20,6 @@ program
 );
 
 program.addCommand(makeCommandMarketplace(program));
+program.addCommand(makeCommandWallet(program));
 
 program.parse(process.argv);

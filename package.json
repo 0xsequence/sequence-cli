@@ -1,6 +1,6 @@
 {
   "name": "@0xsequence/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "bin": {
@@ -32,9 +32,9 @@
     "vite": "^5.3.3"
   },
   "dependencies": {
-    "0xsequence": "^1.9.36",
-    "@0xsequence/auth": "^1.9.36",
-    "@0xsequence/network": "^1.9.36",
+    "0xsequence": "0.0.0-20240709173026",
+    "@0xsequence/auth": "0.0.0-20240709173026",
+    "@0xsequence/network": "0.0.0-20240709173026",
     "@inquirer/prompts": "^5.1.2",
     "commander": "^12.1.0",
     "ethers": "6.13.1",

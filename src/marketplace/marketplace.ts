@@ -27,7 +27,7 @@ export function makeCommandMarketplace(program: Command) {
         )
         .option(
         "-c, --currency <currency>",
-        "Either a well known currency code (USDC, MATIC, etc.) or a token address"
+        "Address for the currency token to be used for the listing"
         )
         .option("-p, --price <price>", "Price per token, in the currency specified")
         .option(

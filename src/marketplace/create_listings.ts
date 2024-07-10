@@ -75,7 +75,6 @@ export async function createListings(program: Command, options: any) {
   
     console.log(`Using EOA Wallet: ${wallet.address}`);
     console.log("Collection Address:", collectionAddress);
-  
     console.log("Currency token address:", currency);
   
     const collectionContract = new ethers.Contract(
@@ -84,10 +83,7 @@ export async function createListings(program: Command, options: any) {
       wallet
     );
   
-    console.log("tokenId", tokenId);
-  
     const balance = await collectionContract.balanceOf(wallet.address, tokenId);
-    console.log("balance", balance.toString());
   
     let isApprovedForAll = false;
   

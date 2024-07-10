@@ -24,6 +24,10 @@ export function makeCommandWallet(program: Command) {
         "--project-access-key <access_key>",
         "Project access key for Sequence requests"
         )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
         .action((options) => {
             createSingleSigner(program, options);
         });

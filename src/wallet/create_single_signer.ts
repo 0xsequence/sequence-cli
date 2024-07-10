@@ -34,7 +34,9 @@ export async function createSingleSigner(program: Command, options: any) {
         nodeUrl += "/" + options.projectAccessKey
     }
     
-    console.log(`Using node URL: ${nodeUrl}`)
+    if (options.verbose) {
+        console.log(`Using node URL: ${nodeUrl}`)
+    }
   
     const provider = new ethers.JsonRpcProvider(nodeUrl);
     const wallet = new ethers.Wallet(privateKey, provider);

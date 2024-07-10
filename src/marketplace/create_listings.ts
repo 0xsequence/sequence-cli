@@ -68,7 +68,9 @@ export async function createListings(program: Command, options: any) {
         nodeUrl += "/" + options.projectAccessKey
     }
     
-    console.log(`Using node URL: ${nodeUrl}`)
+    if (options.verbose) {
+      console.log(`Using node URL: ${nodeUrl}`)
+    }
   
     const provider = new ethers.JsonRpcProvider(nodeUrl);
     const wallet = new ethers.Wallet(privateKey, provider);
@@ -105,10 +107,16 @@ export async function createListings(program: Command, options: any) {
   
       try {
         const res = await wallet.sendTransaction(approveTxn);
-        console.log(`Approve transaction sent: ${res.hash}`);
+
+        if (options.verbose) {
+          console.log(`Approve transaction sent: ${res.hash}`);
+        }
   
         const receipt = await res.wait();
-        console.dir(receipt, { depth: null });
+
+        if (options.verbose) {
+          console.dir(receipt, { depth: null });
+        }
       } catch (error) {
         console.dir(error, { depth: null });
         program.error("Error processing transaction, please try again.");
@@ -143,10 +151,16 @@ export async function createListings(program: Command, options: any) {
   
     try {
       const res = await wallet.sendTransaction(txn);
-      console.log(`Create request transaction sent: ${res.hash}`);
+
+      if (options.verbose) {
+          console.log(`Create request transaction sent: ${res.hash}`);
+      }
   
       const receipt = await res.wait();
-      console.dir(receipt, { depth: null });
+
+      if (options.verbose) {
+        console.dir(receipt, { depth: null });
+      }
     } catch (error) {
       console.dir(error, { depth: null });
       program.error("Error processing transaction, please try again.");

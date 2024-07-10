@@ -151,6 +151,8 @@ export async function createListings(program: Command, options: any) {
       console.dir(error, { depth: null });
       program.error("Error processing transaction, please try again.");
     }
+
+    console.log(`Listing created successfully for token ID ${tokenId}`);
   }
   
   const getErc1155ApproveAllTransaction = (

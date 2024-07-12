@@ -10,7 +10,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/bin.ts"),
       name: "sequence-cli",
       formats: ["es"],
-      fileName: "bin.js",
+      fileName: "bin",
     },
     rollupOptions: {
       external: [

@@ -1,11 +1,11 @@
 {
-  "name": "@0xsequence/cli",
-  "version": "0.1.4",
+  "name": "sequence-cli",
+  "version": "0.1.6",
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "type": "module",
   "bin": {
-    "0xsequence": "./dist/bin.js"
+    "sequence-cli": "./dist/bin.js"
   },
   "files": [
     "dist"

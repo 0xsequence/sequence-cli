@@ -1038,6 +1038,8 @@ const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/embedded-w
 async function createEmbeddedWalletReact(program, options) {
   let waasConfigKey = options.waasConfigKey;
   let projectAccessKey = options.projectAccessKey;
+  let googleClientId = options.googleClientId;
+  let appleClientId = options.appleClientId;
   if (!waasConfigKey) {
     console.log("Please provide the WaaS Config Key for your project.");
     console.log("Your config key can be found at https://sequence.build under the embedded wallet settings.");
@@ -1047,12 +1049,30 @@ async function createEmbeddedWalletReact(program, options) {
     });
     console.log("");
   }
-  if (!projectAccessKey) {
+  if (!projectAccessKey && waasConfigKey != "") {
     console.log("Please provide the Project Access Key for your project.");
     console.log("Your access key can be found at https://sequence.build under the project settings.");
     console.log("To skip and use the default test access key, press enter.");
     projectAccessKey = await input({
       message: "Project Access Key:"
+    });
+    console.log("");
+  }
+  if (!googleClientId && waasConfigKey != "") {
+    console.log("Please provide the Google Client ID for your project.");
+    console.log("Your client ID can be found at https://console.cloud.google.com/apis/credentials");
+    console.log("To skip and use the default test client ID, press enter.");
+    googleClientId = await input({
+      message: "Google Client ID:"
+    });
+    console.log("");
+  }
+  if (!appleClientId && waasConfigKey != "") {
+    console.log("Please provide the Apple Client ID for your project.");
+    console.log("Your client ID can be found at https://developer.apple.com/account/resources/identifiers/list/serviceId");
+    console.log("To skip and use the default test client ID, press enter.");
+    appleClientId = await input({
+      message: "Apple Client ID:"
     });
     console.log("");
   }
@@ -1068,8 +1088,12 @@ async function createEmbeddedWalletReact(program, options) {
   for (let i = 0; i < envExampleLines.length; i++) {
     if (envExampleLines[i].includes("VITE_WAAS_CONFIG_KEY") && waasConfigKey != "") {
       shell.exec(`echo VITE_WAAS_CONFIG_KEY=${waasConfigKey} >> .env`, { silent: !options.verbose });
-    } else if (envExampleLines[i].includes("VITE_PROJECT_ACCESS_KEY") && projectAccessKey != "") {
+    } else if (envExampleLines[i].includes("VITE_PROJECT_ACCESS_KEY") && projectAccessKey != "" && projectAccessKey != void 0) {
       shell.exec(`echo VITE_PROJECT_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
+    } else if (envExampleLines[i].includes("VITE_GOOGLE_CLIENT_ID") && googleClientId != "" && googleClientId != void 0) {
+      shell.exec(`echo VITE_GOOGLE_CLIENT_ID=${googleClientId} >> .env`, { silent: !options.verbose });
+    } else if (envExampleLines[i].includes("VITE_APPLE_CLIENT_ID") && appleClientId != "" && appleClientId != void 0) {
+      shell.exec(`echo VITE_APPLE_CLIENT_ID=${appleClientId} >> .env`, { silent: !options.verbose });
     } else {
       shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
     }
@@ -1089,6 +1113,12 @@ function makeCommandBoilerplates(program) {
   ).option(
     "--project-access-key <access_key>",
     "Project access key for Sequence requests"
+  ).option(
+    "--google-client-id <google_client_id>",
+    "Google client ID to be used during authentication"
+  ).option(
+    "--apple-client-id <apple_client_id>",
+    "Apple client ID to be used during authentication"
   ).option(
     "--verbose",
     "Show additional information in the output"

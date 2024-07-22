@@ -1034,7 +1034,7 @@ function makeCommandWallet(program) {
   return comm;
 }
 
-const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/embedded-wallet-react-boilerplate/";
+const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
 async function createEmbeddedWalletReact(program, options) {
   let waasConfigKey = options.waasConfigKey;
   let projectAccessKey = options.projectAccessKey;

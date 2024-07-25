@@ -3,9 +3,8 @@ import { input } from "@inquirer/prompts";
 
 import shell from "shelljs";
 
-
 const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
-
+const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager";
 
 async function createEmbeddedWalletReact(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
@@ -97,6 +96,87 @@ async function createEmbeddedWalletReact(program: Command, options: any) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
+async function createTxManager(program: Command, options: any) {
+    let network = options.network;
+    let privateKey = options.key;
+    let projectAccessKey = options.projectAccessKey;
+
+    if (!network) {
+        console.log("Please provide the Network for your project as a Sequence chain handle");
+        console.log("Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support");
+        console.log("To skip and use the default test network key, press enter.");
+ 
+        network = await input({
+            message: "Chain Handle (Network):",
+        });
+
+        console.log("");
+    }
+
+    if (!privateKey) {
+        console.log("Please provide a relayer private key for your project.");
+        console.log("You can obtain one for demo purposes here https://sequence-ethauthproof-viewer.vercel.app/");
+        console.log("To skip and use the default evm private key, press enter.");
+ 
+        privateKey = await input({
+            message: "EVM Private Key:",
+        });
+
+        console.log("");
+    }
+
+
+    if (!projectAccessKey) {
+        console.log("Please provide the Project Access Key for your project.");
+        console.log("Your access key can be found at https://sequence.build under the project settings.");
+        console.log("To skip and use the default test access key, press enter.");
+ 
+        projectAccessKey = await input({
+            message: "Project Access Key:",
+        });
+
+        console.log("");
+    }
+
+    console.log("Cloning the repo to `tx-manager-boilerplate`...");
+
+    shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager`, { silent: !options.verbose });
+    
+    shell.cd("tx-manager");
+
+    console.log("Installing dependencies...");
+    
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    // shell.exec(`touch .env`, { silent: !options.verbose });
+
+    console.log("Configuring your project...");
+    shell.cd("../tx-manager/server");
+
+
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+
+    for (let i = 0; i < envExampleLines.length; i++) {
+        if (envExampleLines[i].includes('CHAIN_HANDLE') && network != ''&& network != undefined) {
+            shell.exec(`echo CHAIN_HANDLE=${network} >> .env`, { silent: !options.verbose });
+        } 
+        else if (envExampleLines[i].includes('EVM_PRIVATE_KEY') && privateKey != '' && privateKey != undefined) {
+            shell.exec(`echo EVM_PRIVATE_KEY=${privateKey} >> .env`, { silent: !options.verbose });
+        }
+        else if (envExampleLines[i].includes('PROJECT_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
+            shell.exec(`echo PROJECT_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
+        }
+        else {
+            shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
+        }
+    }
+
+    console.log("Tx Manager boilerplate created successfully! 🔄");
+    console.log("Starting development server...");
+    shell.cd("../");
+    shell.exec(`pnpm start`, { silent: false });
+}
+
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
 
@@ -129,7 +209,29 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createEmbeddedWalletReact(program, options);
-        });
+        })
+    comm    
+        .command("create-tx-manager")
+        .description("Create a server that has the ability to mint collectibles based on parameters")
+        .option(
+            "-k, --key <private_key>",
+            "Private key for the wallet that holds the tokens"
+        )
+        .option(
+            "-n, --network <network>",
+            "Network to be used (mainnet, polygon, etc.)"
+        )
+        .option(
+            "-pak, --project-access-key <access_key>",
+            "Project access key for Sequence requests"
+        )
+        .option(
+            "--verbose",
+            "Show additional information in the output"
+        )
+        .action((options) => {
+            createTxManager(program, options);
+        })
 
     return comm;
 }

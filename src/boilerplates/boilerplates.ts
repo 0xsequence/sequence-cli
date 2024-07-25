@@ -4,7 +4,7 @@ import { input } from "@inquirer/prompts";
 import shell from "shelljs";
 
 
-const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/embedded-wallet-react-boilerplate/";
+const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
 
 
 async function createEmbeddedWalletReact(program: Command, options: any) {

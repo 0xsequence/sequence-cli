@@ -12,6 +12,7 @@ async function createEmbeddedWalletReact(program: Command, options: any) {
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
     let appleClientId = options.appleClientId;
+    let walletConnectId = options.walletConnectId;
 
     if (!waasConfigKey) {
         console.log("Please provide the WaaS Config Key for your project.");
@@ -61,6 +62,19 @@ async function createEmbeddedWalletReact(program: Command, options: any) {
         console.log("");
     }
 
+
+    if (!walletConnectId && waasConfigKey != '') {
+        console.log("Please provide a walletconnect ID for your project if you would like to use walletconnect..");
+        console.log("Your client ID can be created by signing up for an account at https://cloud.walletconnect.com/sign-in");
+        console.log("To skip and use the default test client ID, press enter.");
+ 
+        walletConnectId = await input({
+            message: "Wallet Connect ID:",
+        });
+
+        console.log("");
+    }
+
     console.log("Cloning the repo to `embedded-wallet-react-boilerplate`...");
 
     shell.exec(`git clone ${EMBEDDED_WALLET_REACT_REPO_URL} embedded-wallet-react-boilerplate`, { silent: !options.verbose });
@@ -86,6 +100,8 @@ async function createEmbeddedWalletReact(program: Command, options: any) {
             shell.exec(`echo VITE_GOOGLE_CLIENT_ID=${googleClientId} >> .env`, { silent: !options.verbose });
         } else if (envExampleLines[i].includes('VITE_APPLE_CLIENT_ID') && appleClientId != '' && appleClientId != undefined) {
             shell.exec(`echo VITE_APPLE_CLIENT_ID=${appleClientId} >> .env`, { silent: !options.verbose });
+        } else if (envExampleLines[i].includes('VITE_WALLET_CONNECT_ID') && walletConnectId != '' && walletConnectId != undefined) {
+            shell.exec(`echo VITE_WALLET_CONNECT_ID=${walletConnectId} >> .env`, { silent: !options.verbose });
         } else {
             shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
         }
@@ -123,6 +139,10 @@ export function makeCommandBoilerplates(program: Command) {
         "--apple-client-id <apple_client_id>",
         "Apple client ID to be used during authentication"
         )
+        .option(
+            "--wallet-connect-id <wallet-connect-id>",
+            "Wallet Connect ID to use"
+            )
         .option(
         "--verbose",
         "Show additional information in the output"

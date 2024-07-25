@@ -173,7 +173,7 @@ async function createTxManager(program: Command, options: any) {
 
     console.log("Tx Manager boilerplate created successfully! 🔄");
     console.log("Starting development server...");
-    shell.cd("../");
+    // shell.cd("../"); // For Local Development
     shell.exec(`pnpm start`, { silent: false });
 }
 

@@ -30,7 +30,7 @@ export async function createListings(program: Command, options: any) {
       });
     }
   
-    if (!tokenId) {
+    if (tokenId === null || tokenId === undefined) {
       tokenId = await number({
         message: "Enter the ID for the token to be listed",
       });
@@ -84,7 +84,7 @@ export async function createListings(program: Command, options: any) {
       ERC1155_ABI,
       wallet
     );
-  
+
     const balance = await collectionContract.balanceOf(wallet.address, tokenId);
   
     let isApprovedForAll = false;

@@ -13,20 +13,20 @@ export function makeCommandWallet(program: Command) {
         .command("create-single-signer")
         .description("Generate a Sequence Wallet Single Signer using an EOA wallet (i.e. MetaMask)")
         .option(
-        "-k, --key <private_key>",
-        "Private key for the wallet that holds the tokens"
+            "-k, --key <private_key>",
+            "Private key for the wallet that holds the tokens"
         )
         .option(
-        "-n, --network <network>",
-        "Network to be used (mainnet, polygon, etc.)"
+            "-n, --network <network>",
+            "Network to be used (mainnet, polygon, etc.)"
         )
         .option(
-        "--project-access-key <access_key>",
-        "Project access key for Sequence requests"
+            "--project-access-key <access_key>",
+            "Project access key for Sequence requests"
         )
         .option(
-        "--verbose",
-        "Show additional information in the output"
+            "--verbose",
+            "Show additional information in the output"
         )
         .action((options) => {
             createSingleSigner(program, options);

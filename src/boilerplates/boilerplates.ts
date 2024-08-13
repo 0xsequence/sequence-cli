@@ -1,10 +1,13 @@
 import { Command } from "commander";
 import { input } from "@inquirer/prompts";
-
+import { findSupportedNetwork } from '@0xsequence/network'
+import { isValidPrivateKey } from '../utils/'
 import shell from "shelljs";
 
 const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
 const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager";
+
+const devMode = process.env.DEV === 'true';
 
 async function createEmbeddedWalletReact(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
@@ -110,17 +113,25 @@ async function createTxManager(program: Command, options: any) {
             message: "Chain Handle (Network):",
         });
 
-        console.log("");
+        if((await findSupportedNetwork(network) == undefined) && network){
+            program.error('Please input a valid Sequence offered network')
+        }
     }
 
     if (!privateKey) {
         console.log("Please provide a relayer private key for your project.");
         console.log("You can obtain one for demo purposes here https://sequence-ethauthproof-viewer.vercel.app/");
         console.log("To skip and use the default evm private key, press enter.");
+        console.log("");
+        console.log("Note: This private key's computed Sequence Wallet Address will have to have a Minter Role Granted on a Sequence standard contract in order for minting to work.");
  
         privateKey = await input({
             message: "EVM Private Key:",
         });
+
+        if(!isValidPrivateKey(privateKey) && privateKey){
+            program.error('Please input a valid EVM Private key')
+        }
 
         console.log("");
     }
@@ -138,7 +149,7 @@ async function createTxManager(program: Command, options: any) {
         console.log("");
     }
 
-    console.log("Cloning the repo to `tx-manager-boilerplate`...");
+    console.log("Cloning the repo to `tx-manager`...");
 
     shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager`, { silent: !options.verbose });
     
@@ -147,11 +158,11 @@ async function createTxManager(program: Command, options: any) {
     console.log("Installing dependencies...");
     
     shell.exec(`pnpm install`, { silent: !options.verbose });
-    // shell.exec(`touch .env`, { silent: !options.verbose });
+    shell.exec(`touch .env`, { silent: !options.verbose });
 
     console.log("Configuring your project...");
-    shell.cd("../tx-manager/server");
-
+    
+    devMode && shell.cd("../tx-manager/server"); // for Local Development
 
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
@@ -173,7 +184,9 @@ async function createTxManager(program: Command, options: any) {
 
     console.log("Tx Manager boilerplate created successfully! 🔄");
     console.log("Starting development server...");
-    // shell.cd("../"); // For Local Development
+    
+    devMode && shell.cd("../"); // for Local Development
+    
     shell.exec(`pnpm start`, { silent: false });
 }
 
@@ -188,28 +201,29 @@ export function makeCommandBoilerplates(program: Command) {
         .command("create-embedded-wallet-react-starter")
         .description("Clone a starter boilerplate for Sequence Embedded Wallet integrated with React")
         .option(
-        "--waas-config-key <waas_key>",
-        "WaaS config key for this project"
+            "--waas-config-key <waas_key>",
+            "WaaS config key for this project"
         )
         .option(
-        "--project-access-key <access_key>",
-        "Project access key for Sequence requests"
+            "--project-access-key <access_key>",
+            "Project access key for Sequence requests"
         )
         .option(
-        "--google-client-id <google_client_id>",
-        "Google client ID to be used during authentication"
+            "--google-client-id <google_client_id>",
+            "Google client ID to be used during authentication"
         )
         .option(
-        "--apple-client-id <apple_client_id>",
-        "Apple client ID to be used during authentication"
+            "--apple-client-id <apple_client_id>",
+            "Apple client ID to be used during authentication"
         )
         .option(
-        "--verbose",
-        "Show additional information in the output"
+            "--verbose",
+            "Show additional information in the output"
         )
         .action((options) => {
             createEmbeddedWalletReact(program, options);
         })
+
     comm    
         .command("create-tx-manager")
         .description("Create a server that has the ability to mint collectibles based on parameters")

@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "tsc": "tsc -p tsconfig.json",
-    "dev": "tsx src/bin.ts",
+    "remove-built-files": "node removeJsFiles.js",
+    "dev": "DEV=true tsx src/bin.ts",
     "build": "tsc && vite build && chmod +x dist/bin.js",
     "upload": "pnpm build && npm publish"
   },

@@ -1,9 +1,10 @@
 import { Command } from "commander";
 import { createListings } from "./create_listings";
+import { createMarketplaceBoilerplate } from "./create_marketplace_boilerplate";
 
 
 export function makeCommandMarketplace(program: Command) {
-    const comm = new Command("marketplace");
+    const comm = new Command("marketplaces");
 
     comm.action(() => {
         comm.help();
@@ -52,6 +53,37 @@ export function makeCommandMarketplace(program: Command) {
         )
         .action((options) => {
             createListings(program, options);
+        });
+
+    comm
+        .command("create-marketplace-boilerplate")
+        .description("Clone a starter boilerplate for Marketplace integrated with Next.js")
+        .option(
+        "-wt, --wallet-type <wallet_type>",
+        "Wallet type that you want to use. Possible values: 'waas' || 'universal'"
+        )
+        .option(
+        "-pkey --project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "-pid --project-id <project_id>",
+        "Project ID from your project"
+        )
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createMarketplaceBoilerplate(program, options);
         });
 
     return comm;

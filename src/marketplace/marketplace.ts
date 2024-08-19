@@ -4,7 +4,7 @@ import { createMarketplaceBoilerplate } from "./create_marketplace_boilerplate";
 
 
 export function makeCommandMarketplace(program: Command) {
-    const comm = new Command("marketplaces");
+    const comm = new Command("marketplace");
 
     comm.action(() => {
         comm.help();

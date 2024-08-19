@@ -16,7 +16,8 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
     
     if (!walletType) {
         console.log("Please provide the Wallet Type for your project.");
-        console.log("You can use 'universal' or 'waas' as values.");
+        console.log("You can use 'waas' for Embedded Wallet and 'universal' for Universal Wallet.");
+        console.log("For more information on wallet types: https://docs.sequence.xyz/solutions/wallets/overview");
         console.log("To skip and use the default value: 'waas', press enter.");
  
         walletType = await input({

@@ -8,7 +8,6 @@ const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager-boil
 const devMode = process.env.DEV === 'true';
 
 export async function createTxManager(program: Command, options: any) {
-    let network = options.network;
     let privateKey = options.key;
     let projectAccessKey = options.projectAccessKey;
 

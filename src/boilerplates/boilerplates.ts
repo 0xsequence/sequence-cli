@@ -5,7 +5,7 @@ import { isValidPrivateKey } from '../utils/'
 import shell from "shelljs";
 
 const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
-const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager";
+const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager-boilerplate";
 
 const devMode = process.env.DEV === 'true';
 
@@ -104,20 +104,6 @@ async function createTxManager(program: Command, options: any) {
     let privateKey = options.key;
     let projectAccessKey = options.projectAccessKey;
 
-    if (!network) {
-        console.log("Please provide the Network for your project as a Sequence chain handle");
-        console.log("Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support");
-        console.log("To skip and use the default test network key, press enter.");
- 
-        network = await input({
-            message: "Chain Handle (Network):",
-        });
-
-        if((await findSupportedNetwork(network) == undefined) && network){
-            program.error('Please input a valid Sequence offered network')
-        }
-    }
-
     if (!privateKey) {
         console.log("Please provide a relayer private key for your project.");
         console.log("You can obtain one for demo purposes here https://sequence-ethauthproof-viewer.vercel.app/");
@@ -149,11 +135,11 @@ async function createTxManager(program: Command, options: any) {
         console.log("");
     }
 
-    console.log("Cloning the repo to `tx-manager`...");
+    console.log("Cloning the repo to `tx-manager-boilerplate`...");
 
-    shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager`, { silent: !options.verbose });
+    shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager-boilerplate`, { silent: !options.verbose });
     
-    shell.cd("tx-manager");
+    shell.cd("tx-manager-boilerplate");
 
     console.log("Installing dependencies...");
     
@@ -162,16 +148,13 @@ async function createTxManager(program: Command, options: any) {
 
     console.log("Configuring your project...");
     
-    devMode && shell.cd("../tx-manager/server"); // for Local Development
+    devMode && shell.cd("../tx-manager-boilerplate/server"); // for Local Development
 
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
 
     for (let i = 0; i < envExampleLines.length; i++) {
-        if (envExampleLines[i].includes('CHAIN_HANDLE') && network != ''&& network != undefined) {
-            shell.exec(`echo CHAIN_HANDLE=${network} >> .env`, { silent: !options.verbose });
-        } 
-        else if (envExampleLines[i].includes('EVM_PRIVATE_KEY') && privateKey != '' && privateKey != undefined) {
+        if (envExampleLines[i].includes('EVM_PRIVATE_KEY') && privateKey != '' && privateKey != undefined) {
             shell.exec(`echo EVM_PRIVATE_KEY=${privateKey} >> .env`, { silent: !options.verbose });
         }
         else if (envExampleLines[i].includes('PROJECT_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
@@ -230,10 +213,6 @@ export function makeCommandBoilerplates(program: Command) {
         .option(
             "-k, --key <private_key>",
             "Private key for the wallet that holds the tokens"
-        )
-        .option(
-            "-n, --network <network>",
-            "Network to be used (mainnet, polygon, etc.)"
         )
         .option(
             "-pak, --project-access-key <access_key>",

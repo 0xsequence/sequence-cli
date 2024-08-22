@@ -7,7 +7,6 @@ import { makeCommandBoilerplates } from "./boilerplates/boilerplates";
 
 import figlet from "figlet";
 
-
 console.log(figlet.textSync("Sequence"));
 console.log("");
 

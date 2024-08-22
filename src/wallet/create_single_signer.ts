@@ -3,16 +3,23 @@ import { password, input } from "@inquirer/prompts";
 import { ethers } from "ethers";
 import { Session } from '@0xsequence/auth';
 import { findSupportedNetwork } from '@0xsequence/network';
-
+import { isValidPrivateKey } from '../utils/'
 
 export async function createSingleSigner(program: Command, options: any) {
     let privateKey = options.key;
     let network = options.network
 
     if (!privateKey) {
-      privateKey = await password({
-        message: "Enter the private key for an EOA wallet (i.e. MetaMask)",
-      });
+        privateKey = await password({
+          message: "Enter the private key for an EOA wallet (i.e. MetaMask)",
+        });
+  
+        if(!isValidPrivateKey(privateKey) && privateKey){
+            console.log('Please input a valid EVM Private key')
+            process.exit()
+        }
+  
+        console.log("");
     }
 
     if (!network) {

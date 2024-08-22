@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { input, password, number } from "@inquirer/prompts";
 import { ethers } from "ethers";
 import { findSupportedNetwork } from '@0xsequence/network';
-
+import { isValidPrivateKey } from '../utils/'
 import { ERC1155_ABI } from "../abi/ERC_1155";
 import { Orderbook_ABI } from "../abi/Orderbook";
 
@@ -22,6 +22,13 @@ export async function createListings(program: Command, options: any) {
       privateKey = await password({
         message: "Enter the private key for the wallet that holds the tokens",
       });
+
+      if(!isValidPrivateKey(privateKey) && privateKey){
+          console.log('Please input a valid EVM Private key')
+          process.exit()
+      }
+
+      console.log("");
     }
   
     if (!collectionAddress) {
@@ -35,10 +42,13 @@ export async function createListings(program: Command, options: any) {
         message: "Enter the ID for the token to be listed",
       });
     }
-  
+
     if (!network) {
+      console.log("Please provide the Network for your project as a Sequence chain handle");
+      console.log("Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support");
+
       network = await input({
-        message: "Enter the network to be used (mainnet, polygon, etc.)",
+          message: "Enter the network to be used (mainnet, polygon, etc.)",
       });
     }
   

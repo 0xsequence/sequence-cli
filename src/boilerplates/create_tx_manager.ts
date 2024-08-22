@@ -5,7 +5,6 @@ import shell from "shelljs";
 import { isValidPrivateKey } from '../utils/'
 
 const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager-boilerplate";
-const devMode = process.env.DEV === 'true';
 
 export async function createTxManager(program: Command, options: any) {
     let privateKey = options.key;
@@ -55,8 +54,6 @@ export async function createTxManager(program: Command, options: any) {
 
     console.log("Configuring your project...");
     
-    devMode && shell.cd("../tx-manager-boilerplate/server"); // for Local Development
-
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
 
@@ -74,8 +71,6 @@ export async function createTxManager(program: Command, options: any) {
 
     console.log("Tx Manager boilerplate created successfully! 🔄");
     console.log("Starting development server...");
-    
-    devMode && shell.cd("../"); // for Local Development
     
     shell.exec(`pnpm start`, { silent: false });
 }

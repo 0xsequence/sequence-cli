@@ -1,10 +1,11 @@
 import { Command } from "commander";
 import { input } from "@inquirer/prompts";
-import { findSupportedNetwork } from '@0xsequence/network'
+import { findSupportedNetwork } from "@0xsequence/network";
 import shell from "shelljs";
 import { createTxManager } from "./create_tx_manager";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
 import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
+import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -84,6 +85,29 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createEmbeddedWalletNextjs(program, options);
+        });
+
+    comm
+        .command("create-embedded-wallet-verify-session-starter")
+        .description("Clone a starter boilerplate for Sequence Embedded Wallet verification from a server-side application")
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createEmbeddedWalletVerifySession(program, options);
         });
 
     return comm;

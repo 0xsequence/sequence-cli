@@ -1,11 +1,22 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { password, input, number } from '@inquirer/prompts';
-import { ethers } from 'ethers';
+import { Wallet, ethers } from 'ethers';
 import { findSupportedNetwork } from '@0xsequence/network';
-import { Session } from '@0xsequence/auth';
 import shell from 'shelljs';
+import { Session } from '@0xsequence/auth';
+import { extractProjectIdFromAccessKey } from '@0xsequence/utils';
 import figlet from 'figlet';
+
+function isValidPrivateKey(privateKey) {
+    try {
+        new Wallet(privateKey);
+        return true;
+    }
+    catch (error) {
+        return false;
+    }
+}
 
 const ERC1155_ABI = [
     {
@@ -798,7 +809,6 @@ const Orderbook_ABI = [
 
 const SEQUENCE_MARKETPLACE_V1_ADDRESS = "0xB537a160472183f2150d42EB1c3DD6684A55f74c";
 async function createListings(program, options) {
-<<<<<<< HEAD
     let privateKey = options.key;
     let collectionAddress = options.address;
     let tokenId = options.token;
@@ -810,18 +820,25 @@ async function createListings(program, options) {
         privateKey = await password({
             message: "Enter the private key for the wallet that holds the tokens",
         });
+        if (!isValidPrivateKey(privateKey) && privateKey) {
+            console.log('Please input a valid EVM Private key');
+            process.exit();
+        }
+        console.log("");
     }
     if (!collectionAddress) {
         collectionAddress = await input({
             message: "Enter the address of the collection contract",
         });
     }
-    if (!tokenId) {
+    if (tokenId === null || tokenId === undefined) {
         tokenId = await number({
             message: "Enter the ID for the token to be listed",
         });
     }
     if (!network) {
+        console.log("Please provide the Network for your project as a Sequence chain handle");
+        console.log("Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support");
         network = await input({
             message: "Enter the network to be used (mainnet, polygon, etc.)",
         });
@@ -856,83 +873,6 @@ async function createListings(program, options) {
     const collectionContract = new ethers.Contract(collectionAddress, ERC1155_ABI, wallet);
     await collectionContract.balanceOf(wallet.address, tokenId);
     let isApprovedForAll = false;
-=======
-  let privateKey = options.key;
-  let collectionAddress = options.address;
-  let tokenId = options.token;
-  let network = options.network;
-  let currency = options.currency;
-  let price = options.price;
-  let quantity = options.quantity;
-  if (!privateKey) {
-    privateKey = await password({
-      message: "Enter the private key for the wallet that holds the tokens"
-    });
-  }
-  if (!collectionAddress) {
-    collectionAddress = await input({
-      message: "Enter the address of the collection contract"
-    });
-  }
-  if (tokenId === null || tokenId === void 0) {
-    tokenId = await number({
-      message: "Enter the ID for the token to be listed"
-    });
-  }
-  if (!network) {
-    network = await input({
-      message: "Enter the network to be used (mainnet, polygon, etc.)"
-    });
-  }
-  if (!currency) {
-    currency = await input({
-      message: "Enter either a well known currency code (USDC, MATIC, etc.) or a token address"
-    });
-  }
-  if (!price) {
-    price = await input({
-      message: "Enter the price per token, in the currency specified"
-    });
-  }
-  const chainConfig = findSupportedNetwork(network);
-  if (chainConfig === void 0) {
-    program.error("Unsupported network, please select a valid network");
-    return;
-  }
-  let nodeUrl = chainConfig.rpcUrl;
-  if (options.projectAccessKey) {
-    nodeUrl += "/" + options.projectAccessKey;
-  }
-  if (options.verbose) {
-    console.log(`Using node URL: ${nodeUrl}`);
-  }
-  const provider = new ethers.JsonRpcProvider(nodeUrl);
-  const wallet = new ethers.Wallet(privateKey, provider);
-  console.log(`Using EOA Wallet: ${wallet.address}`);
-  console.log("Collection Address:", collectionAddress);
-  console.log("Currency token address:", currency);
-  const collectionContract = new ethers.Contract(
-    collectionAddress,
-    ERC1155_ABI,
-    wallet
-  );
-  await collectionContract.balanceOf(wallet.address, tokenId);
-  let isApprovedForAll = false;
-  try {
-    isApprovedForAll = await collectionContract.isApprovedForAll(
-      wallet.address,
-      SEQUENCE_MARKETPLACE_V1_ADDRESS
-    );
-  } catch (error) {
-    console.dir(error, { depth: null });
-    program.error("Error checking approval.");
-  }
-  if (!isApprovedForAll) {
-    const approveTxn = getErc1155ApproveAllTransaction(
-      collectionAddress,
-      SEQUENCE_MARKETPLACE_V1_ADDRESS
-    );
->>>>>>> origin/main
     try {
         isApprovedForAll = await collectionContract.isApprovedForAll(wallet.address, SEQUENCE_MARKETPLACE_V1_ADDRESS);
     }
@@ -1004,6 +944,163 @@ const getErc1155ApproveAllTransaction = (tokenAddress, spender) => {
     return erc1155ApprovalTx;
 };
 
+const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence/marketplace-boilerplate/";
+async function createMarketplaceBoilerplate(program, options) {
+    let walletType = options.walletType;
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let googleClientId = options.googleClientId;
+    let projectId = options.projectId;
+    let userWantConfigureEnvs = "yes";
+    if (!walletType) {
+        console.log("Please provide the Wallet Type for your project.");
+        console.log("You can use 'waas' for Embedded Wallet and 'universal' for Universal Wallet.");
+        console.log("For more information on wallet types: https://docs.sequence.xyz/solutions/wallets/overview");
+        console.log("To skip and use the default value: 'waas', press enter.");
+        walletType = await input({
+            message: "Wallet Type:",
+        });
+        if (!walletType)
+            walletType = "waas";
+        if (walletType && walletType != "waas" && walletType != "universal") {
+            console.log("You only can use 'universal' or 'waas' as values.");
+            console.log("Please try creating the project again.");
+            console.log("Stopping processes...");
+            return;
+        }
+        console.log("");
+    }
+    if (userWantConfigureEnvs) {
+        console.log("Do you want to configure your project keys for this project?");
+        console.log("Please answer with 'yes' or 'no'.");
+        console.log("To skip and use the default value: 'yes', press enter.");
+        userWantConfigureEnvs = await input({
+            message: "Configure project keys:",
+        });
+        if (!userWantConfigureEnvs)
+            userWantConfigureEnvs = "yes";
+        if (userWantConfigureEnvs && (userWantConfigureEnvs != "yes" && userWantConfigureEnvs != "no")) {
+            console.log("You only can use 'yes' or 'no' as values.");
+            console.log("Please try creating the project again.");
+            console.log("Stopping processes...");
+            return;
+        }
+        console.log("");
+    }
+    if (userWantConfigureEnvs === "yes") {
+        if (!projectAccessKey) {
+            console.log("Please provide the Project Access Key for your project.");
+            console.log("Your access key can be found at https://sequence.build under the project settings.");
+            console.log("To skip and use the default test access key, press enter.");
+            projectAccessKey = await input({
+                message: "Project Access Key:",
+            });
+            console.log("");
+        }
+        if (!projectId) {
+            console.log("Please provide the Project ID from your project.");
+            console.log("Your Project ID can be found in the URL within https://sequence.build, either in the cards of your projects or by entering one of the projects where it can also be found in the URL.");
+            console.log("To skip and use the default test projectId, press enter.");
+            projectId = await input({
+                message: "Project ID:",
+            });
+            console.log("");
+        }
+        if (walletType === "waas") {
+            if (!waasConfigKey) {
+                console.log("Please provide the WaaS Config Key for your project.");
+                console.log("Your config key can be found at https://sequence.build under the embedded wallet settings.");
+                console.log("To skip and use the default test config key, press enter.");
+                waasConfigKey = await input({
+                    message: "WaaS Config Key:",
+                });
+                console.log("");
+            }
+            if (!googleClientId) {
+                console.log("Please provide the Google Client ID for your project.");
+                console.log("Your client ID can be found at https://console.cloud.google.com/apis/credentials");
+                console.log("To skip and use the default test client ID, press enter.");
+                googleClientId = await input({
+                    message: "Google Client ID:",
+                });
+                console.log("");
+            }
+        }
+    }
+    console.log("Cloning the repo to `marketplace-boilerplate`...");
+    shell.exec(`git clone ${MARKETPLACE_BOILERPLATE_REPO_URL} marketplace-boilerplate`, { silent: !options.verbose });
+    shell.cd("marketplace-boilerplate");
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\r\n');
+    for (let i = 0; i < envExampleLines.length; i++) {
+        const isValidEnv = !envExampleLines[i].split(" ").join().startsWith("#");
+        if (!isValidEnv || envExampleLines[i].trim() === "") {
+            continue;
+        }
+        else if (walletType === "waas") {
+            if (userWantConfigureEnvs === "no" && [
+                "NEXT_PUBLIC_WALLET_TYPE=",
+                "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=",
+                "NEXT_PUBLIC_SEQUENCE_PROJECT_ID=",
+                "NEXT_PUBLIC_WAAS_CONFIG_KEY=",
+                "NEXT_PUBLIC_GOOGLE_CLIENT_ID=",
+            ].some((currentEnvironment) => envExampleLines[i].includes(currentEnvironment))) {
+                shell.exec(`echo ${envExampleLines[i]} >> .env`, {
+                    silent: !options.verbose,
+                });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_WALLET_TYPE') && walletType === "waas") {
+                shell.exec(`echo NEXT_PUBLIC_WALLET_TYPE=${walletType} >> .env`, { silent: !options.verbose });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
+                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_PROJECT_ID') && projectId != '' && projectId != undefined) {
+                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_PROJECT_ID=${projectId} >> .env`, { silent: !options.verbose });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_WAAS_CONFIG_KEY') && waasConfigKey != '') {
+                shell.exec(`echo NEXT_PUBLIC_WAAS_CONFIG_KEY=${waasConfigKey} >> .env`, { silent: !options.verbose });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_GOOGLE_CLIENT_ID') && googleClientId != '' && googleClientId != undefined) {
+                shell.exec(`echo NEXT_PUBLIC_GOOGLE_CLIENT_ID=${googleClientId} >> .env`, { silent: !options.verbose });
+            }
+            else if ([
+                "NEXT_PUBLIC_WALLET_TYPE=",
+                "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=",
+                "NEXT_PUBLIC_SEQUENCE_PROJECT_ID=",
+                "NEXT_PUBLIC_WAAS_CONFIG_KEY=",
+                "NEXT_PUBLIC_GOOGLE_CLIENT_ID=",
+            ].some((currentEnvironment) => envExampleLines[i].includes(currentEnvironment))) {
+                shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
+            }
+        }
+        else if (walletType === "universal") {
+            if (userWantConfigureEnvs === "no" && ["NEXT_PUBLIC_WALLET_TYPE=", "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=", "NEXT_PUBLIC_SEQUENCE_PROJECT_ID="].some(currentEnvironment => envExampleLines[i].includes(currentEnvironment))) {
+                shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_WALLET_TYPE') && walletType === "universal") {
+                shell.exec(`echo NEXT_PUBLIC_WALLET_TYPE=${walletType} >> .env`, { silent: !options.verbose });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
+                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
+            }
+            else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_PROJECT_ID') && projectId != '' && projectId != undefined) {
+                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_PROJECT_ID=${projectId} >> .env`, { silent: !options.verbose });
+            }
+            else if (["NEXT_PUBLIC_WALLET_TYPE=", "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=", "NEXT_PUBLIC_SEQUENCE_PROJECT_ID="].some(currentEnvironment => envExampleLines[i].includes(currentEnvironment))) {
+                shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
+            }
+        }
+    }
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Marketplace boilerplate created successfully! 🚀");
+    console.log("Starting development server...");
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
 function makeCommandMarketplace(program) {
     const comm = new Command("marketplace");
     comm.action(() => {
@@ -1025,6 +1122,18 @@ function makeCommandMarketplace(program) {
         .action((options) => {
         createListings(program, options);
     });
+    comm
+        .command("create-marketplace-boilerplate")
+        .description("Clone a starter boilerplate for Marketplace integrated with Next.js")
+        .option("-wt, --wallet-type <wallet_type>", "Wallet type that you want to use. Possible values: 'waas' || 'universal'")
+        .option("-pkey --project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("-pid --project-id <project_id>", "Project ID from your project")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createMarketplaceBoilerplate(program, options);
+    });
     return comm;
 }
 
@@ -1035,6 +1144,11 @@ async function createSingleSigner(program, options) {
         privateKey = await password({
             message: "Enter the private key for an EOA wallet (i.e. MetaMask)",
         });
+        if (!isValidPrivateKey(privateKey) && privateKey) {
+            console.log('Please input a valid EVM Private key');
+            process.exit();
+        }
+        console.log("");
     }
     if (!network) {
         network = await input({
@@ -1081,9 +1195,59 @@ function makeCommandWallet(program) {
     return comm;
 }
 
+const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager-boilerplate";
+async function createTxManager(program, options) {
+    let privateKey = options.key;
+    let projectAccessKey = options.projectAccessKey;
+    if (!privateKey) {
+        console.log("Please provide a relayer private key for your project.");
+        console.log("You can obtain one for demo purposes here https://sequence-ethauthproof-viewer.vercel.app/");
+        console.log("To skip and use the default evm private key, press enter.");
+        console.log("");
+        console.log("Note: This private key's computed Sequence Wallet Address will have to have a Minter Role Granted on a Sequence standard contract in order for minting to work.");
+        privateKey = await input({
+            message: "EVM Private Key:",
+        });
+        if (!isValidPrivateKey(privateKey) && privateKey) {
+            program.error('Please input a valid EVM Private key');
+        }
+        console.log("");
+    }
+    if (!projectAccessKey) {
+        console.log("Please provide the Project Access Key for your project.");
+        console.log("Your access key can be found at https://sequence.build under the project settings.");
+        console.log("To skip and use the default test access key, press enter.");
+        projectAccessKey = await input({
+            message: "Project Access Key:",
+        });
+        console.log("");
+    }
+    console.log("Cloning the repo to `tx-manager-boilerplate`...");
+    shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager-boilerplate`, { silent: !options.verbose });
+    shell.cd("tx-manager-boilerplate");
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    for (let i = 0; i < envExampleLines.length; i++) {
+        if (envExampleLines[i].includes('EVM_PRIVATE_KEY') && privateKey != '' && privateKey != undefined) {
+            shell.exec(`echo EVM_PRIVATE_KEY=${privateKey} >> .env`, { silent: !options.verbose });
+        }
+        else if (envExampleLines[i].includes('PROJECT_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
+            shell.exec(`echo PROJECT_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
+        }
+        else {
+            shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
+        }
+    }
+    console.log("Tx Manager boilerplate created successfully! 🔄");
+    console.log("Starting development server...");
+    shell.exec(`pnpm start`, { silent: false });
+}
+
 const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
-const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager";
-const devMode = process.env.DEV === 'true';
 async function createEmbeddedWalletReact(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
@@ -1155,34 +1319,23 @@ async function createEmbeddedWalletReact(program, options) {
     console.log("Starting development server...");
     shell.exec(`pnpm dev`, { silent: false });
 }
-async function createTxManager(program, options) {
-    let network = options.network;
-    let privateKey = options.key;
+
+const EMBEDDED_WALLET_NEXTJS_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-nextjs-boilerplate/";
+async function createEmbeddedWalletNextjs(program, options) {
+    let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
-    if (!network) {
-        console.log("Please provide the Network for your project as a Sequence chain handle");
-        console.log("Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support");
-        console.log("To skip and use the default test network key, press enter.");
-        console.log("To skip and use the default test network key, press enter.");
-        network = await input({
-            message: "Chain Handle (Network):",
-        });
-        console.log('testing');
-        // console.log(await findSupportedNetwork(network))
-        console.log("");
-    }
-    if (!privateKey) {
-        console.log("Please provide a relayer private key for your project.");
-        console.log("You can obtain one for demo purposes here https://sequence-ethauthproof-viewer.vercel.app/");
-        console.log("To skip and use the default evm private key, press enter.");
-        console.log("");
-        console.log("Note: This private key's computed Sequence Wallet Address will have to have a Minter Role Granted on a Sequence standard contract in order for minting to work.");
-        privateKey = await input({
-            message: "EVM Private Key:",
+    let googleClientId = options.googleClientId;
+    let appleClientId = options.appleClientId;
+    if (!waasConfigKey) {
+        console.log("Please provide the WaaS Config Key for your project.");
+        console.log("Your config key can be found at https://sequence.build under the embedded wallet settings.");
+        console.log("To skip and use the default test config key, press enter.");
+        waasConfigKey = await input({
+            message: "WaaS Config Key:",
         });
         console.log("");
     }
-    if (!projectAccessKey) {
+    if (!projectAccessKey && waasConfigKey != '') {
         console.log("Please provide the Project Access Key for your project.");
         console.log("Your access key can be found at https://sequence.build under the project settings.");
         console.log("To skip and use the default test access key, press enter.");
@@ -1191,107 +1344,134 @@ async function createTxManager(program, options) {
         });
         console.log("");
     }
-    console.log("Cloning the repo to `tx-manager-boilerplate`...");
-    shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager`, { silent: !options.verbose });
-    shell.cd("tx-manager");
-    console.log("Installing dependencies...");
-    shell.exec(`pnpm install`, { silent: !options.verbose });
-    // shell.exec(`touch .env`, { silent: !options.verbose });
+    if (!googleClientId && waasConfigKey != '') {
+        console.log("Please provide the Google Client ID for your project.");
+        console.log("Your client ID can be found at https://console.cloud.google.com/apis/credentials");
+        console.log("To skip and use the default test client ID, press enter.");
+        googleClientId = await input({
+            message: "Google Client ID:",
+        });
+        console.log("");
+    }
+    if (!appleClientId && waasConfigKey != '') {
+        console.log("Please provide the Apple Client ID for your project.");
+        console.log("Your client ID can be found at https://developer.apple.com/account/resources/identifiers/list/serviceId");
+        console.log("To skip and use the default test client ID, press enter.");
+        appleClientId = await input({
+            message: "Apple Client ID:",
+        });
+        console.log("");
+    }
+    console.log("Cloning the repo to `kit-embedded-wallet-nextjs-boilerplate`...");
+    shell.exec(`git clone ${EMBEDDED_WALLET_NEXTJS_REPO_URL} kit-embedded-wallet-nextjs-boilerplate`, { silent: !options.verbose });
+    shell.cd("kit-embedded-wallet-nextjs-boilerplate");
+    shell.exec(`touch .env`, { silent: !options.verbose });
     console.log("Configuring your project...");
-    devMode && shell.cd("../tx-manager/server"); // for Local Development
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
     for (let i = 0; i < envExampleLines.length; i++) {
-        if (envExampleLines[i].includes('CHAIN_HANDLE') && network != '' && network != undefined) {
-            shell.exec(`echo CHAIN_HANDLE=${network} >> .env`, { silent: !options.verbose });
+        if (envExampleLines[i].includes('NEXT_PUBLIC_WAAS_CONFIG_KEY') && waasConfigKey != '') {
+            shell.exec(`echo NEXT_PUBLIC_WAAS_CONFIG_KEY=${waasConfigKey} >> .env`, { silent: !options.verbose });
         }
-        else if (envExampleLines[i].includes('EVM_PRIVATE_KEY') && privateKey != '' && privateKey != undefined) {
-            shell.exec(`echo EVM_PRIVATE_KEY=${privateKey} >> .env`, { silent: !options.verbose });
+        else if (envExampleLines[i].includes('NEXT_PUBLIC_PROJECT_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
+            shell.exec(`echo NEXT_PUBLIC_PROJECT_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
         }
-        else if (envExampleLines[i].includes('PROJECT_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
-            shell.exec(`echo PROJECT_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
+        else if (envExampleLines[i].includes('NEXT_PUBLIC_GOOGLE_CLIENT_ID') && googleClientId != '' && googleClientId != undefined) {
+            shell.exec(`echo NEXT_PUBLIC_GOOGLE_CLIENT_ID=${googleClientId} >> .env`, { silent: !options.verbose });
+        }
+        else if (envExampleLines[i].includes('NEXT_PUBLIC_APPLE_CLIENT_ID') && appleClientId != '' && appleClientId != undefined) {
+            shell.exec(`echo NEXT_PUBLIC_APPLE_CLIENT_ID=${appleClientId} >> .env`, { silent: !options.verbose });
         }
         else {
             shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
         }
     }
-    console.log("Tx Manager boilerplate created successfully! 🔄");
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Kit Embedded Wallet Nextjs boilerplate created successfully! 🚀");
     console.log("Starting development server...");
-    devMode && shell.cd("../"); // for Local Development
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
+const EMBEDDED_WALLET_VERIFY_SESSION_REPO_URL = "https://github.com/0xsequence-demos/embedded-wallet-verify-session";
+async function createEmbeddedWalletVerifySession(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let googleClientId = options.googleClientId;
+    if (!waasConfigKey) {
+        console.log("Please provide the WaaS Config Key for your project.");
+        console.log("Your config key can be found at https://sequence.build under the embedded wallet settings.");
+        console.log("To skip and use the default test config key, press enter.");
+        waasConfigKey = await input({
+            message: "WaaS Config Key:",
+        });
+        console.log("");
+    }
+    if (!projectAccessKey && waasConfigKey != '') {
+        console.log("Please provide the Project Access Key for your project.");
+        console.log("Your access key can be found at https://sequence.build under the project settings.");
+        console.log("To skip and use the default test access key, press enter.");
+        projectAccessKey = await input({
+            message: "Project Access Key:",
+        });
+        console.log("");
+    }
+    if (!googleClientId && waasConfigKey != '') {
+        console.log("Please provide the Google Client ID for your project.");
+        console.log("Your client ID can be found at https://console.cloud.google.com/apis/credentials");
+        console.log("To skip and use the default test client ID, press enter.");
+        googleClientId = await input({
+            message: "Google Client ID:",
+        });
+        console.log("");
+    }
+    const builerProjectId = extractProjectIdFromAccessKey(projectAccessKey);
+    if (!builerProjectId) {
+        console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
+        process.exit();
+    }
+    console.log("Cloning the repo to `embedded-wallet-verify_session_boilerplate`...");
+    shell.exec(`git clone ${EMBEDDED_WALLET_VERIFY_SESSION_REPO_URL} embedded-wallet-verify-session-boilerplate`, { silent: !options.verbose });
+    shell.cd("embedded-wallet-verify_session_boilerplate");
+    shell.exec(`touch client/.env`, { silent: !options.verbose });
+    shell.exec(`touch server/.env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envClientExampleContent = shell.cat('./client/.env.example').toString();
+    const envClientExampleLines = envClientExampleContent.split('\n');
+    for (let i = 0; i < envClientExampleLines.length; i++) {
+        if (envClientExampleLines[i].trim() == "")
+            continue;
+        if (envClientExampleLines[i].includes('VITE_WAAS_CONFIG_KEY') && waasConfigKey != '') {
+            shell.exec(`echo VITE_WAAS_CONFIG_KEY=${waasConfigKey} >> ./client/.env`, { silent: !options.verbose });
+        }
+        else if (envClientExampleLines[i].includes('VITE_PROJECT_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
+            shell.exec(`echo VITE_PROJECT_ACCESS_KEY=${projectAccessKey} >> ./client/.env`, { silent: !options.verbose });
+        }
+        else if (envClientExampleLines[i].includes('VITE_GOOGLE_CLIENT_ID') && googleClientId != '' && googleClientId != undefined) {
+            shell.exec(`echo VITE_GOOGLE_CLIENT_ID=${googleClientId} >> ./client/.env`, { silent: !options.verbose });
+        }
+        else {
+            shell.exec(`echo ${envClientExampleLines[i]} >> ./client/.env`, { silent: !options.verbose });
+        }
+    }
+    const envServerExampleContent = shell.cat('./server/.env.example').toString();
+    const envServerExampleLines = envServerExampleContent.split('\n');
+    for (let i = 0; i < envServerExampleLines.length; i++) {
+        if (envServerExampleLines[i].includes('BUILDER_PROJECT_ID') && waasConfigKey != '') {
+            shell.exec(`echo BUILDER_PROJECT_ID=${builerProjectId} >> ./server/.env`, { silent: !options.verbose });
+        }
+        else {
+            shell.exec(`echo ${envServerExampleLines[i]} >> ./server/.env`, { silent: !options.verbose });
+        }
+    }
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Embedded Wallet Verify Session boilerplate created successfully! 🚀");
+    console.log("Starting development server...");
     shell.exec(`pnpm start`, { silent: false });
 }
 
-const EMBEDDED_WALLET_NEXTJS_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-nextjs-boilerplate/";
-async function createEmbeddedWalletNextjs(program, options) {
-  let waasConfigKey = options.waasConfigKey;
-  let projectAccessKey = options.projectAccessKey;
-  let googleClientId = options.googleClientId;
-  let appleClientId = options.appleClientId;
-  if (!waasConfigKey) {
-    console.log("Please provide the WaaS Config Key for your project.");
-    console.log("Your config key can be found at https://sequence.build under the embedded wallet settings.");
-    console.log("To skip and use the default test config key, press enter.");
-    waasConfigKey = await input({
-      message: "WaaS Config Key:"
-    });
-    console.log("");
-  }
-  if (!projectAccessKey && waasConfigKey != "") {
-    console.log("Please provide the Project Access Key for your project.");
-    console.log("Your access key can be found at https://sequence.build under the project settings.");
-    console.log("To skip and use the default test access key, press enter.");
-    projectAccessKey = await input({
-      message: "Project Access Key:"
-    });
-    console.log("");
-  }
-  if (!googleClientId && waasConfigKey != "") {
-    console.log("Please provide the Google Client ID for your project.");
-    console.log("Your client ID can be found at https://console.cloud.google.com/apis/credentials");
-    console.log("To skip and use the default test client ID, press enter.");
-    googleClientId = await input({
-      message: "Google Client ID:"
-    });
-    console.log("");
-  }
-  if (!appleClientId && waasConfigKey != "") {
-    console.log("Please provide the Apple Client ID for your project.");
-    console.log("Your client ID can be found at https://developer.apple.com/account/resources/identifiers/list/serviceId");
-    console.log("To skip and use the default test client ID, press enter.");
-    appleClientId = await input({
-      message: "Apple Client ID:"
-    });
-    console.log("");
-  }
-  console.log("Cloning the repo to `kit-embedded-wallet-nextjs-boilerplate`...");
-  shell.exec(`git clone ${EMBEDDED_WALLET_NEXTJS_REPO_URL} kit-embedded-wallet-nextjs-boilerplate`, { silent: !options.verbose });
-  shell.cd("kit-embedded-wallet-nextjs-boilerplate");
-  shell.exec(`touch .env`, { silent: !options.verbose });
-  console.log("Configuring your project...");
-  const envExampleContent = shell.cat(".env.example").toString();
-  const envExampleLines = envExampleContent.split("\n");
-  for (let i = 0; i < envExampleLines.length; i++) {
-    if (envExampleLines[i].includes("NEXT_PUBLIC_WAAS_CONFIG_KEY") && waasConfigKey != "") {
-      shell.exec(`echo NEXT_PUBLIC_WAAS_CONFIG_KEY=${waasConfigKey} >> .env`, { silent: !options.verbose });
-    } else if (envExampleLines[i].includes("NEXT_PUBLIC_PROJECT_ACCESS_KEY") && projectAccessKey != "" && projectAccessKey != void 0) {
-      shell.exec(`echo NEXT_PUBLIC_PROJECT_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
-    } else if (envExampleLines[i].includes("NEXT_PUBLIC_GOOGLE_CLIENT_ID") && googleClientId != "" && googleClientId != void 0) {
-      shell.exec(`echo NEXT_PUBLIC_GOOGLE_CLIENT_ID=${googleClientId} >> .env`, { silent: !options.verbose });
-    } else if (envExampleLines[i].includes("NEXT_PUBLIC_APPLE_CLIENT_ID") && appleClientId != "" && appleClientId != void 0) {
-      shell.exec(`echo NEXT_PUBLIC_APPLE_CLIENT_ID=${appleClientId} >> .env`, { silent: !options.verbose });
-    } else {
-      shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
-    }
-  }
-  console.log("Installing dependencies...");
-  shell.exec(`pnpm install`, { silent: !options.verbose });
-  console.log("Kit Embedded Wallet Nextjs boilerplate created successfully! 🚀");
-  console.log("Starting development server...");
-  shell.exec(`pnpm dev`, { silent: false });
-}
-
 function makeCommandBoilerplates(program) {
-<<<<<<< HEAD
     const comm = new Command("boilerplates");
     comm.action(() => {
         comm.help();
@@ -1311,56 +1491,33 @@ function makeCommandBoilerplates(program) {
         .command("create-tx-manager")
         .description("Create a server that has the ability to mint collectibles based on parameters")
         .option("-k, --key <private_key>", "Private key for the wallet that holds the tokens")
-        .option("-n, --network <network>", "Network to be used (mainnet, polygon, etc.)")
         .option("-pak, --project-access-key <access_key>", "Project access key for Sequence requests")
         .option("--verbose", "Show additional information in the output")
         .action((options) => {
         createTxManager(program, options);
     });
+    comm
+        .command("create-kit-embedded-wallet-nextjs-starter")
+        .description("Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--apple-client-id <apple_client_id>", "Apple client ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createEmbeddedWalletNextjs(program, options);
+    });
+    comm
+        .command("create-embedded-wallet-verify-session-starter")
+        .description("Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createEmbeddedWalletVerifySession(program, options);
+    });
     return comm;
-=======
-  const comm = new Command("boilerplates");
-  comm.action(() => {
-    comm.help();
-  });
-  comm.command("create-embedded-wallet-react-starter").description("Clone a starter boilerplate for Sequence Embedded Wallet integrated with React").option(
-    "--waas-config-key <waas_key>",
-    "WaaS config key for this project"
-  ).option(
-    "--project-access-key <access_key>",
-    "Project access key for Sequence requests"
-  ).option(
-    "--google-client-id <google_client_id>",
-    "Google client ID to be used during authentication"
-  ).option(
-    "--apple-client-id <apple_client_id>",
-    "Apple client ID to be used during authentication"
-  ).option(
-    "--verbose",
-    "Show additional information in the output"
-  ).action((options) => {
-    createEmbeddedWalletReact(program, options);
-  });
-  comm.command("create-kit-embedded-wallet-nextjs-starter").description("Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js").option(
-    "--waas-config-key <waas_key>",
-    "WaaS config key for this project"
-  ).option(
-    "--project-access-key <access_key>",
-    "Project access key for Sequence requests"
-  ).option(
-    "--google-client-id <google_client_id>",
-    "Google client ID to be used during authentication"
-  ).option(
-    "--apple-client-id <apple_client_id>",
-    "Apple client ID to be used during authentication"
-  ).option(
-    "--verbose",
-    "Show additional information in the output"
-  ).action((options) => {
-    createEmbeddedWalletNextjs(program, options);
-  });
-  return comm;
->>>>>>> origin/main
 }
 
 console.log(figlet.textSync("Sequence"));

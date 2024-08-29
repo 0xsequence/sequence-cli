@@ -89,7 +89,7 @@ export function makeCommandBoilerplates(program: Command) {
 
     comm
         .command("create-embedded-wallet-verify-session-starter")
-        .description("Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js")
+        .description("Clone a starter boilerplate for Sequence Embedded Wallet verification from a server-side application")
         .option(
         "--waas-config-key <waas_key>",
         "WaaS config key for this project"

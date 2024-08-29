@@ -1523,7 +1523,7 @@ function makeCommandBoilerplates(program) {
 console.log(figlet.textSync("Sequence"));
 console.log("");
 const program = new Command();
-program.version("0.1.2", "-v, --version", "Display the current version").action(
+program.version("0.2.1", "-v, --version", "Display the current version").action(
   () => {
     program.help();
   }

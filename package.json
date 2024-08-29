@@ -24,6 +24,7 @@
   "author": "Horizon Blockchain Games",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@0xsequence/utils": "^2.0.0",
     "@commander-js/extra-typings": "^12.1.0",
     "@types/figlet": "^1.5.8",
     "@types/node": "^20.14.10",
@@ -34,9 +35,10 @@
     "vite": "^5.3.3"
   },
   "dependencies": {
-    "0xsequence": "0.0.0-20240709173026",
-    "@0xsequence/auth": "0.0.0-20240709173026",
-    "@0xsequence/network": "0.0.0-20240709173026",
+    "0xsequence": "2.0.0",
+    "@0xsequence/auth": "2.0.0",
+    "@0xsequence/network": "2.0.0",
+    "@0xsequence/utils": "^2.0.0",
     "@inquirer/prompts": "^5.1.2",
     "commander": "^12.1.0",
     "ethers": "6.13.1",

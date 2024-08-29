@@ -1,6 +1,7 @@
 
 import { input } from "@inquirer/prompts";
 import { Command } from "commander";
+import { extractProjectIdFromAccessKey } from "@0xsequence/utils";
 
 import shell from "shelljs";
 
@@ -12,7 +13,6 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
-    let builderApiId = options.builderApiId;
 
     if (!waasConfigKey) {
         console.log("Please provide the WaaS Config Key for your project.");
@@ -50,21 +50,11 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
         console.log("");
     }
 
-    if (!builderApiId && waasConfigKey != '') {
-        console.log("Please provide your project id for your project.");
-        console.log("Your project id can be found at https://sequence.build/");
-        console.log("Please select a project and copy your project id from URL. It will look like: 2317");        
-        console.log("To skip and use the default test client ID, press enter.");
-        const baseBuilderApiIdUrl = "https://api.sequence.build/project/";
-        builderApiId = await input({
-            message: "Builder API ID:",
-        });
+    const builerProjectId = extractProjectIdFromAccessKey(projectAccessKey);
 
-        if (builderApiId) {
-            builderApiId = baseBuilderApiIdUrl + builderApiId;
-        }
-
-        console.log("");
+    if (!builerProjectId) {
+        console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
+        process.exit();
     }
 
     console.log("Cloning the repo to `embedded-wallet-verify_session_boilerplate`...");
@@ -97,8 +87,8 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
     const envServerExampleLines = envServerExampleContent.split('\n');
 
     for (let i = 0; i < envServerExampleLines.length; i++) {
-        if (envServerExampleLines[i].includes('BUILDER_API_ID') && waasConfigKey != '') {
-            shell.exec(`echo BUILDER_API_ID=${builderApiId} >> ./server/.env`, { silent: !options.verbose });
+        if (envServerExampleLines[i].includes('BUILDER_PROJECT_ID') && waasConfigKey != '') {
+            shell.exec(`echo BUILDER_PROJECT_ID=${builerProjectId} >> ./server/.env`, { silent: !options.verbose });
         } else {
             shell.exec(`echo ${envServerExampleLines[i]} >> ./server/.env`, { silent: !options.verbose });
         }

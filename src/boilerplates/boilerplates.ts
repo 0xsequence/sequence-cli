@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { input } from "@inquirer/prompts";
-import { findSupportedNetwork } from '@0xsequence/network'
+import { findSupportedNetwork } from "@0xsequence/network";
 import shell from "shelljs";
 import { createTxManager } from "./create_tx_manager";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
@@ -101,10 +101,6 @@ export function makeCommandBoilerplates(program: Command) {
         .option(
         "--google-client-id <google_client_id>",
         "Google client ID to be used during authentication"
-        )
-        .option(
-        "-bapi --builder-api-id <builder_api_id>",
-        "Builder API ID to be used in this project"
         )
         .option(
         "--verbose",

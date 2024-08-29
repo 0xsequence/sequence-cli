@@ -1431,7 +1431,7 @@ async function createEmbeddedWalletVerifySession(program, options) {
         process.exit();
     }
     console.log("Cloning the repo to `embedded-wallet-verify_session_boilerplate`...");
-    shell.exec(`git clone ${EMBEDDED_WALLET_VERIFY_SESSION_REPO_URL} embedded-wallet-verify_session_boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${EMBEDDED_WALLET_VERIFY_SESSION_REPO_URL} embedded-wallet-verify-session-boilerplate`, { silent: !options.verbose });
     shell.cd("embedded-wallet-verify_session_boilerplate");
     shell.exec(`touch client/.env`, { silent: !options.verbose });
     shell.exec(`touch server/.env`, { silent: !options.verbose });

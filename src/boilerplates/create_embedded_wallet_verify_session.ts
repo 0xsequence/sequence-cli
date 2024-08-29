@@ -50,18 +50,21 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
         console.log("");
     }
 
-    const builerProjectId = extractProjectIdFromAccessKey(projectAccessKey);
-
-    if (!builerProjectId) {
-        console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
-        process.exit();
+    let builderProjectId;
+    
+    if (projectAccessKey) {
+        builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
+        if (!builderProjectId) {
+            console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
+            process.exit();
+        }
     }
 
-    console.log("Cloning the repo to `embedded-wallet-verify_session_boilerplate`...");
+    console.log("Cloning the repo to `embedded-wallet-verify-session-boilerplate`...");
 
     shell.exec(`git clone ${EMBEDDED_WALLET_VERIFY_SESSION_REPO_URL} embedded-wallet-verify-session-boilerplate`, { silent: !options.verbose });
     
-    shell.cd("embedded-wallet-verify_session_boilerplate");
+    shell.cd("embedded-wallet-verify-session-boilerplate");
     shell.exec(`touch client/.env`, { silent: !options.verbose });
     shell.exec(`touch server/.env`, { silent: !options.verbose });
 
@@ -88,7 +91,7 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
 
     for (let i = 0; i < envServerExampleLines.length; i++) {
         if (envServerExampleLines[i].includes('BUILDER_PROJECT_ID') && waasConfigKey != '') {
-            shell.exec(`echo BUILDER_PROJECT_ID=${builerProjectId} >> ./server/.env`, { silent: !options.verbose });
+            shell.exec(`echo BUILDER_PROJECT_ID=${builderProjectId} >> ./server/.env`, { silent: !options.verbose });
         } else {
             shell.exec(`echo ${envServerExampleLines[i]} >> ./server/.env`, { silent: !options.verbose });
         }

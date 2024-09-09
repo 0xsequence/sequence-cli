@@ -110,5 +110,36 @@ export function makeCommandBoilerplates(program: Command) {
             createEmbeddedWalletVerifySession(program, options);
         });
 
+    comm
+        .command("create-primary-drop-sale-starter")
+        .description("Clone a starter boilerplate for Primary Drop Sale integrated with WaaS")
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
+        )
+        .option(
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createEmbeddedWalletVerifySession(program, options);
+        });
+
     return comm;
 }

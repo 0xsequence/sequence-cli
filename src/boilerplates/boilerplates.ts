@@ -6,6 +6,7 @@ import { createTxManager } from "./create_tx_manager";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
 import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
+import { createPrimaryDropSale } from "./create_primary_drop_sale";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -138,7 +139,7 @@ export function makeCommandBoilerplates(program: Command) {
         "Show additional information in the output"
         )
         .action((options) => {
-            createEmbeddedWalletVerifySession(program, options);
+            createPrimaryDropSale(program, options);
         });
 
     return comm;

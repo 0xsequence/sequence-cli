@@ -120,7 +120,7 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
     console.log("Configuring your project...");
 
     const envExampleContent = shell.cat('.env.example').toString();
-    const envExampleLines = envExampleContent.split('\r\n');
+    const envExampleLines = envExampleContent.split('\n');
 
     for (let i = 0; i < envExampleLines.length; i++) {
         const isValidEnv = !envExampleLines[i].split(" ").join().startsWith("#");

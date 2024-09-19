@@ -1033,7 +1033,7 @@ async function createMarketplaceBoilerplate(program, options) {
     shell.exec(`touch .env`, { silent: !options.verbose });
     console.log("Configuring your project...");
     const envExampleContent = shell.cat('.env.example').toString();
-    const envExampleLines = envExampleContent.split('\r\n');
+    const envExampleLines = envExampleContent.split('\n');
     for (let i = 0; i < envExampleLines.length; i++) {
         const isValidEnv = !envExampleLines[i].split(" ").join().startsWith("#");
         if (!isValidEnv || envExampleLines[i].trim() === "") {
@@ -1195,8 +1195,8 @@ function makeCommandWallet(program) {
     return comm;
 }
 
-const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager-boilerplate";
-async function createTxManager(program, options) {
+const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/server-side-transactions-boilerplate";
+async function createServerSideTx(program, options) {
     let privateKey = options.key;
     let projectAccessKey = options.projectAccessKey;
     if (!privateKey) {
@@ -1222,9 +1222,9 @@ async function createTxManager(program, options) {
         });
         console.log("");
     }
-    console.log("Cloning the repo to `tx-manager-boilerplate`...");
-    shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager-boilerplate`, { silent: !options.verbose });
-    shell.cd("tx-manager-boilerplate");
+    console.log("Cloning the repo to `server-side-transactions-boilerplate`...");
+    shell.exec(`git clone ${TX_MANAGER_REPO_URL} server-side-transactions-boilerplate`, { silent: !options.verbose });
+    shell.cd("server-side-transactions-boilerplate");
     console.log("Installing dependencies...");
     shell.exec(`pnpm install`, { silent: !options.verbose });
     shell.exec(`touch .env`, { silent: !options.verbose });
@@ -1242,7 +1242,7 @@ async function createTxManager(program, options) {
             shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
         }
     }
-    console.log("Tx Manager boilerplate created successfully! 🔄");
+    console.log("Server side transactions boilerplate created successfully! 🔄");
     console.log("Starting development server...");
     shell.exec(`pnpm start`, { silent: false });
 }
@@ -1491,13 +1491,13 @@ function makeCommandBoilerplates(program) {
         createEmbeddedWalletReact(program, options);
     });
     comm
-        .command("create-tx-manager")
+        .command("create-server-side-transactions")
         .description("Create a server that has the ability to mint collectibles based on parameters")
         .option("-k, --key <private_key>", "Private key for the wallet that holds the tokens")
         .option("-pak, --project-access-key <access_key>", "Project access key for Sequence requests")
         .option("--verbose", "Show additional information in the output")
         .action((options) => {
-        createTxManager(program, options);
+        createServerSideTx(program, options);
     });
     comm
         .command("create-kit-embedded-wallet-nextjs-starter")
@@ -1526,7 +1526,7 @@ function makeCommandBoilerplates(program) {
 console.log(figlet.textSync("Sequence"));
 console.log("");
 const program = new Command();
-program.version("0.2.2", "-v, --version", "Display the current version").action(
+program.version("0.2.3", "-v, --version", "Display the current version").action(
   () => {
     program.help();
   }

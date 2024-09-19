@@ -1,12 +1,12 @@
-import { input } from "@inquirer/prompts";
+import { input, confirm } from "@inquirer/prompts";
 import { Command } from "commander";
 
 import shell from "shelljs";
-import { isValidPrivateKey } from '../utils/'
+import { isValidPrivateKey } from '../utils'
 
-const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/tx-manager-boilerplate";
+const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/server-side-transactions-boilerplate";
 
-export async function createTxManager(program: Command, options: any) {
+export async function createServerSideTx(program: Command, options: any) {
     let privateKey = options.key;
     let projectAccessKey = options.projectAccessKey;
 
@@ -41,11 +41,11 @@ export async function createTxManager(program: Command, options: any) {
         console.log("");
     }
 
-    console.log("Cloning the repo to `tx-manager-boilerplate`...");
+    console.log("Cloning the repo to `server-side-transactions-boilerplate`...");
 
-    shell.exec(`git clone ${TX_MANAGER_REPO_URL} tx-manager-boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${TX_MANAGER_REPO_URL} server-side-transactions-boilerplate`, { silent: !options.verbose });
     
-    shell.cd("tx-manager-boilerplate");
+    shell.cd("server-side-transactions-boilerplate");
 
     console.log("Installing dependencies...");
     
@@ -69,7 +69,7 @@ export async function createTxManager(program: Command, options: any) {
         }
     }
 
-    console.log("Tx Manager boilerplate created successfully! 🔄");
+    console.log("Server side transactions boilerplate created successfully! 🔄");
     console.log("Starting development server...");
     
     shell.exec(`pnpm start`, { silent: false });

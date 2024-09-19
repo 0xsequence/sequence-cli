@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { input } from "@inquirer/prompts";
 import { findSupportedNetwork } from "@0xsequence/network";
 import shell from "shelljs";
-import { createTxManager } from "./create_tx_manager";
+import { createServerSideTx } from "./create_server_side_transactions";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
 import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
@@ -43,7 +43,7 @@ export function makeCommandBoilerplates(program: Command) {
         })
 
     comm    
-        .command("create-tx-manager")
+        .command("create-server-side-transactions")
         .description("Create a server that has the ability to mint collectibles based on parameters")
         .option(
             "-k, --key <private_key>",
@@ -58,7 +58,7 @@ export function makeCommandBoilerplates(program: Command) {
             "Show additional information in the output"
         )
         .action((options) => {
-            createTxManager(program, options);
+            createServerSideTx(program, options);
         })
 
     comm

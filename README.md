@@ -8,7 +8,7 @@ A collection of CLI commands to interface with Sequence services:
     - `create-single-signer`: Create single signer Sequence wallet for any EOA and get the address
 - `boilerplates`: Collection of Sequence boilerplate starter projects
     - `create-embedded-wallet-react-starter`: Clone and configure Embedded Wallet start project with React
-    - `create-tx-manager`: Create a server that has the ability to mint collectibles based on parameters
+    - `create-server-side-transactions`: Create a server that has the ability to mint collectibles based on parameters
     - `create-kit-embedded-wallet-nextjs-starter`: Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js
     - `create-embedded-wallet-verify-session-starter`: Clone a starter boilerplate for Sequence Embedded Wallet verification from a server-side application
 

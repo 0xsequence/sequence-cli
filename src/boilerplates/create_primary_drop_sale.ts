@@ -1,4 +1,5 @@
 
+import { extractProjectIdFromAccessKey } from "@0xsequence/utils";
 import { input } from "@inquirer/prompts";
 import { Command } from "commander";
 
@@ -75,6 +76,16 @@ export async function createPrimaryDropSale(program: Command, options: any) {
         console.log("");
     }
 
+    let builderProjectId;
+    
+    if (projectAccessKey) {
+        builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
+        if (!builderProjectId) {
+            console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
+            process.exit();
+        }
+    }
+
     console.log("Cloning the repo to `primary-drop-sale-boilerplate`...");
 
     shell.exec(`git clone ${PRIMARY_DROP_SALE_REPO_URL} primary-drop-sale-boilerplate`, { silent: !options.verbose });
@@ -98,6 +109,8 @@ export async function createPrimaryDropSale(program: Command, options: any) {
             shell.exec(`echo VITE_APPLE_CLIENT_ID=${appleClientId} >> .env`, { silent: !options.verbose });
         } else if (envExampleLines[i].includes('VITE_WALLET_CONNECT_ID') && walletConnectId != '' && walletConnectId != undefined) {
             shell.exec(`echo VITE_WALLET_CONNECT_ID=${walletConnectId} >> .env`, { silent: !options.verbose });
+        } else if (envExampleLines[i].includes('VITE_PROJECT_ID') && builderProjectId?.toString() != '' && builderProjectId?.toString() != undefined) {
+            shell.exec(`echo VITE_PROJECT_ID=${builderProjectId?.toString()} >> .env`, { silent: !options.verbose });
         } else {
             shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
         }

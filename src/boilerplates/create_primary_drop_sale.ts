@@ -6,6 +6,7 @@ import shell from "shelljs";
 
 
 const PRIMARY_DROP_SALE_REPO_URL = "https://github.com/0xsequence/primary-drop-sale-boilerplate/";
+const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 
 export async function createPrimaryDropSale(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
@@ -107,7 +108,10 @@ export async function createPrimaryDropSale(program: Command, options: any) {
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
     console.log("Primary Drop Sale boilerplate created successfully! 🚀");
-    console.log("Starting development server...");
 
+    console.log(`Great! Now you can test the project with your WaaS. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-sales`);
+    
+    console.log("Starting development server...");
+    
     shell.exec(`pnpm dev`, { silent: false });
 }

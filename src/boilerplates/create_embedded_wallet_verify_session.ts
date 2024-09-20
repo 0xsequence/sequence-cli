@@ -2,6 +2,7 @@
 import { input } from "@inquirer/prompts";
 import { Command } from "commander";
 import { extractProjectIdFromAccessKey } from "@0xsequence/utils";
+import { promptUserKeyCustomizationDecision } from "../utils";
 
 import shell from "shelljs";
 
@@ -13,50 +14,53 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
-
-    if (!waasConfigKey) {
-        console.log("Please provide the WaaS Config Key for your project.");
-        console.log("Your config key can be found at https://sequence.build under the embedded wallet settings.");
-        console.log("To skip and use the default test config key, press enter.");
- 
-        waasConfigKey = await input({
-            message: "WaaS Config Key:",
-        });
-
-        console.log("");
-    }
-
-    if (!projectAccessKey && waasConfigKey != '') {
-        console.log("Please provide the Project Access Key for your project.");
-        console.log("Your access key can be found at https://sequence.build under the project settings.");
-        console.log("To skip and use the default test access key, press enter.");
- 
-        projectAccessKey = await input({
-            message: "Project Access Key:",
-        });
-
-        console.log("");
-    }
-
-    if (!googleClientId && waasConfigKey != '') {
-        console.log("Please provide the Google Client ID for your project.");
-        console.log("Your client ID can be found at https://console.cloud.google.com/apis/credentials");
-        console.log("To skip and use the default test client ID, press enter.");
- 
-        googleClientId = await input({
-            message: "Google Client ID:",
-        });
-
-        console.log("");
-    }
-
     let builderProjectId;
+
+    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+
+    if (userWantsToConfigureTheirKeys) {
+        if (!waasConfigKey) {
+            console.log("Please provide the WaaS Config Key for your project.");
+            console.log("Your config key can be found at https://sequence.build under the embedded wallet settings.");
+            console.log("To skip and use the default test config key, press enter.");
+     
+            waasConfigKey = await input({
+                message: "WaaS Config Key:",
+            });
     
-    if (projectAccessKey) {
-        builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
-        if (!builderProjectId) {
-            console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
-            process.exit();
+            console.log("");
+        }
+    
+        if (!projectAccessKey && waasConfigKey != '') {
+            console.log("Please provide the Project Access Key for your project.");
+            console.log("Your access key can be found at https://sequence.build under the project settings.");
+            console.log("To skip and use the default test access key, press enter.");
+     
+            projectAccessKey = await input({
+                message: "Project Access Key:",
+            });
+    
+            console.log("");
+        }
+    
+        if (!googleClientId && waasConfigKey != '') {
+            console.log("Please provide the Google Client ID for your project.");
+            console.log("Your client ID can be found at https://console.cloud.google.com/apis/credentials");
+            console.log("To skip and use the default test client ID, press enter.");
+     
+            googleClientId = await input({
+                message: "Google Client ID:",
+            });
+    
+            console.log("");
+        }
+        
+        if (projectAccessKey) {
+            builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
+            if (!builderProjectId) {
+                console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
+                process.exit();
+            }
         }
     }
 
@@ -75,7 +79,7 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
 
     for (let i = 0; i < envClientExampleLines.length; i++) {
         if (envClientExampleLines[i].trim() == "") continue;
-        if (envClientExampleLines[i].includes('VITE_WAAS_CONFIG_KEY') && waasConfigKey != '') {
+        if (envClientExampleLines[i].includes('VITE_WAAS_CONFIG_KEY') && waasConfigKey != '' && projectAccessKey != undefined) {
             shell.exec(`echo VITE_WAAS_CONFIG_KEY=${waasConfigKey} >> ./client/.env`, { silent: !options.verbose });
         } else if (envClientExampleLines[i].includes('VITE_PROJECT_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
             shell.exec(`echo VITE_PROJECT_ACCESS_KEY=${projectAccessKey} >> ./client/.env`, { silent: !options.verbose });

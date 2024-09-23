@@ -1,7 +1,7 @@
 
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
-import { promptForKeyWithLogs, promptUserKeyCustomizationDecision } from "../utils";
+import { promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision } from "../utils";
 import { WalletTypes } from "../utils/types";
 
 import shell from "shelljs";
@@ -36,14 +36,7 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
 
     if (userWantsToConfigureTheirKeys) {
         {
-            projectAccessKey = await promptForKeyWithLogs(
-              { key: projectAccessKey, inputMessage: "Project Access Key:" },
-              [
-                "Please provide the Project Access Key for your project.",
-                "Your access key can be found at https://sequence.build under the project settings.",
-                "To skip and use the default test access key, press enter.",
-              ]
-            );
+            projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
 
             projectId = await promptForKeyWithLogs(
                 { key: projectId, inputMessage: "Project ID:" },
@@ -54,25 +47,9 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
                 ]
             );
             
-        
             if (walletType === WalletTypes.EmbeddedWallet) {
-                waasConfigKey = await promptForKeyWithLogs(
-                    { key: waasConfigKey, inputMessage: "WaaS Config Key:" },
-                    [
-                        "Please provide the WaaS Config Key for your project.",
-                        "Your config key can be found at https://sequence.build under the embedded wallet settings.",
-                        "To skip and use the default test config key, press enter."
-                    ]
-                );                
-            
-                googleClientId = await promptForKeyWithLogs(
-                    { key: googleClientId, inputMessage: "Google Client ID:" },
-                    [
-                        "Please provide the Google Client ID for your project.",
-                        "Your client ID can be found at https://console.cloud.google.com/apis/credentials.",
-                        "To skip and use the default test client ID, press enter."
-                    ]
-                );                
+                waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
+                googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);         
             }
         }
     }
@@ -114,7 +91,7 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
                 shell.exec(`echo NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
             } else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_PROJECT_ID') && projectId != '' && projectId != undefined) {
                 shell.exec(`echo NEXT_PUBLIC_SEQUENCE_PROJECT_ID=${projectId} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_WAAS_CONFIG_KEY') && waasConfigKey != '') {
+            } else if (envExampleLines[i].includes('NEXT_PUBLIC_WAAS_CONFIG_KEY') && waasConfigKey != '' && waasConfigKey != undefined) {
                 shell.exec(`echo NEXT_PUBLIC_WAAS_CONFIG_KEY=${waasConfigKey} >> .env`, { silent: !options.verbose });
             } else if (envExampleLines[i].includes('NEXT_PUBLIC_GOOGLE_CLIENT_ID') && googleClientId != '' && googleClientId != undefined) {
                 shell.exec(`echo NEXT_PUBLIC_GOOGLE_CLIENT_ID=${googleClientId} >> .env`, { silent: !options.verbose });

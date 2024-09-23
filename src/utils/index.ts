@@ -41,3 +41,42 @@ export async function promptForKeyWithLogs(
   }
   return prompt.key;
 }
+
+export async function promptForProjectAccessKeyWithLogs(
+  projectAccessKey: string | undefined
+): Promise<string | undefined> {
+  return await promptForKeyWithLogs(
+    { key: projectAccessKey, inputMessage: "Project Access Key:" },
+    [
+      "Please provide the Project Access Key for your project.",
+      "Your access key can be found at https://sequence.build under the project settings.",
+      "To skip and use the default test access key, press enter.",
+    ]
+  );
+}
+
+export async function promptForWaaSConfigKeyWithLogs(
+  waasConfigKey: string | undefined
+): Promise<string | undefined> {
+  return await promptForKeyWithLogs(
+    { key: waasConfigKey, inputMessage: "WaaS Config Key:" },
+    [
+      "Please provide the WaaS Config Key for your project.",
+      "Your config key can be found at https://sequence.build under the embedded wallet settings.",
+      "To skip and use the default test config key, press enter.",
+    ]
+  );
+}
+
+export async function promptForGoogleClientIdWithLogs(
+  googleClientId: string | undefined
+): Promise<string | undefined> {
+  return await promptForKeyWithLogs(
+    { key: googleClientId, inputMessage: "Google Client ID:" },
+    [
+      "Please provide the Google Client ID for your project.",
+      "Your client ID can be found at https://console.cloud.google.com/apis/credentials.",
+      "To skip and use the default test client ID, press enter.",
+    ]
+  );
+}

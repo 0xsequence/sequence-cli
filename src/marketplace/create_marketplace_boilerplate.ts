@@ -1,8 +1,8 @@
 
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
-import { promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision } from "../utils";
-import { WalletTypes } from "../utils/types";
+import { promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { EnvKeys, WalletTypes } from "../utils/types";
 
 import shell from "shelljs";
 
@@ -63,61 +63,29 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
 
     console.log("Configuring your project...");
 
-    const envExampleContent = shell.cat('.env.example').toString();
-    const envExampleLines = envExampleContent.split('\n');
+    const envExampleContent = shell.cat(".env.example").toString();
+    const envExampleLines = envExampleContent.split("\n");
 
-    for (let i = 0; i < envExampleLines.length; i++) {
-        const isValidEnv = !envExampleLines[i].split(" ").join().startsWith("#");
-        if (!isValidEnv || envExampleLines[i].trim() === "") {
-            continue;
-        } else if (walletType === WalletTypes.EmbeddedWallet) {
-            if (userWantsToConfigureTheirKeys === false && [
-                  "NEXT_PUBLIC_WALLET_TYPE=",
-                  "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=",
-                  "NEXT_PUBLIC_SEQUENCE_PROJECT_ID=",
-                  "NEXT_PUBLIC_WAAS_CONFIG_KEY=",
-                  "NEXT_PUBLIC_GOOGLE_CLIENT_ID=",
-                ].some((currentEnvironment) =>
-                  envExampleLines[i].includes(currentEnvironment)
-                )
-              ) {
-                shell.exec(`echo ${envExampleLines[i]} >> .env`, {
-                  silent: !options.verbose,
-                })
-            }
-              else if (envExampleLines[i].includes('NEXT_PUBLIC_WALLET_TYPE') && walletType === WalletTypes.EmbeddedWallet) {
-                shell.exec(`echo NEXT_PUBLIC_WALLET_TYPE=${walletType} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
-                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_PROJECT_ID') && projectId != '' && projectId != undefined) {
-                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_PROJECT_ID=${projectId} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_WAAS_CONFIG_KEY') && waasConfigKey != '' && waasConfigKey != undefined) {
-                shell.exec(`echo NEXT_PUBLIC_WAAS_CONFIG_KEY=${waasConfigKey} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_GOOGLE_CLIENT_ID') && googleClientId != '' && googleClientId != undefined) {
-                shell.exec(`echo NEXT_PUBLIC_GOOGLE_CLIENT_ID=${googleClientId} >> .env`, { silent: !options.verbose });
-            } else if (
-                [
-                  "NEXT_PUBLIC_WALLET_TYPE=",
-                  "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=",
-                  "NEXT_PUBLIC_SEQUENCE_PROJECT_ID=",
-                  "NEXT_PUBLIC_WAAS_CONFIG_KEY=",
-                  "NEXT_PUBLIC_GOOGLE_CLIENT_ID=",
-                ].some((currentEnvironment) => envExampleLines[i].includes(currentEnvironment))
-              )
-              { shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose }); }
-        } else if (walletType === WalletTypes.UniversalWallet) {
-            if (userWantsToConfigureTheirKeys === false && ["NEXT_PUBLIC_WALLET_TYPE=", "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=", "NEXT_PUBLIC_SEQUENCE_PROJECT_ID="].some(currentEnvironment => envExampleLines[i].includes(currentEnvironment))) {
-                shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_WALLET_TYPE') && walletType === WalletTypes.UniversalWallet) {
-                shell.exec(`echo NEXT_PUBLIC_WALLET_TYPE=${walletType} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_ACCESS_KEY') && projectAccessKey != '' && projectAccessKey != undefined) {
-                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=${projectAccessKey} >> .env`, { silent: !options.verbose });
-            } else if (envExampleLines[i].includes('NEXT_PUBLIC_SEQUENCE_PROJECT_ID') && projectId != '' && projectId != undefined) {
-                shell.exec(`echo NEXT_PUBLIC_SEQUENCE_PROJECT_ID=${projectId} >> .env`, { silent: !options.verbose });
-            } else if (["NEXT_PUBLIC_WALLET_TYPE=", "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY=", "NEXT_PUBLIC_SEQUENCE_PROJECT_ID="].some(currentEnvironment => envExampleLines[i].includes(currentEnvironment))) {
-                shell.exec(`echo ${envExampleLines[i]} >> .env`, { silent: !options.verbose });
-            }
-        }
+    if (walletType === WalletTypes.EmbeddedWallet) {
+        const envKeys: EnvKeys = {
+            "NEXT_PUBLIC_WALLET_TYPE": walletType || undefined,
+            "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY": projectAccessKey || undefined,
+            "NEXT_PUBLIC_SEQUENCE_PROJECT_ID": projectId || undefined,
+            "NEXT_PUBLIC_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+            "NEXT_PUBLIC_GOOGLE_CLIENT_ID": googleClientId || undefined,
+        };
+
+        writeToEnvFile(envKeys, options);
+        writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    } else if (walletType === WalletTypes.UniversalWallet) {
+        const envKeys: EnvKeys = {
+            "NEXT_PUBLIC_WALLET_TYPE": walletType || undefined,
+            "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY": projectAccessKey || undefined,
+            "NEXT_PUBLIC_SEQUENCE_PROJECT_ID": projectId || undefined,
+        };
+
+        writeToEnvFile(envKeys, options);
+        writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
     }
     
     console.log("Installing dependencies...");

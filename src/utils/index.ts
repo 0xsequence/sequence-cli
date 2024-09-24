@@ -1,5 +1,7 @@
-import { Wallet } from 'ethers'
-import { select, input } from '@inquirer/prompts';
+import { Wallet } from "ethers"
+import { select, input } from "@inquirer/prompts";
+import { EnvKeys, EnvWriteOptions } from "./types";
+import shell from "shelljs";
 
 export function isValidPrivateKey(privateKey: string) {
     try {
@@ -79,4 +81,28 @@ export async function promptForGoogleClientIdWithLogs(
       "To skip and use the default test client ID, press enter.",
     ]
   );
+}
+
+export function writeToEnvFile (envKeys: EnvKeys, options: EnvWriteOptions) {
+  Object.entries(envKeys).forEach(([key, value]) => {
+    if (value && value !== "") {
+      shell.exec(`echo ${key}=${value} >> .env`, { silent: !options.verbose });
+    }
+  });
+};
+
+export function writeDefaultKeysToEnvFileIfMissing(
+  envExampleLines: string[],
+  envKeys: EnvKeys,
+  options: EnvWriteOptions
+) {
+  const missingKeys = Object.entries(envKeys)
+    .filter(([_, value]) => value === undefined || value === "")
+    .map(([key, _]) => key);
+
+  envExampleLines.forEach((line) => {
+    if (missingKeys.some((key) => line.includes(key))) {
+      shell.exec(`echo ${line} >> .env`, { silent: !options.verbose });
+    }
+  });
 }

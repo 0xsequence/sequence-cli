@@ -5,7 +5,7 @@ import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
-const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/email-embedded-wallet-react-boilerplate";
+const EMAIL_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/email-embedded-wallet-react-boilerplate";
 
 export async function createEmailEmbeddedWalletReact(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
@@ -20,7 +20,7 @@ export async function createEmailEmbeddedWalletReact(program: Command, options: 
 
     console.log("Cloning the repo to `email-embedded-wallet-react-boilerplate`...");
 
-    shell.exec(`git clone ${EMBEDDED_WALLET_REACT_REPO_URL} email-embedded-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${EMAIL_EMBEDDED_WALLET_REACT_REPO_URL} email-embedded-wallet-react-boilerplate`, { silent: !options.verbose });
     
     shell.cd("email-embedded-wallet-react-boilerplate");
 

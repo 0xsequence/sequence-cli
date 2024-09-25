@@ -22,7 +22,7 @@ export async function createGoogleEmbeddedWalletReact(program: Command, options:
 
     console.log("Cloning the repo to `google-embedded-wallet-react-boilerplate`...");
 
-    shell.exec(`git clone ${EMBEDDED_WALLET_REACT_REPO_URL} google-embedded-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${GOOGLE_EMBEDDED_WALLET_REACT_REPO_URL} google-embedded-wallet-react-boilerplate`, { silent: !options.verbose });
     
     shell.cd("google-embedded-wallet-react-boilerplate");
 

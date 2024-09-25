@@ -1,7 +1,4 @@
 import { Command } from "commander";
-import { input } from "@inquirer/prompts";
-import { findSupportedNetwork } from "@0xsequence/network";
-import shell from "shelljs";
 import { createServerSideTx } from "./create_server_side_transactions";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
 import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
@@ -33,6 +30,10 @@ export function makeCommandBoilerplates(program: Command) {
         .option(
             "--apple-client-id <apple_client_id>",
             "Apple client ID to be used during authentication"
+        )
+        .option(
+            "--wallet-connect-id <wallet_connect_id>",
+            "Wallet Connect ID to be used during authentication"
         )
         .option(
             "--verbose",
@@ -79,6 +80,10 @@ export function makeCommandBoilerplates(program: Command) {
         .option(
         "--apple-client-id <apple_client_id>",
         "Apple client ID to be used during authentication"
+        )
+        .option(
+            "--wallet-connect-id <wallet_connect_id>",
+            "Wallet Connect ID to be used during authentication"
         )
         .option(
         "--verbose",

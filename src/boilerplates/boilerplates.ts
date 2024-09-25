@@ -3,6 +3,7 @@ import { createServerSideTx } from "./create_server_side_transactions";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
 import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
+import { createUniversalWalletReact } from "./create_universal_wallet_react";
 import { createPrimaryDropSale } from "./create_primary_drop_sale";
 
 export function makeCommandBoilerplates(program: Command) {
@@ -114,6 +115,21 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createEmbeddedWalletVerifySession(program, options);
+        });
+
+    comm
+        .command("create-universal-wallet-react")
+        .description("Clone a starter boilerplate for Sequence Universal Wallet")
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createUniversalWalletReact(program, options);
         });
 
     comm

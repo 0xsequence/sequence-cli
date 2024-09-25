@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { createServerSideTx } from "./create_server_side_transactions";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
 import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
+import { createWalletLinkingEmbeddedWalletReact } from './create_wallet_linking_embedded_wallet_react'
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
 import { createPrimaryDropSale } from "./create_primary_drop_sale";
 
@@ -93,6 +94,33 @@ export function makeCommandBoilerplates(program: Command) {
             createEmbeddedWalletNextjs(program, options);
         });
 
+        comm
+            .command("create-embedded-wallet-linking-starter")
+            .description("Clone a starter boilerplate for Sequence Embedded Wallet Linking demo integrated with React")
+            .option(
+                "--waas-config-key <waas_key>",
+                "WaaS config key for this project"
+            )
+            .option(
+                "--project-access-key <access_key>",
+                "Project access key for Sequence requests"
+            )
+            .option(
+                "--google-client-id <google_client_id>",
+                "Google client ID to be used during authentication"
+            )
+            .option(
+                "--wallet-connect-id <wallet_connect_id>",
+                "Wallet Connect ID to be used during authentication"
+            )
+            .option(
+                "--verbose",
+                "Show additional information in the output"
+            )
+            .action((options) => {
+                createWalletLinkingEmbeddedWalletReact(program, options);
+            })
+        
     comm
         .command("create-embedded-wallet-verify-session-starter")
         .description("Clone a starter boilerplate for Sequence Embedded Wallet verification from a server-side application")

@@ -5,7 +5,7 @@ import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
-const EMAIL_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/email-embedded-wallet-react-boilerplate";
+const EMAIL_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/email-embedded-wallet-react-boilerplate";
 
 export async function createEmailEmbeddedWalletReact(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;

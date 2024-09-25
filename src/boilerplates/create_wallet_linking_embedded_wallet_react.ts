@@ -5,9 +5,9 @@ import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
-const WALLET_LINKING_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/demo-embedded-wallet-linking";
+const WALLET_LINKING_EMBEDDED_WALLET_REPO_URL = "https://github.com/0xsequence-demos/demo-embedded-wallet-linking";
 
-export async function createWalletLinkingEmbeddedWalletReact(program: Command, options: any) {
+export async function createWalletLinkingEmbeddedWallet(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
@@ -24,7 +24,7 @@ export async function createWalletLinkingEmbeddedWalletReact(program: Command, o
 
     console.log("Cloning the repo to `demo-embedded-wallet-linking`...");
 
-    shell.exec(`git clone ${WALLET_LINKING_EMBEDDED_WALLET_REACT_REPO_URL} demo-embedded-wallet-linking`, { silent: !options.verbose });
+    shell.exec(`git clone ${WALLET_LINKING_EMBEDDED_WALLET_REPO_URL} demo-embedded-wallet-linking`, { silent: !options.verbose });
     
     shell.cd("demo-embedded-wallet-linking");
     

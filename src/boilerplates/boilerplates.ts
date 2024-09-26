@@ -118,7 +118,7 @@ export function makeCommandBoilerplates(program: Command) {
         });
 
     comm
-        .command("create-universal-wallet")
+        .command("create-universal-wallet-starter")
         .description("Clone a boilerplate for Sequence Universal Wallet")
         .option(
         "--project-access-key <access_key>",

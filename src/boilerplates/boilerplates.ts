@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { createServerSideTx } from "./create_server_side_transactions";
 import { createEmbeddedWalletReact } from "./create_embedded_wallet_react";
 import { createGoogleEmbeddedWalletReact } from './create_google_embedded_wallet_react'
+import { createEmailEmbeddedWalletReact } from "./create_email_embedded_wallet_react"
 import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
 import { createPrimaryDropSale } from "./create_primary_drop_sale";
@@ -115,6 +116,25 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createEmbeddedWalletNextjs(program, options);
+        });
+
+    comm
+        .command("create-email-embedded-wallet-react-starter")
+        .description("Clone a starter boilerplate for email authenticated Sequence Embedded Wallet and React")
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createEmailEmbeddedWalletReact(program, options);
         });
 
     comm

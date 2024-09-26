@@ -11,6 +11,7 @@ A collection of CLI commands to interface with Sequence services:
     - `create-server-side-transactions`: Create a server that has the ability to mint collectibles based on parameters
     - `create-kit-embedded-wallet-nextjs-starter`: Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js
     - `create-embedded-wallet-verify-session-starter`: Clone a starter boilerplate for Sequence Embedded Wallet verification from a server-side application
+    - `create-universal-wallet-react`: Clone a boilerplate for Sequence Universal Wallet
     - `create-primary-drop-sale-starter`: Clone a starter boilerplate for Primary Sales, integrated with Sequence Kit and Embedded Wallet, using React.
 
 ## Usage

@@ -118,7 +118,7 @@ export function makeCommandBoilerplates(program: Command) {
         });
 
     comm
-        .command("create-universal-wallet-react")
+        .command("create-universal-wallet")
         .description("Clone a boilerplate for Sequence Universal Wallet")
         .option(
         "--project-access-key <access_key>",

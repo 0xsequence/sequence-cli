@@ -17,28 +17,28 @@ export function makeCommandBoilerplates(program: Command) {
         .command("create-embedded-wallet-react-starter")
         .description("Clone a starter boilerplate for Sequence Embedded Wallet integrated with React")
         .option(
-            "--waas-config-key <waas_key>",
-            "WaaS config key for this project"
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
         )
         .option(
-            "--project-access-key <access_key>",
-            "Project access key for Sequence requests"
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
         )
         .option(
-            "--google-client-id <google_client_id>",
-            "Google client ID to be used during authentication"
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
         )
         .option(
-            "--apple-client-id <apple_client_id>",
-            "Apple client ID to be used during authentication"
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
         )
         .option(
-            "--wallet-connect-id <wallet_connect_id>",
-            "Wallet Connect ID to be used during authentication"
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
         )
         .option(
-            "--verbose",
-            "Show additional information in the output"
+        "--verbose",
+        "Show additional information in the output"
         )
         .action((options) => {
             createEmbeddedWalletReact(program, options);
@@ -46,22 +46,22 @@ export function makeCommandBoilerplates(program: Command) {
     
     comm
         .command("create-google-embedded-wallet-react-starter")
-        .description("Clone a starter boilerplate for Google Widget Authenticated Sequence Embedded Wallet integrated with React")
+        .description("Clone a starter boilerplate for Google widget authenticated Sequence Embedded Wallet integrated with React")
         .option(
-            "--waas-config-key <waas_key>",
-            "WaaS config key for this project"
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
         )
         .option(
-            "--project-access-key <access_key>",
-            "Project access key for Sequence requests"
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
         )
         .option(
-            "--google-client-id <google_client_id>",
-            "Google client ID to be used during authentication"
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
         )
         .option(
-            "--verbose",
-            "Show additional information in the output"
+        "--verbose",
+        "Show additional information in the output"
         )
         .action((options) => {
             createGoogleEmbeddedWalletReact(program, options);
@@ -71,16 +71,16 @@ export function makeCommandBoilerplates(program: Command) {
         .command("create-server-side-transactions")
         .description("Create a server that has the ability to mint collectibles based on parameters")
         .option(
-            "-k, --key <private_key>",
-            "Private key for the wallet that holds the tokens"
+        "-k, --key <private_key>",
+        "Private key for the wallet that holds the tokens"
         )
         .option(
-            "-pak, --project-access-key <access_key>",
-            "Project access key for Sequence requests"
+        "-pak, --project-access-key <access_key>",
+        "Project access key for Sequence requests"
         )
         .option(
-            "--verbose",
-            "Show additional information in the output"
+        "--verbose",
+        "Show additional information in the output"
         )
         .action((options) => {
             createServerSideTx(program, options);
@@ -106,8 +106,8 @@ export function makeCommandBoilerplates(program: Command) {
         "Apple client ID to be used during authentication"
         )
         .option(
-            "--wallet-connect-id <wallet_connect_id>",
-            "Wallet Connect ID to be used during authentication"
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
         )
         .option(
         "--verbose",

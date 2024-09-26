@@ -96,18 +96,18 @@ export function makeCommandBoilerplates(program: Command) {
 
     comm
         .command("create-email-embedded-wallet-react-starter")
-        .description("Clone a starter boilerplate for Sequence Email authenticated Embedded Wallet and React")
+        .description("Clone a starter boilerplate for email authenticated Sequence Embedded Wallet and React")
         .option(
-            "--waas-config-key <waas_key>",
-            "WaaS config key for this project"
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
         )
         .option(
-            "--project-access-key <access_key>",
-            "Project access key for Sequence requests"
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
         )
         .option(
-            "--verbose",
-            "Show additional information in the output"
+        "--verbose",
+        "Show additional information in the output"
         )
         .action((options) => {
             createEmailEmbeddedWalletReact(program, options);

@@ -96,7 +96,7 @@ export function makeCommandBoilerplates(program: Command) {
 
     comm
         .command("create-embedded-wallet-linking-starter")
-        .description("Clone a starter boilerplate for Sequence Embedded Wallet Linking demo integrated with React")
+        .description("Clone a starter boilerplate for Sequence Embedded wallet linking demo integrated with React")
         .option(
             "--waas-config-key <waas_key>",
             "WaaS config key for this project"

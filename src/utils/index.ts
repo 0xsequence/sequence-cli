@@ -108,6 +108,18 @@ export async function promptForWalletConnectIdWithLogs(
     );
 }
 
+export async function promptForStytchWithLogs(
+    stytchPublicToken: string | undefined
+): Promise<string | undefined> {
+    return await promptForKeyWithLogs(
+        { key: stytchPublicToken, inputMessage: "Stytch Public Token:" },
+        [
+            "Please provide the Stytch Public Token for your project.",
+            "To skip and use the default test client ID, press enter.",
+        ]
+    );
+}
+
 export function writeToEnvFile(envKeys: EnvKeys, options: EnvWriteOptions) {
     Object.entries(envKeys).forEach(([key, value]) => {
         if (value && value !== "") {

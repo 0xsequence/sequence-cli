@@ -120,7 +120,7 @@ export function makeCommandBoilerplates(program: Command) {
         .action((options) => {
             createEmbeddedWalletNextjs(program, options);
         });
-    
+
     comm
         .command("create-email-embedded-wallet-react-starter")
         .description("Clone a starter boilerplate for email authenticated Sequence Embedded Wallet integrated with React")

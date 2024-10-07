@@ -103,7 +103,7 @@ export async function promptForWalletConnectIdWithLogs(
         { key: walletConnectId, inputMessage: "Wallet Connect ID:" },
         [
             "Please provide the Wallet Connect ID for your project.",
-            "To skip and use the default test client ID, press enter.",
+            "To skip and use the default test project ID, press enter.",
         ]
     );
 }
@@ -112,10 +112,11 @@ export async function promptForStytchWithLogs(
     stytchPublicToken: string | undefined
 ): Promise<string | undefined> {
     return await promptForKeyWithLogs(
-        { key: stytchPublicToken, inputMessage: "Stytch Public Token:" },
+        { key: stytchPublicToken, inputMessage: "Stytch Public token:" },
         [
-            "Please provide the Stytch Public Token for your project.",
-            "To skip and use the default test client ID, press enter.",
+            "Please provide the Stytch Public token for your project found in your dashboard",
+            "Your Public token can be found at https://stytch.com/dashboardhttps://stytch.com/dashboard.",
+            "To skip and use the default test Public token, press enter.",
         ]
     );
 }

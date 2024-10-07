@@ -114,8 +114,8 @@ export async function promptForStytchWithLogs(
     return await promptForKeyWithLogs(
         { key: stytchPublicToken, inputMessage: "Stytch Public token:" },
         [
-            "Please provide the Stytch Public token for your project found in your dashboard",
-            "Your Public token can be found at https://stytch.com/dashboardhttps://stytch.com/dashboard.",
+            "Please provide the Stytch Public token for your project found in your dashboard.",
+            "Your Public token can be found at https://stytch.com/dashboard in the top header.",
             "To skip and use the default test Public token, press enter.",
         ]
     );

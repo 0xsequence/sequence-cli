@@ -10,6 +10,7 @@ A collection of CLI commands to interface with Sequence services:
     - `create-embedded-wallet-react-starter`: Clone and configure Embedded Wallet start project with React
     - `create-google-embedded-wallet-react-starter`: Clone a starter boilerplate for Google widget authenticated Sequence Embedded Wallet integrated with React
     - `create-email-embedded-wallet-react-starter`: Clone a starter boilerplate for  email authenticated Sequence Embedded Wallet and React
+     - `create-stytch-embedded-wallet-react-starter`: Clone a starter boilerplate for  Stytch authenticated Sequence Embedded Wallet and React
     - `create-server-side-transactions`: Create a server that has the ability to mint collectibles based on parameters
     - `create-kit-embedded-wallet-nextjs-starter`: Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js
     - `create-embedded-wallet-linking-starter`: Clone a starter boilerplate for Sequence Embedded wallet linking demo integrated with React

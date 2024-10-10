@@ -1,15 +1,15 @@
 
 import { extractProjectIdFromAccessKey } from "@0xsequence/utils";
 import { Command } from "commander";
-import { promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
-const PRIMARY_DROP_SALE_REPO_URL = "https://github.com/0xsequence/primary-drop-sale-boilerplate/";
+const PRIMARY_SALES_ERC1155_REPO_URL = "https://github.com/0xsequence/primary-sale-1155-boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 
-export async function createPrimaryDropSale(program: Command, options: any) {
+export async function createPrimarySalesErc1155(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
@@ -24,14 +24,7 @@ export async function createPrimaryDropSale(program: Command, options: any) {
         projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
         googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
         appleClientId = await promptForAppleClientIdWithLogs(appleClientId);
-
-        walletConnectId = await promptForKeyWithLogs(
-            { key: walletConnectId, inputMessage: "Wallet Connect ID:" },
-            [
-                "Please provide the Wallet Connect ID for your project.",
-                "To skip and use the default test client ID, press enter.",
-            ]
-        );
+        walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId);
         
         if (projectAccessKey) {
             builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
@@ -42,11 +35,11 @@ export async function createPrimaryDropSale(program: Command, options: any) {
         }
     }
     
-    console.log("Cloning the repo to `primary-drop-sale-boilerplate`...");
+    console.log("Cloning the repo to `primary-sale-1155-boilerplate`...");
 
-    shell.exec(`git clone ${PRIMARY_DROP_SALE_REPO_URL} primary-drop-sale-boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${PRIMARY_SALES_ERC1155_REPO_URL} primary-sale-1155-boilerplate`, { silent: !options.verbose });
     
-    shell.cd("primary-drop-sale-boilerplate");
+    shell.cd("primary-sale-1155-boilerplate");
     shell.exec(`touch .env`, { silent: !options.verbose });
 
     console.log("Configuring your project...");
@@ -70,7 +63,7 @@ export async function createPrimaryDropSale(program: Command, options: any) {
     
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    console.log("Primary Drop Sale boilerplate created successfully! 🚀");
+    console.log("Primary Sales ERC1155 boilerplate created successfully! 🚀");
 
     console.log(`Great! Now you can test the project with your WaaS. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-sales`);
     

@@ -74,7 +74,14 @@ async function promptForAppleClientIdWithLogs(appleClientId) {
 async function promptForWalletConnectIdWithLogs(walletConnectId) {
     return await promptForKeyWithLogs({ key: walletConnectId, inputMessage: "Wallet Connect ID:" }, [
         "Please provide the Wallet Connect ID for your project.",
-        "To skip and use the default test client ID, press enter.",
+        "To skip and use the default test project ID, press enter.",
+    ]);
+}
+async function promptForStytchWithLogs(stytchPublicToken) {
+    return await promptForKeyWithLogs({ key: stytchPublicToken, inputMessage: "Stytch Public token:" }, [
+        "Please provide the Stytch Public token for your project found in your dashboard.",
+        "Your Public token can be found at https://stytch.com/dashboard in the top header.",
+        "To skip and use the default test Public token, press enter.",
     ]);
 }
 function writeToEnvFile(envKeys, options) {
@@ -1269,6 +1276,99 @@ async function createEmbeddedWalletReact(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
+const GOOGLE_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/google-embedded-wallet-react-boilerplate";
+async function createGoogleEmbeddedWalletReact(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let googleClientId = options.googleClientId;
+    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    if (userWantsToConfigureTheirKeys) {
+        waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
+        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
+        googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
+    }
+    console.log("Cloning the repo to `google-embedded-wallet-react-boilerplate`...");
+    shell.exec(`git clone ${GOOGLE_EMBEDDED_WALLET_REACT_REPO_URL} google-embedded-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.cd("google-embedded-wallet-react-boilerplate");
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+        "VITE_GOOGLE_CLIENT_ID": googleClientId || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Google Authenticated Embedded Wallet React boilerplate created successfully! 🚀");
+    console.log("Starting development server...");
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
+const EMAIL_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/email-embedded-wallet-react-boilerplate";
+async function createEmailEmbeddedWalletReact(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    if (userWantsToConfigureTheirKeys) {
+        waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
+        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
+    }
+    console.log("Cloning the repo to `email-embedded-wallet-react-boilerplate`...");
+    shell.exec(`git clone ${EMAIL_EMBEDDED_WALLET_REACT_REPO_URL} email-embedded-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.cd("email-embedded-wallet-react-boilerplate");
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Email Embedded Wallet React boilerplate created successfully! 🚀");
+    console.log("Starting development server...");
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
+const STYTCH_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/stytch-embedded-wallet-react-boilerplate/";
+async function createStytchEmbeddedWalletReact(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let stytchPublicToken = options.stytchPublicToken;
+    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    if (userWantsToConfigureTheirKeys) {
+        waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
+        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
+        stytchPublicToken = await promptForStytchWithLogs(stytchPublicToken);
+    }
+    console.log("Cloning the repo to `stytch-embedded-wallet-react-boilerplate`...");
+    shell.exec(`git clone ${STYTCH_EMBEDDED_WALLET_REACT_REPO_URL} stytch-embedded-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.cd("stytch-embedded-wallet-react-boilerplate");
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+        "VITE_STYTCH_PUBLIC_TOKEN": stytchPublicToken || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Stytch Embedded Wallet React boilerplate created successfully! 🚀");
+    console.log("Starting development server...");
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
 const EMBEDDED_WALLET_NEXTJS_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-nextjs-boilerplate/";
 async function createEmbeddedWalletNextjs(program, options) {
     let waasConfigKey = options.waasConfigKey;
@@ -1303,6 +1403,41 @@ async function createEmbeddedWalletNextjs(program, options) {
     console.log("Installing dependencies...");
     shell.exec(`pnpm install`, { silent: !options.verbose });
     console.log("Kit Embedded Wallet Nextjs boilerplate created successfully! 🚀");
+    console.log("Starting development server...");
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
+const WALLET_LINKING_EMBEDDED_WALLET_REPO_URL = "https://github.com/0xsequence-demos/demo-embedded-wallet-linking";
+async function createWalletLinkingEmbeddedWallet(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let googleClientId = options.googleClientId;
+    let walletConnectId = options.walletConnectId;
+    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    if (userWantsToConfigureTheirKeys) {
+        waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
+        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
+        googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
+        walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId);
+    }
+    console.log("Cloning the repo to `demo-embedded-wallet-linking`...");
+    shell.exec(`git clone ${WALLET_LINKING_EMBEDDED_WALLET_REPO_URL} demo-embedded-wallet-linking`, { silent: !options.verbose });
+    shell.cd("demo-embedded-wallet-linking");
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+        "VITE_GOOGLE_CLIENT_ID": googleClientId || undefined,
+        "VITE_WALLET_CONNECT_ID": walletConnectId || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Embedded Wallet Linking React boilerplate created successfully! 🚀");
     console.log("Starting development server...");
     shell.exec(`pnpm dev`, { silent: false });
 }
@@ -1355,9 +1490,35 @@ async function createEmbeddedWalletVerifySession(program, options) {
     shell.exec(`pnpm start`, { silent: false });
 }
 
-const PRIMARY_DROP_SALE_REPO_URL = "https://github.com/0xsequence/primary-drop-sale-boilerplate/";
+const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/universal-wallet-react-boilerplate/";
+async function createUniversalWalletReact(program, options) {
+    let projectAccessKey = options.projectAccessKey;
+    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    if (userWantsToConfigureTheirKeys) {
+        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
+    }
+    console.log("Cloning the repo to `universal-wallet-react-boilerplate`...");
+    shell.exec(`git clone ${UNIVERSAL_WALLET_REACT_REPO_URL} universal-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.cd("universal-wallet-react-boilerplate");
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    console.log("Configuring your project...");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    console.log("Installing dependencies...");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    console.log("Universal Wallet React boilerplate created successfully! 🚀");
+    console.log("Starting development server...");
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
+const PRIMARY_SALES_ERC1155_REPO_URL = "https://github.com/0xsequence/primary-sale-1155-boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
-async function createPrimaryDropSale(program, options) {
+async function createPrimarySalesErc1155(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
@@ -1370,10 +1531,7 @@ async function createPrimaryDropSale(program, options) {
         projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
         googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
         appleClientId = await promptForAppleClientIdWithLogs(appleClientId);
-        walletConnectId = await promptForKeyWithLogs({ key: walletConnectId, inputMessage: "Wallet Connect ID:" }, [
-            "Please provide the Wallet Connect ID for your project.",
-            "To skip and use the default test client ID, press enter.",
-        ]);
+        walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId);
         if (projectAccessKey) {
             builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
             if (!builderProjectId) {
@@ -1382,9 +1540,9 @@ async function createPrimaryDropSale(program, options) {
             }
         }
     }
-    console.log("Cloning the repo to `primary-drop-sale-boilerplate`...");
-    shell.exec(`git clone ${PRIMARY_DROP_SALE_REPO_URL} primary-drop-sale-boilerplate`, { silent: !options.verbose });
-    shell.cd("primary-drop-sale-boilerplate");
+    console.log("Cloning the repo to `primary-sale-1155-boilerplate`...");
+    shell.exec(`git clone ${PRIMARY_SALES_ERC1155_REPO_URL} primary-sale-1155-boilerplate`, { silent: !options.verbose });
+    shell.cd("primary-sale-1155-boilerplate");
     shell.exec(`touch .env`, { silent: !options.verbose });
     console.log("Configuring your project...");
     const envExampleContent = shell.cat('.env.example').toString();
@@ -1401,7 +1559,7 @@ async function createPrimaryDropSale(program, options) {
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
     console.log("Installing dependencies...");
     shell.exec(`pnpm install`, { silent: !options.verbose });
-    console.log("Primary Drop Sale boilerplate created successfully! 🚀");
+    console.log("Primary Sales ERC1155 boilerplate created successfully! 🚀");
     console.log(`Great! Now you can test the project with your WaaS. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-sales`);
     console.log("Starting development server...");
     shell.exec(`pnpm dev`, { silent: false });
@@ -1425,6 +1583,16 @@ function makeCommandBoilerplates(program) {
         createEmbeddedWalletReact(program, options);
     });
     comm
+        .command("create-google-embedded-wallet-react-starter")
+        .description("Clone a starter boilerplate for Google widget authenticated Sequence Embedded Wallet integrated with React")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createGoogleEmbeddedWalletReact(program, options);
+    });
+    comm
         .command("create-server-side-transactions")
         .description("Create a server that has the ability to mint collectibles based on parameters")
         .option("-k, --key <private_key>", "Private key for the wallet that holds the tokens")
@@ -1446,6 +1614,36 @@ function makeCommandBoilerplates(program) {
         createEmbeddedWalletNextjs(program, options);
     });
     comm
+        .command("create-email-embedded-wallet-react-starter")
+        .description("Clone a starter boilerplate for email authenticated Sequence Embedded Wallet integrated with React")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createEmailEmbeddedWalletReact(program, options);
+    });
+    comm
+        .command("create-stytch-embedded-wallet-react-starter")
+        .description("Clone a starter boilerplate for Stytch authenticated Sequence Embedded Wallet integrated with React")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--stytch-public-token <stytch_public_token>", "Stytch Public Token for authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createStytchEmbeddedWalletReact(program, options);
+    });
+    comm
+        .command("create-embedded-wallet-linking-starter")
+        .description("Clone a starter boilerplate for Sequence Embedded wallet linking demo integrated with React")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--wallet-connect-id <wallet_connect_id>", "Wallet Connect ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createWalletLinkingEmbeddedWallet(program, options);
+    });
+    comm
         .command("create-embedded-wallet-verify-session-starter")
         .description("Clone a starter boilerplate for Sequence Embedded Wallet verification from a server-side application")
         .option("--waas-config-key <waas_key>", "WaaS config key for this project")
@@ -1456,8 +1654,16 @@ function makeCommandBoilerplates(program) {
         createEmbeddedWalletVerifySession(program, options);
     });
     comm
-        .command("create-primary-drop-sale-starter")
-        .description("Clone a starter boilerplate for Primary Drop Sale integrated with WaaS")
+        .command("create-universal-wallet-starter")
+        .description("Clone a boilerplate for Sequence Universal Wallet")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createUniversalWalletReact(program, options);
+    });
+    comm
+        .command("create-primary-sales-erc1155-starter")
+        .description("Clone a starter boilerplate for Primary Sales integrated with WaaS")
         .option("--waas-config-key <waas_key>", "WaaS config key for this project")
         .option("--project-access-key <access_key>", "Project access key for Sequence requests")
         .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
@@ -1465,7 +1671,7 @@ function makeCommandBoilerplates(program) {
         .option("--wallet-connect-id <wallet_connect_id>", "Wallet Connect ID to be used during authentication")
         .option("--verbose", "Show additional information in the output")
         .action((options) => {
-        createPrimaryDropSale(program, options);
+        createPrimarySalesErc1155(program, options);
     });
     return comm;
 }
@@ -1473,7 +1679,7 @@ function makeCommandBoilerplates(program) {
 console.log(figlet.textSync("Sequence"));
 console.log("");
 const program = new Command();
-program.version("0.3.0", "-v, --version", "Display the current version").action(
+program.version("0.3.1", "-v, --version", "Display the current version").action(
   () => {
     program.help();
   }

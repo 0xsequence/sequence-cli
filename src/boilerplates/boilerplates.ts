@@ -8,7 +8,7 @@ import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
 import { createWalletLinkingEmbeddedWallet } from './create_wallet_linking_embedded_wallet_react'
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
 import { createUniversalWalletReact } from "./create_universal_wallet_react";
-import { createPrimaryDropSale } from "./create_primary_drop_sale";
+import { createPrimarySalesErc1155 } from "./create_primary_sales_erc1155";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -229,8 +229,8 @@ export function makeCommandBoilerplates(program: Command) {
         });
 
     comm
-        .command("create-primary-drop-sale-starter")
-        .description("Clone a starter boilerplate for Primary Drop Sale integrated with WaaS")
+        .command("create-primary-sales-erc1155-starter")
+        .description("Clone a starter boilerplate for Primary Sales integrated with WaaS")
         .option(
         "--waas-config-key <waas_key>",
         "WaaS config key for this project"
@@ -256,7 +256,7 @@ export function makeCommandBoilerplates(program: Command) {
         "Show additional information in the output"
         )
         .action((options) => {
-            createPrimaryDropSale(program, options);
+            createPrimarySalesErc1155(program, options);
         });
 
     return comm;

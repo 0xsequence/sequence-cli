@@ -8,7 +8,7 @@ import { createWalletLinkingEmbeddedWallet } from './create_wallet_linking_embed
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
 import { createUniversalWalletReact } from "./create_universal_wallet_react";
 import { createPrimaryDropSale } from "./create_primary_drop_sale";
-import { createNftDrop } from "./create_nft_drop";
+import { createPrimaryDropSalesErc721 } from "./create_primary_drop_sales_erc721";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -237,7 +237,7 @@ export function makeCommandBoilerplates(program: Command) {
         });
 
     comm
-        .command("create-nft-drop-starter")
+        .command("create-primary-drop-sales-erc721-starter")
         .description("Clone a starter boilerplate for NFT Drops using primary sales for NFTs ERC721, integrated with Sequence Kit and Embedded Wallet, using React")
         .option(
         "--waas-config-key <waas_key>",
@@ -264,7 +264,7 @@ export function makeCommandBoilerplates(program: Command) {
         "Show additional information in the output"
         )
         .action((options) => {
-            createNftDrop(program, options);
+            createPrimaryDropSalesErc721(program, options);
         });
 
     return comm;

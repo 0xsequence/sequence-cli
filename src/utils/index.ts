@@ -121,6 +121,19 @@ export function writeToEnvFile(envKeys: EnvKeys, options: EnvWriteOptions) {
     });
 }
 
+export function writeToWranglerEnvFile(envKeys: EnvKeys, options: EnvWriteOptions) {
+    Object.entries(envKeys).forEach(([key, value]) => {
+        if (value && value !== "") {
+            shell.exec(
+                `echo ${key} = ${value} >> ${
+                    options.pathToWrite ? options.pathToWrite : "wrangler.toml"
+                }`,
+                { silent: !options.verbose }
+            );
+        }
+    });
+}
+
 export function writeDefaultKeysToEnvFileIfMissing(
     envExampleLines: string[],
     envKeys: EnvKeys,

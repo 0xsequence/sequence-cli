@@ -119,6 +119,8 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
     cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-sales`);
     
     cliConsole.loading("Starting development server");
+
+    cliConsole.info("Hey, fantastic! Everything is set up, and the frontend for this boilerplate is now running. To start the API, open another terminal and run 'pnpm dev:wrangler'. Good luck!");
     
     shell.exec(`pnpm dev`, { silent: false });
 }

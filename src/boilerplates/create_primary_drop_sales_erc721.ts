@@ -41,9 +41,9 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
     cliConsole.sectionTitle("Initializing creation process for Primary Drop Sales ERC721 boilerplate 🚀");
 
     waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey, { allowEmptyInput: false });
-    googleClientId = await promptForGoogleClientIdWithLogs(googleClientId, { allowEmptyInput: false });
-    appleClientId = await promptForAppleClientIdWithLogs(appleClientId, { allowEmptyInput: false });
-    walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId, { allowEmptyInput: false });
+    googleClientId = await promptForGoogleClientIdWithLogs(googleClientId, { allowEmptyInput: true });
+    appleClientId = await promptForAppleClientIdWithLogs(appleClientId, { allowEmptyInput: true });
+    walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId, { allowEmptyInput: true });
     projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey, { allowEmptyInput: false });
     jwtAccessKey = await promptForJwtAccessKeyWithLogs(jwtAccessKey, { allowEmptyInput: false });
     password = await promptForPasswordWithLogs(password, { allowEmptyInput: false });
@@ -57,14 +57,14 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
     }
     
     
-    console.log("Cloning the repo to `primary-drop-sales-erc721-boilerplate`...");
+    cliConsole.loading("Cloning the repo to `primary-drop-sales-erc721-boilerplate`");
 
     shell.exec(`git clone ${PRIMARY_DROP_SALES_ERC721_REPO_URL} primary-drop-sales-erc721-boilerplate`, { silent: !options.verbose });
     
     shell.cd("primary-drop-sales-erc721-boilerplate");
     shell.exec(`touch .env`, { silent: !options.verbose });
 
-    console.log("Configuring your project...");
+    cliConsole.loading("Configuring your project");
 
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
@@ -110,15 +110,15 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
     addDevToWranglerConfig(wranglerConfigPath, options.verbose);
     writeToWranglerEnvFile(portWrangler, { ...options, pathToWrite: wranglerConfigPath });
     
-    console.log("Installing dependencies...");
+    cliConsole.loading("Installing dependencies");
     
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    console.log("Primary Drop Sales ERC721 boilerplate created successfully! 🚀");
+    cliConsole.done("Primary Drop Sales ERC721 boilerplate created successfully!");
 
-    console.log(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-sales`);
+    cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-sales`);
     
-    console.log("Starting development server...");
+    cliConsole.loading("Starting development server");
     
     shell.exec(`pnpm dev`, { silent: false });
 }

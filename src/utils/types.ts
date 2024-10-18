@@ -8,6 +8,15 @@ export type EnvWriteOptions = {
     pathToWrite: string;
 };
 
+export type PromptForKeysWithLogsOptions = {
+    allowEmptyInput: boolean;
+};
+
 export type EnvKeys = {
     [key: string]: string | undefined;
+};
+
+export type KeyPromptParams = {
+    key: string | undefined;
+    inputMessage: string;
 };

@@ -274,3 +274,7 @@ export function addVarsToWranglerConfig(wranglerConfigPath: string, verbose: boo
 export function addDevToWranglerConfig(wranglerConfigPath: string, verbose: boolean): void {
     appendToWranglerConfig('[dev]', wranglerConfigPath, verbose);
 }
+
+export function checkIfDirectoryExists(path: string): boolean {
+    return shell.test('-d', path);
+}

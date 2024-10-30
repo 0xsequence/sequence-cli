@@ -1,4 +1,3 @@
-
 import { extractProjectIdFromAccessKey } from "@0xsequence/utils";
 import { Command } from "commander";
 import { checkIfDirectoryExists, cliConsole, promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForJwtAccessKeyWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile, writeToWranglerEnvFile } from "../utils";
@@ -34,8 +33,7 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
             process.exit();
         }
     }
-    
-    
+
     cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
     shell.exec(`git clone ${PRIMARY_DROP_SALES_ERC721_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
@@ -46,7 +44,7 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
     }
     shell.cd(REPOSITORY_FILENAME);
     shell.exec(`touch .env`, { silent: !options.verbose });
-    
+
     cliConsole.loading("Configuring your project");
 
     const envExampleContent = shell.cat('.env.example').toString();
@@ -64,18 +62,18 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
 
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
-    
+
     cliConsole.loading("Installing dependencies");
-    
+
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
     cliConsole.done("Primary Drop Sales ERC721 boilerplate created successfully!");
 
     cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-drop-sales-erc721`);
-    
+
     cliConsole.loading("Starting development server");
 
     cliConsole.info(`To know how to use this repository please go to the following link ${SEQUENCE_DOCS_URL}guides/primary-drop-sales-erc721`);
-    
+
     shell.exec(`pnpm dev`, { silent: false });
 }

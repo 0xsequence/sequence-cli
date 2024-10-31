@@ -4,6 +4,7 @@ import { select, input, password, number } from '@inquirer/prompts';
 import { Wallet, ethers } from 'ethers';
 import { findSupportedNetwork } from '@0xsequence/network';
 import shell from 'shelljs';
+import chalk from 'chalk';
 import { Session } from '@0xsequence/auth';
 import { extractProjectIdFromAccessKey } from '@0xsequence/utils';
 import figlet from 'figlet';
@@ -17,6 +18,35 @@ function isValidPrivateKey(privateKey) {
         return false;
     }
 }
+const cliConsole = {
+    error: (message) => {
+        console.log(chalk.red(message));
+    },
+    errorFieldInBlank: () => {
+        cliConsole.error("You cannot leave this field in blank. Please try again.");
+    },
+    warning: (message) => {
+        console.log(chalk.yellow(`⚠️  ${message}`));
+    },
+    info: (message) => {
+        console.log(chalk.blue(`ℹ️ ${message}`));
+    },
+    success: (message) => {
+        console.log(chalk.green(`✅  ${message}`));
+    },
+    loading: (message) => {
+        console.log(chalk.gray(`⏳ ${message}...`));
+    },
+    done: (message) => {
+        console.log(chalk.greenBright(`🎉 ${message}`));
+    },
+    lineBreak: () => {
+        console.log('\n');
+    },
+    sectionTitle: (title) => {
+        console.log(chalk.magenta.bold(`\n=== ${title.toUpperCase()} ===\n`));
+    },
+};
 async function promptUserKeyCustomizationDecision() {
     return await select({
         message: "Would you like to use the default configuration keys for testing?",
@@ -43,39 +73,71 @@ async function promptForKeyWithLogs(prompt, logs) {
     }
     return prompt.key;
 }
-async function promptForProjectAccessKeyWithLogs(projectAccessKey) {
-    return await promptForKeyWithLogs({ key: projectAccessKey, inputMessage: "Project Access Key:" }, [
-        "Please provide the Project Access Key for your project.",
-        "Your access key can be found at https://sequence.build under the project settings.",
-        "To skip and use the default test access key, press enter.",
-    ]);
+async function executePromptWithRetry(promptFn, params, logs, options = { allowEmptyInput: true }) {
+    const promptResult = await promptFn(params, logs);
+    if (!promptResult && !options.allowEmptyInput) {
+        cliConsole.errorFieldInBlank();
+        return await executePromptWithRetry(promptFn, params, logs, options);
+    }
+    return promptResult;
 }
-async function promptForWaaSConfigKeyWithLogs(waasConfigKey) {
-    return await promptForKeyWithLogs({ key: waasConfigKey, inputMessage: "WaaS Config Key:" }, [
+async function promptForProjectAccessKeyWithLogs(projectAccessKey, options = { allowEmptyInput: true }) {
+    const logsArray = [
+        "Please provide the Project Access Key for your project.",
+        "Your access key can be found at https://sequence.build under the project settings."
+    ];
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test access key, press enter.");
+    }
+    return await executePromptWithRetry(promptForKeyWithLogs, { key: projectAccessKey, inputMessage: "Project Access Key:" }, logsArray, options);
+}
+async function promptForWaaSConfigKeyWithLogs(waasConfigKey, options = { allowEmptyInput: true }) {
+    const logsArray = [
         "Please provide the WaaS Config Key for your project.",
         "Your config key can be found at https://sequence.build under the embedded wallet settings.",
-        "To skip and use the default test config key, press enter.",
-    ]);
+    ];
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test config key, press enter.");
+    }
+    return await executePromptWithRetry(promptForKeyWithLogs, { key: waasConfigKey, inputMessage: "WaaS Config Key:" }, logsArray, options);
 }
-async function promptForGoogleClientIdWithLogs(googleClientId) {
-    return await promptForKeyWithLogs({ key: googleClientId, inputMessage: "Google Client ID:" }, [
+async function promptForGoogleClientIdWithLogs(googleClientId, options = { allowEmptyInput: true }) {
+    const logsArray = [
         "Please provide the Google Client ID for your project.",
         "Your client ID can be found at https://console.cloud.google.com/apis/credentials.",
-        "To skip and use the default test client ID, press enter.",
-    ]);
+    ];
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test client ID, press enter.");
+    }
+    return await executePromptWithRetry(promptForKeyWithLogs, { key: googleClientId, inputMessage: "Google Client ID:" }, logsArray, options);
 }
-async function promptForAppleClientIdWithLogs(appleClientId) {
-    return await promptForKeyWithLogs({ key: appleClientId, inputMessage: "Apple Client ID:" }, [
+async function promptForAppleClientIdWithLogs(appleClientId, options = { allowEmptyInput: true }) {
+    const logsArray = [
         "Please provide the Apple Client ID for your project.",
         "Your client ID can be found at https://developer.apple.com/account/resources/identifiers/list/serviceId",
-        "To skip and use the default test client ID, press enter.",
-    ]);
+    ];
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test client ID, press enter.");
+    }
+    return await executePromptWithRetry(promptForKeyWithLogs, { key: appleClientId, inputMessage: "Apple Client ID:" }, logsArray, options);
 }
-async function promptForWalletConnectIdWithLogs(walletConnectId) {
-    return await promptForKeyWithLogs({ key: walletConnectId, inputMessage: "Wallet Connect ID:" }, [
+async function promptForWalletConnectIdWithLogs(walletConnectId, options = { allowEmptyInput: true }) {
+    const logsArray = [
         "Please provide the Wallet Connect ID for your project.",
-        "To skip and use the default test project ID, press enter.",
-    ]);
+    ];
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test client ID, press enter.");
+    }
+    return await executePromptWithRetry(promptForKeyWithLogs, { key: walletConnectId, inputMessage: "Wallet Connect ID:" }, logsArray, options);
+}
+async function promptForJwtAccessKeyWithLogs(jwtAccessKey, options = { allowEmptyInput: true }) {
+    const logsArray = [
+        "To get your jwt access key follow the first step in https://docs.sequence.xyz/guides/metadata-guide/",
+    ];
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default jwt access key, press enter.");
+    }
+    return await executePromptWithRetry(promptForKeyWithLogs, { key: jwtAccessKey, inputMessage: "JWT Access Key:" }, logsArray, options);
 }
 async function promptForStytchWithLogs(stytchPublicToken) {
     return await promptForKeyWithLogs({ key: stytchPublicToken, inputMessage: "Stytch Public token:" }, [
@@ -100,6 +162,9 @@ function writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options) {
             shell.exec(`echo ${line} >> ${options.pathToWrite ? options.pathToWrite : ".env"}`, { silent: !options.verbose });
         }
     });
+}
+function checkIfDirectoryExists(path) {
+    return shell.test('-d', path);
 }
 
 const ERC1155_ABI = [
@@ -1181,6 +1246,45 @@ async function createSingleSigner(program, options) {
     console.log(`Your Sequence Wallet Single Signer: ${session.account.address}`);
 }
 
+const TXN_EXECUTED_LOG_TOPIC = "0x5c4eeb02dabf8976016ab414d617f9a162936dcace3cdef8c69ef6e262ad5ae7";
+async function identifySequenceWallet(program, options) {
+    let transactionHash = options.txn;
+    let network = options.network;
+    if (!transactionHash) {
+        transactionHash = await input({
+            message: 'Provide the transaction hash'
+        });
+    }
+    if (!network) {
+        network = await input({
+            message: 'Enter the network to be used (mainnet, polygon, etc.)'
+        });
+    }
+    const chainConfig = findSupportedNetwork(network);
+    if (chainConfig === undefined) {
+        program.error(`Unsupported network ${network}, please select a valid network`);
+    }
+    let nodeUrl = chainConfig.rpcUrl;
+    if (options.projectAccessKey) {
+        nodeUrl += "/" + options.projectAccessKey;
+    }
+    if (options.verbose) {
+        console.log(`Using node URL: ${nodeUrl}`);
+    }
+    const provider = new ethers.JsonRpcProvider(nodeUrl);
+    const txReceipt = await provider.getTransactionReceipt(transactionHash);
+    if (!txReceipt) {
+        program.error("Transaction not found");
+    }
+    // Filter logs to find TxExecuted event log
+    const txExecutedLog = txReceipt.logs.find((log) => log.topics[0] === TXN_EXECUTED_LOG_TOPIC);
+    if (!txExecutedLog) {
+        program.error("Sequence Wallet not found in the transaction logs");
+    }
+    console.log(`Transaction Origin (Relayer): ${txReceipt.from}`);
+    console.log(`Sequence Wallet Address: ${txExecutedLog.address}`);
+}
+
 function makeCommandWallet(program) {
     const comm = new Command("wallet");
     comm.action(() => {
@@ -1195,6 +1299,16 @@ function makeCommandWallet(program) {
         .option("--verbose", "Show additional information in the output")
         .action((options) => {
         createSingleSigner(program, options);
+    });
+    comm
+        .command("identify-sequence-wallet")
+        .description("Identify Sequence Wallet address from a transaction hash")
+        .option("-t, --txn <txn>", "Transaction hash to be used")
+        .option("-n, --network <network>", "Network to be used (mainnet, polygon, etc.)")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        identifySequenceWallet(program, options);
     });
     return comm;
 }
@@ -1516,6 +1630,63 @@ async function createUniversalWalletReact(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
+const PRIMARY_DROP_SALES_ERC721_REPO_URL = "https://github.com/0xsequence/primary-drop-sale-721-boilerplate";
+const REPOSITORY_FILENAME = "primary-drop-sales-erc721-boilerplate";
+const SEQUENCE_DOCS_URL$1 = "https://docs.sequence.xyz/";
+async function createPrimaryDropSalesErc721(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let googleClientId = options.googleClientId;
+    let appleClientId = options.appleClientId;
+    let walletConnectId = options.walletConnectId;
+    let builderProjectId;
+    let jwtAccessKey;
+    cliConsole.sectionTitle("Initializing creation process for Primary Drop Sales ERC721 boilerplate 🚀");
+    waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey, { allowEmptyInput: false });
+    googleClientId = await promptForGoogleClientIdWithLogs(googleClientId, { allowEmptyInput: true });
+    appleClientId = await promptForAppleClientIdWithLogs(appleClientId, { allowEmptyInput: true });
+    walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId, { allowEmptyInput: true });
+    projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey, { allowEmptyInput: false });
+    jwtAccessKey = await promptForJwtAccessKeyWithLogs(jwtAccessKey, { allowEmptyInput: false });
+    if (projectAccessKey) {
+        builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
+        if (!builderProjectId) {
+            console.log("Invalid Project Access Key provided. Please provide a valid Project Access Key.");
+            process.exit();
+        }
+    }
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
+    shell.exec(`git clone ${PRIMARY_DROP_SALES_ERC721_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+    if (!directoryExists) {
+        cliConsole.error("Repository cloning failed. Please try again.");
+        return;
+    }
+    shell.cd(REPOSITORY_FILENAME);
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    cliConsole.loading("Configuring your project");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "VITE_GOOGLE_CLIENT_ID": googleClientId || undefined,
+        "VITE_APPLE_CLIENT_ID": appleClientId || undefined,
+        "VITE_WALLET_CONNECT_ID": walletConnectId || undefined,
+        "VITE_PROJECT_ID": builderProjectId?.toString() || undefined,
+        "JWT_ACCESS_KEY": jwtAccessKey || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    cliConsole.loading("Installing dependencies");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    cliConsole.done("Primary Drop Sales ERC721 boilerplate created successfully!");
+    cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL$1}guides/primary-drop-sales-erc721`);
+    cliConsole.loading("Starting development server");
+    cliConsole.info(`To know how to use this repository please go to the following link ${SEQUENCE_DOCS_URL$1}guides/primary-drop-sales-erc721`);
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
 const PRIMARY_SALES_ERC1155_REPO_URL = "https://github.com/0xsequence/primary-sale-1155-boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 async function createPrimarySalesErc1155(program, options) {
@@ -1673,13 +1844,25 @@ function makeCommandBoilerplates(program) {
         .action((options) => {
         createPrimarySalesErc1155(program, options);
     });
+    comm
+        .command("create-primary-drop-sales-erc721-starter")
+        .description("Clone a starter boilerplate for NFT Drops using primary sales for NFTs ERC721, integrated with Sequence Kit and Embedded Wallet, using React")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--apple-client-id <apple_client_id>", "Apple client ID to be used during authentication")
+        .option("--wallet-connect-id <wallet_connect_id>", "Wallet Connect ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createPrimaryDropSalesErc721(program, options);
+    });
     return comm;
 }
 
 console.log(figlet.textSync("Sequence"));
 console.log("");
 const program = new Command();
-program.version("0.3.1", "-v, --version", "Display the current version").action(
+program.version("0.4.0", "-v, --version", "Display the current version").action(
   () => {
     program.help();
   }

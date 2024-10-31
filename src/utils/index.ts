@@ -1,7 +1,8 @@
 import { Wallet } from "ethers";
 import { select, input } from "@inquirer/prompts";
-import { EnvKeys, EnvWriteOptions } from "./types";
+import { EnvKeys, EnvWriteOptions, KeyPromptParams, PromptForKeysWithLogsOptions } from "./types";
 import shell from "shelljs";
+import chalk from "chalk";
 
 export function isValidPrivateKey(privateKey: string) {
     try {
@@ -11,6 +12,36 @@ export function isValidPrivateKey(privateKey: string) {
         return false;
     }
 }
+
+export const cliConsole = {
+    error: (message: string) => {
+        console.log(chalk.red(message));
+    },
+    errorFieldInBlank: () => {
+        cliConsole.error("You cannot leave this field in blank. Please try again.");
+    },
+    warning: (message: string) => {
+        console.log(chalk.yellow(`⚠️  ${message}`));
+    },
+    info: (message: string) => {
+        console.log(chalk.blue(`ℹ️ ${message}`));
+    },
+    success: (message: string) => {
+        console.log(chalk.green(`✅  ${message}`));
+    },
+    loading: (message: string) => {
+        console.log(chalk.gray(`⏳ ${message}...`));
+    },
+    done: (message: string) => {
+        console.log(chalk.greenBright(`🎉 ${message}`));
+    },
+    lineBreak: () => {
+        console.log('\n');
+    },
+    sectionTitle: (title: string) => {
+        console.log(chalk.magenta.bold(`\n=== ${title.toUpperCase()} ===\n`));
+    },
+};
 
 export async function promptUserKeyCustomizationDecision(): Promise<boolean> {
     return await select({
@@ -30,7 +61,7 @@ export async function promptUserKeyCustomizationDecision(): Promise<boolean> {
 }
 
 export async function promptForKeyWithLogs(
-    prompt: { key: string | undefined; inputMessage: string },
+    prompt: KeyPromptParams,
     logs: string[]
 ): Promise<string | undefined> {
     if (!prompt.key) {
@@ -44,67 +75,143 @@ export async function promptForKeyWithLogs(
     return prompt.key;
 }
 
-export async function promptForProjectAccessKeyWithLogs(
-    projectAccessKey: string | undefined
+export async function executePromptWithRetry(
+    promptFn: (params: KeyPromptParams, logs: string[]) => Promise<string | undefined>,
+    params: KeyPromptParams,
+    logs: string[],
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true }
 ): Promise<string | undefined> {
-    return await promptForKeyWithLogs(
+    const promptResult = await promptFn(params, logs);
+
+    if (!promptResult && !options.allowEmptyInput) {
+        cliConsole.errorFieldInBlank();
+        return await executePromptWithRetry(promptFn, params, logs, options);
+    }
+
+    return promptResult;
+}
+
+export async function promptForProjectAccessKeyWithLogs(
+    projectAccessKey: string | undefined,
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true },
+): Promise<string | undefined> {
+    const logsArray = [
+        "Please provide the Project Access Key for your project.",
+        "Your access key can be found at https://sequence.build under the project settings."
+    ];
+
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test access key, press enter.",)
+    }
+
+    return await executePromptWithRetry(
+        promptForKeyWithLogs,
         { key: projectAccessKey, inputMessage: "Project Access Key:" },
-        [
-            "Please provide the Project Access Key for your project.",
-            "Your access key can be found at https://sequence.build under the project settings.",
-            "To skip and use the default test access key, press enter.",
-        ]
+        logsArray,
+        options
     );
 }
 
 export async function promptForWaaSConfigKeyWithLogs(
-    waasConfigKey: string | undefined
+    waasConfigKey: string | undefined,
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true },
 ): Promise<string | undefined> {
-    return await promptForKeyWithLogs(
+    const logsArray = [
+        "Please provide the WaaS Config Key for your project.",
+        "Your config key can be found at https://sequence.build under the embedded wallet settings.",
+    ];
+
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test config key, press enter.")
+    }
+
+    return await executePromptWithRetry(
+        promptForKeyWithLogs,
         { key: waasConfigKey, inputMessage: "WaaS Config Key:" },
-        [
-            "Please provide the WaaS Config Key for your project.",
-            "Your config key can be found at https://sequence.build under the embedded wallet settings.",
-            "To skip and use the default test config key, press enter.",
-        ]
+        logsArray,
+        options
     );
 }
 
 export async function promptForGoogleClientIdWithLogs(
-    googleClientId: string | undefined
+    googleClientId: string | undefined,
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true },
 ): Promise<string | undefined> {
-    return await promptForKeyWithLogs(
+    const logsArray = [
+       "Please provide the Google Client ID for your project.",
+        "Your client ID can be found at https://console.cloud.google.com/apis/credentials.",
+    ];
+
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test client ID, press enter.")
+    }
+    
+    return await executePromptWithRetry(
+        promptForKeyWithLogs,
         { key: googleClientId, inputMessage: "Google Client ID:" },
-        [
-            "Please provide the Google Client ID for your project.",
-            "Your client ID can be found at https://console.cloud.google.com/apis/credentials.",
-            "To skip and use the default test client ID, press enter.",
-        ]
+        logsArray,
+        options
     );
 }
 
 export async function promptForAppleClientIdWithLogs(
-    appleClientId: string | undefined
+    appleClientId: string | undefined,
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true },
 ): Promise<string | undefined> {
-    return await promptForKeyWithLogs(
+    const logsArray = [
+        "Please provide the Apple Client ID for your project.",
+        "Your client ID can be found at https://developer.apple.com/account/resources/identifiers/list/serviceId",
+    ];
+
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test client ID, press enter.")
+    }
+
+    return await executePromptWithRetry(
+        promptForKeyWithLogs,
         { key: appleClientId, inputMessage: "Apple Client ID:" },
-        [
-            "Please provide the Apple Client ID for your project.",
-            "Your client ID can be found at https://developer.apple.com/account/resources/identifiers/list/serviceId",
-            "To skip and use the default test client ID, press enter.",
-        ]
+        logsArray,
+        options
     );
 }
 
 export async function promptForWalletConnectIdWithLogs(
-    walletConnectId: string | undefined
+    walletConnectId: string | undefined,
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true },
 ): Promise<string | undefined> {
-    return await promptForKeyWithLogs(
+    const logsArray = [
+        "Please provide the Wallet Connect ID for your project.",
+    ];
+
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test client ID, press enter.")
+    }
+
+    return await executePromptWithRetry(
+        promptForKeyWithLogs,
         { key: walletConnectId, inputMessage: "Wallet Connect ID:" },
-        [
-            "Please provide the Wallet Connect ID for your project.",
-            "To skip and use the default test project ID, press enter.",
-        ]
+        logsArray,
+        options
+    );
+}
+
+export async function promptForJwtAccessKeyWithLogs(
+    jwtAccessKey: string | undefined,
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true },
+): Promise<string | undefined> {
+    const logsArray = [
+        "To get your jwt access key follow the first step in https://docs.sequence.xyz/guides/metadata-guide/",
+    ];
+
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default jwt access key, press enter.")
+    }
+
+    return await executePromptWithRetry(
+        promptForKeyWithLogs,
+        { key: jwtAccessKey, inputMessage: "JWT Access Key:" },
+        logsArray,
+        options,
     );
 }
 
@@ -153,4 +260,34 @@ export function writeDefaultKeysToEnvFileIfMissing(
             );
         }
     });
+}
+
+export function writeToWranglerEnvFile(envKeys: EnvKeys, options: EnvWriteOptions) {
+    Object.entries(envKeys).forEach(([key, value]) => {
+        if (value && value !== "") {
+            shell.exec(
+                `echo ${key} = ${value} >> ${
+                    options.pathToWrite ? options.pathToWrite : "wrangler.toml"
+                }`,
+                { silent: !options.verbose }
+            );
+        }
+    });
+}
+
+export function appendToWranglerConfig(section: string, wranglerConfigPath: string, verbose: boolean): void {
+    const command = `echo ${section} >> ${wranglerConfigPath}`;
+    shell.exec(command, { silent: !verbose });
+}
+
+export function addVarsToWranglerConfig(wranglerConfigPath: string, verbose: boolean): void {
+    appendToWranglerConfig('[vars]', wranglerConfigPath, verbose);
+}
+
+export function addDevToWranglerConfig(wranglerConfigPath: string, verbose: boolean): void {
+    appendToWranglerConfig('[dev]', wranglerConfigPath, verbose);
+}
+
+export function checkIfDirectoryExists(path: string): boolean {
+    return shell.test('-d', path);
 }

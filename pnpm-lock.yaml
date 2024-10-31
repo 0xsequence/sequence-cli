@@ -23,6 +23,9 @@ importers:
       '@inquirer/prompts':
         specifier: ^5.1.2
         version: 5.5.0
+      chalk:
+        specifier: ^5.3.0
+        version: 5.3.0
       commander:
         specifier: ^12.1.0
         version: 12.1.0
@@ -640,6 +643,10 @@ packages:
 
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
+
+  chalk@5.3.0:
+    resolution: {integrity: sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
@@ -1443,6 +1450,8 @@ snapshots:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
+  chalk@5.3.0: {}
+
   chardet@0.7.0: {}
 
   cli-spinners@2.9.2: {}
@@ -1689,11 +1698,11 @@ snapshots:
 
   vite@5.4.4(@types/node@20.16.5):
     dependencies:
-      '@types/node': 20.16.5
       esbuild: 0.21.5
       postcss: 8.4.45
       rollup: 4.21.2
     optionalDependencies:
+      '@types/node': 20.16.5
       fsevents: 2.3.3
 
   webextension-polyfill@0.10.0: {}

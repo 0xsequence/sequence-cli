@@ -8,6 +8,7 @@ import { createEmbeddedWalletNextjs } from "./create_embedded_wallet_nextjs";
 import { createWalletLinkingEmbeddedWallet } from './create_wallet_linking_embedded_wallet_react'
 import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_verify_session";
 import { createUniversalWalletReact } from "./create_universal_wallet_react";
+import { createPrimaryDropSalesErc721 } from "./create_primary_drop_sales_erc721";
 import { createPrimarySalesErc1155 } from "./create_primary_sales_erc1155";
 
 export function makeCommandBoilerplates(program: Command) {
@@ -257,6 +258,37 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createPrimarySalesErc1155(program, options);
+        });
+
+    comm
+        .command("create-primary-drop-sales-erc721-starter")
+        .description("Clone a starter boilerplate for NFT Drops using primary sales for NFTs ERC721, integrated with Sequence Kit and Embedded Wallet, using React")
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
+        )
+        .option(
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createPrimaryDropSalesErc721(program, options);
         });
 
     return comm;

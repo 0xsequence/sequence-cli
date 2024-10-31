@@ -17,6 +17,7 @@ A collection of CLI commands to interface with Sequence services:
     - `create-embedded-wallet-linking-starter`: Clone a starter boilerplate for Sequence Embedded wallet linking demo integrated with React
     - `create-embedded-wallet-verify-session-starter`: Clone a starter boilerplate for Sequence Embedded Wallet verification from a server-side application
     - `create-universal-wallet-starter`: Clone a boilerplate for Sequence Universal Wallet starter
+    - `create-primary-drop-sales-erc721-starter`: Clone a starter boilerplate for NFT Drops using primary sales for NFTs ERC721, integrated with Sequence Kit and Embedded Wallet, using React.
     - `create-primary-sales-erc1155-starter`: Clone a starter boilerplate for Primary Sales, integrated with Sequence Kit and Embedded Wallet, using React.
 
 ## Usage

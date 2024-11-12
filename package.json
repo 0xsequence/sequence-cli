@@ -14,7 +14,8 @@
     "tsc": "tsc -p tsconfig.json",
     "dev": "tsx src/bin.ts",
     "build": "tsc && vite build && chmod +x dist/bin.js",
-    "upload": "pnpm build && npm publish"
+    "upload": "pnpm build && npm publish",
+    "format": "prettier --write \"packages/**/src/**/*.ts\" \"packages/**/tests/**/*.ts\""
   },
   "keywords": [
     "sequence",
@@ -30,6 +31,7 @@
     "@types/node": "^20.14.10",
     "@types/shelljs": "^0.8.15",
     "@types/webextension-polyfill": "^0.10.7",
+    "prettier": "3.3.3",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3",
     "vite": "^5.3.3"
@@ -44,7 +46,8 @@
     "commander": "^12.1.0",
     "ethers": "6.13.1",
     "figlet": "^1.7.0",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "viem": "2.x"
   },
   "packageManager": "pnpm@8.15.4+sha1.c85a4305534f76d461407b59277b954bac97b5c4"
 }

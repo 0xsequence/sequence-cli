@@ -176,7 +176,7 @@ export async function createListings(program: Command, options: any) {
           isERC1155: isERC1155,
           tokenContract: listingRequest.collectionAddress,
           tokenId: BigInt(listingRequest.tokenId),
-          quantity: BigInt(1),
+          quantity: BigInt(listingRequest.quantity),
           expiry: BigInt(currentTimeInSeconds + expiryInSeconds),
           currency: listingRequest.currency,
           pricePerToken: ethers.parseUnits(price, 6),

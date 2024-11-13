@@ -117,8 +117,21 @@ export async function createListings(program: Command, options: any) {
   // Set up the wallet client
   const walletClient = createWalletClient({
     account: privateKeyToAccount(privateKey),
-    chain: polygon,
-    transport: http(nodeUrl), // Replace with your Polygon node URL
+    chain:  {
+      id: chainConfig.chainId,
+      name: chainConfig.name,
+      nativeCurrency: {
+        name: chainConfig.nativeToken.name,
+        decimals: chainConfig.nativeToken.decimals,
+        symbol: chainConfig.nativeToken.symbol
+      },
+      rpcUrls: {
+        default: {
+          http: [nodeUrl],
+        }
+      }
+    },
+    transport: http(nodeUrl)
   });
 
   let walletAddress = wallet.address as Address;

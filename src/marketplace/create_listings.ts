@@ -4,7 +4,7 @@ import { ethers, Numeric } from 'ethers';
 import { findSupportedNetwork } from '@0xsequence/network';
 import { isValidPrivateKey } from '../utils/';
 import { ERC1155_ABI } from '../abi/ERC_1155';
-import { Orderbook_ABI } from '../abi/Orderbook';
+import { SequenceMarktetplace_V1_ABI } from '../abi/Orderbook';
 import { ERC721_ABI } from '../abi/ERC_721';
 import { polygon } from 'viem/chains';
 import {
@@ -159,7 +159,7 @@ export async function createListings(program: Command, options: any) {
 
   const marketplaceContract = getContract({
     address: SEQUENCE_MARKETPLACE_V1_ADDRESS,
-    abi: Orderbook_ABI,
+    abi: SequenceMarktetplace_V1_ABI,
     client: walletClient,
   });
 

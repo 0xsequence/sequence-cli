@@ -8632,77 +8632,12 @@ async function createMarketplaceBoilerplate(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
-async function sendTx(program, options) {
-    let privateKey = options.key;
-    let network = options.network;
-    let data = options.data;
-    let to = options.to;
-    if (!privateKey) {
-        privateKey = await password({
-            message: 'Enter the private key for the wallet that holds the tokens',
-        });
-        if (!isValidPrivateKey(privateKey) && privateKey) {
-            console.log('Please input a valid EVM Private key');
-            process.exit();
-        }
-    }
-    if (!to) {
-        console.log('Please provide target address');
-        to = await input({
-            message: 'Enter target address',
-        });
-    }
-    if (!network) {
-        console.log('Please provide the Network for your project as a Sequence chain handle');
-        console.log('Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support');
-        network = await input({
-            message: 'Enter the network to be used (mainnet, polygon, etc.)',
-        });
-    }
-    if (!data) {
-        console.log('Please provide the transaction data');
-        data = await input({
-            message: 'Please provide the transaction data',
-        });
-    }
-    const chainConfig = findSupportedNetwork(network);
-    if (chainConfig === undefined) {
-        program.error('Unsupported network, please select a valid network');
-        return;
-    }
-    let nodeUrl = chainConfig.rpcUrl;
-    if (options.projectAccessKey) {
-        nodeUrl += '/' + options.projectAccessKey;
-    }
-    const provider = new ethers.JsonRpcProvider(nodeUrl);
-    const wallet = new ethers.Wallet(privateKey, provider);
-    try {
-        const res = await wallet.sendTransaction({ data: data, to: to });
-        console.log("Transaction hash", res.hash);
-    }
-    catch (e) {
-        console.error(e);
-        return;
-    }
-}
-
 const SEQUENCE_MARKETPLACE_V1_ADDRESS = '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
 const SEQUENCE_MARKETPLACE_V2_ADDRESS = '0xfdb42A198a932C8D3B506Ffa5e855bC4b348a712';
 function makeCommandMarketplace(program) {
     const comm = new Command("marketplace");
     comm.action(() => {
         comm.help();
-    });
-    comm
-        .command("send-tx")
-        .description("Sign tx data coming from marketplace API and send it to chain")
-        .option("-k, --key <private_key>", "Private key for the wallet that holds the tokens")
-        .option("-d, --data <data>", "TX data from marketplace API")
-        .option("--to <to>", "Target address")
-        .option("-n, --network <network>", "Network to be used (mainnet, polygon, etc.)")
-        .option("--marketplace-version <version>", "Marketplace version", "v2")
-        .action((options) => {
-        sendTx(program, options);
     });
     comm
         .command("create-listings")
@@ -8816,10 +8751,75 @@ async function identifySequenceWallet(program, options) {
     console.log(`Sequence Wallet Address: ${txExecutedLog.address}`);
 }
 
+async function sendTx(program, options) {
+    let privateKey = options.key;
+    let network = options.network;
+    let data = options.data;
+    let to = options.to;
+    if (!privateKey) {
+        privateKey = await password({
+            message: 'Enter the private key for the wallet that holds the tokens',
+        });
+        if (!isValidPrivateKey(privateKey) && privateKey) {
+            console.log('Please input a valid EVM Private key');
+            process.exit();
+        }
+    }
+    if (!to) {
+        console.log('Please provide target address');
+        to = await input({
+            message: 'Enter target address',
+        });
+    }
+    if (!network) {
+        console.log('Please provide the Network for your project as a Sequence chain handle');
+        console.log('Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support');
+        network = await input({
+            message: 'Enter the network to be used (mainnet, polygon, etc.)',
+        });
+    }
+    if (!data) {
+        console.log('Please provide the transaction data');
+        data = await input({
+            message: 'Please provide the transaction data',
+        });
+    }
+    const chainConfig = findSupportedNetwork(network);
+    if (chainConfig === undefined) {
+        program.error('Unsupported network, please select a valid network');
+        return;
+    }
+    let nodeUrl = chainConfig.rpcUrl;
+    if (options.projectAccessKey) {
+        nodeUrl += '/' + options.projectAccessKey;
+    }
+    const provider = new ethers.JsonRpcProvider(nodeUrl);
+    const wallet = new ethers.Wallet(privateKey, provider);
+    try {
+        const res = await wallet.sendTransaction({ data: data, to: to });
+        console.log("Transaction hash", res.hash);
+    }
+    catch (e) {
+        console.error(e);
+        return;
+    }
+}
+
 function makeCommandWallet(program) {
     const comm = new Command("wallet");
     comm.action(() => {
         comm.help();
+    });
+    comm
+        .command("send-tx")
+        .description("Sign tx data coming from marketplace API and send it to chain")
+        .option("-k, --key <private_key>", "Private key for the wallet that holds the tokens")
+        .option("-d, --data <data>", "TX data from marketplace API")
+        .option("--to <to>", "Target address")
+        .option("-n, --network <network>", "Network to be used (mainnet, polygon, etc.)")
+        .option("--marketplace-version <version>", "Marketplace version", "v2")
+        .action((options) => {
+        sendTx(program, options);
     });
     comm
         .command("create-single-signer")

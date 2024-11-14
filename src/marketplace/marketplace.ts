@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { createListings } from "./create_listings";
 import { createMarketplaceBoilerplate } from "./create_marketplace_boilerplate";
-import {sendTx} from "./send_tx";
 
 export const SEQUENCE_MARKETPLACE_V1_ADDRESS =
     '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
@@ -15,34 +14,6 @@ export function makeCommandMarketplace(program: Command) {
     comm.action(() => {
         comm.help();
     });
-
-    comm
-        .command("send-tx")
-        .description("Sign tx data coming from marketplace API and send it to chain")
-        .option(
-            "-k, --key <private_key>",
-            "Private key for the wallet that holds the tokens"
-        )
-        .option(
-            "-d, --data <data>",
-            "TX data from marketplace API"
-        )
-        .option(
-            "--to <to>",
-            "Target address"
-        )
-        .option(
-            "-n, --network <network>",
-            "Network to be used (mainnet, polygon, etc.)"
-        )
-        .option(
-            "--marketplace-version <version>",
-            "Marketplace version",
-            "v2"
-        )
-        .action((options) => {
-            sendTx(program, options);
-        });
 
     comm
         .command("create-listings")

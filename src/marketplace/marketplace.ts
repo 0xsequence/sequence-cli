@@ -53,6 +53,11 @@ export function makeCommandMarketplace(program: Command) {
             "Project access key for Sequence requests"
         )
         .option(
+            "--marketplace-version <version>",
+            "Marketplace version",
+            "v2"
+        )
+        .option(
             "--verbose",
             "Show additional information in the output"
         )

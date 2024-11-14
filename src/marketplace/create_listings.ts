@@ -4,7 +4,7 @@ import { ethers, Numeric } from 'ethers';
 import { findSupportedNetwork } from '@0xsequence/network';
 import { isValidPrivateKey } from '../utils/';
 import { ERC1155_ABI } from '../abi/ERC_1155';
-import { SequenceMarktetplace_V1_ABI } from '../abi/Orderbook';
+import { SequenceMarktetplace_V1_ABI } from '../abi/SequenceMarketplaceV1';
 import { ERC721_ABI } from '../abi/ERC_721';
 import { polygon } from 'viem/chains';
 import {
@@ -16,9 +16,12 @@ import {
   Hex,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
+import { SequenceMarktetplace_V2_ABI } from '../abi/SequenceMarketplaceV2';
 
 const SEQUENCE_MARKETPLACE_V1_ADDRESS =
   '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
+const SEQUENCE_MARKETPLACE_V2_ADDRESS =
+  '0xfdb42A198a932C8D3B506Ffa5e855bC4b348a712';
 
 type ListingRequest = {
   collectionAddress: Address;
@@ -29,6 +32,7 @@ type ListingRequest = {
   price: bigint;
   quantity: Numeric;
   expiry: Numeric;
+  marketplaceAddress: Address;
 };
 
 export async function createListings(program: Command, options: any) {
@@ -117,21 +121,21 @@ export async function createListings(program: Command, options: any) {
   // Set up the wallet client
   const walletClient = createWalletClient({
     account: privateKeyToAccount(privateKey),
-    chain:  {
+    chain: {
       id: chainConfig.chainId,
       name: chainConfig.name,
       nativeCurrency: {
         name: chainConfig.nativeToken.name,
         decimals: chainConfig.nativeToken.decimals,
-        symbol: chainConfig.nativeToken.symbol
+        symbol: chainConfig.nativeToken.symbol,
       },
       rpcUrls: {
         default: {
           http: [nodeUrl],
-        }
-      }
+        },
+      },
     },
-    transport: http(nodeUrl)
+    transport: http(nodeUrl),
   });
 
   let walletAddress = wallet.address as Address;
@@ -139,10 +143,22 @@ export async function createListings(program: Command, options: any) {
     walletAddress = `0x${walletAddress}`;
   }
 
+  let marketplaceAddress = SEQUENCE_MARKETPLACE_V2_ADDRESS;
+  if (options.marketplaceVersion === 'v1') {
+    marketplaceAddress = SEQUENCE_MARKETPLACE_V1_ADDRESS;
+  }
+
+  let marketplaceABI = SequenceMarktetplace_V2_ABI;
+  if (options.marketplaceVersion == 'v1') {
+    let marketplaceABI = SequenceMarktetplace_V1_ABI;
+    console.log('using marketplace version 1');
+  }
+
   console.log(`Using EOA Wallet: ${walletAddress}`);
   console.log('Collection Address:', collectionAddress);
   console.log('Currency token address:', currency);
   console.log('Contract Type: %s, Is 1155', options.type, isERC1155);
+  console.log('Using marketplace version', marketplaceAddress);
 
   const listingRequest = {
     collectionAddress,
@@ -152,6 +168,7 @@ export async function createListings(program: Command, options: any) {
     price,
     quantity,
     expiry: options.expireIn,
+    marketplaceAddress: marketplaceAddress as Address,
   };
 
   if (isERC1155) {
@@ -171,8 +188,8 @@ export async function createListings(program: Command, options: any) {
   }
 
   const marketplaceContract = getContract({
-    address: SEQUENCE_MARKETPLACE_V1_ADDRESS,
-    abi: SequenceMarktetplace_V1_ABI,
+    address: listingRequest.marketplaceAddress,
+    abi: marketplaceABI,
     client: walletClient,
   });
 
@@ -218,7 +235,7 @@ async function approvalERC1155(client: WalletClient, input: ListingRequest) {
   });
 
   const isApprovedForAll = await collectionContract.read.isApprovedForAll(
-    [input.walletAddress, SEQUENCE_MARKETPLACE_V1_ADDRESS],
+    [input.walletAddress, input.marketplaceAddress],
     {
       account: client.account,
     }
@@ -226,7 +243,7 @@ async function approvalERC1155(client: WalletClient, input: ListingRequest) {
 
   if (!isApprovedForAll) {
     await collectionContract.write.setApprovalForAll(
-      [SEQUENCE_MARKETPLACE_V1_ADDRESS, true],
+      [input.marketplaceAddress, true],
       {
         account: client.account as any,
         chain: client.chain,
@@ -244,7 +261,7 @@ async function approvalERC721(client: WalletClient, input: ListingRequest) {
   });
 
   const isApprovedForAll = await collectionContract.read.isApprovedForAll(
-    [input.walletAddress, SEQUENCE_MARKETPLACE_V1_ADDRESS],
+    [input.walletAddress, input.marketplaceAddress],
     {
       account: client.account,
     }
@@ -252,7 +269,7 @@ async function approvalERC721(client: WalletClient, input: ListingRequest) {
 
   if (!isApprovedForAll) {
     await collectionContract.write.setApprovalForAll(
-      [SEQUENCE_MARKETPLACE_V1_ADDRESS, true],
+      [input.marketplaceAddress, true],
       { account: client.account as any, chain: client.chain }
     );
     console.log('ERC721 setApprovalForAll executed successfully');

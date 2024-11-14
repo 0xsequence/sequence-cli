@@ -4,7 +4,7 @@ import { ethers, Numeric } from 'ethers';
 import { findSupportedNetwork } from '@0xsequence/network';
 import { isValidPrivateKey } from '../utils/';
 import { ERC1155_ABI } from '../abi/ERC_1155';
-import { SequenceMarktetplace_V1_ABI } from '../abi/SequenceMarketplaceV1';
+import { SequenceMarketplace_V1_ABI } from '../abi/SequenceMarketplaceV1';
 import { ERC721_ABI } from '../abi/ERC_721';
 import { polygon } from 'viem/chains';
 import {
@@ -16,7 +16,7 @@ import {
   Hex,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { SequenceMarktetplace_V2_ABI } from '../abi/SequenceMarketplaceV2';
+import { SequenceMarketplace_V2_ABI } from '../abi/SequenceMarketplaceV2';
 
 const SEQUENCE_MARKETPLACE_V1_ADDRESS =
   '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
@@ -123,7 +123,7 @@ export async function createListings(program: Command, options: any) {
     account: privateKeyToAccount(privateKey),
     chain: {
       id: chainConfig.chainId,
-      name: chainConfig.name,
+      name: String(chainConfig.title),
       nativeCurrency: {
         name: chainConfig.nativeToken.name,
         decimals: chainConfig.nativeToken.decimals,
@@ -148,17 +148,16 @@ export async function createListings(program: Command, options: any) {
     marketplaceAddress = SEQUENCE_MARKETPLACE_V1_ADDRESS;
   }
 
-  let marketplaceABI = SequenceMarktetplace_V2_ABI;
-  if (options.marketplaceVersion == 'v1') {
-    let marketplaceABI = SequenceMarktetplace_V1_ABI;
-    console.log('using marketplace version 1');
-  }
+  const marketplaceABI =
+    options.marketplaceVersion == 'v2'
+      ? SequenceMarketplace_V2_ABI
+      : SequenceMarketplace_V1_ABI;
 
   console.log(`Using EOA Wallet: ${walletAddress}`);
   console.log('Collection Address:', collectionAddress);
   console.log('Currency token address:', currency);
   console.log('Contract Type: %s, Is 1155', options.type, isERC1155);
-  console.log('Using marketplace version', marketplaceAddress);
+  console.log('Using marketplace version', options.marketplaceVersion);
 
   const listingRequest = {
     collectionAddress,

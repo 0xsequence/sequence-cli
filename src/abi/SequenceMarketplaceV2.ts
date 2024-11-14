@@ -1,4 +1,4 @@
-export const SequenceMarktetplace_V2_ABI = [
+export const SequenceMarketplace_V2_ABI = [
     {
         "type": "constructor",
         "inputs": [],

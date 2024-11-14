@@ -6,7 +6,6 @@ import { isValidPrivateKey } from '../utils/';
 import { ERC1155_ABI } from '../abi/ERC_1155';
 import { SequenceMarketplace_V1_ABI } from '../abi/SequenceMarketplaceV1';
 import { ERC721_ABI } from '../abi/ERC_721';
-import { polygon } from 'viem/chains';
 import {
   createWalletClient,
   http,
@@ -17,11 +16,8 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { SequenceMarketplace_V2_ABI } from '../abi/SequenceMarketplaceV2';
+import {SEQUENCE_MARKETPLACE_V1_ADDRESS, SEQUENCE_MARKETPLACE_V2_ADDRESS} from "./marketplace";
 
-const SEQUENCE_MARKETPLACE_V1_ADDRESS =
-  '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
-const SEQUENCE_MARKETPLACE_V2_ADDRESS =
-  '0xfdb42A198a932C8D3B506Ffa5e855bC4b348a712';
 
 type ListingRequest = {
   collectionAddress: Address;

@@ -493,6 +493,470 @@ const ERC1155_ABI = [
     },
 ];
 
+const SequenceMarketplace_V1_ABI = [
+    {
+        inputs: [{ internalType: "address", name: "_owner", type: "address" }],
+        stateMutability: "nonpayable",
+        type: "constructor",
+    },
+    { inputs: [], name: "InvalidAdditionalFees", type: "error" },
+    { inputs: [], name: "InvalidBatchRequest", type: "error" },
+    { inputs: [], name: "InvalidCurrency", type: "error" },
+    {
+        inputs: [
+            { internalType: "address", name: "currency", type: "address" },
+            { internalType: "uint256", name: "quantity", type: "uint256" },
+            { internalType: "address", name: "owner", type: "address" },
+        ],
+        name: "InvalidCurrencyApproval",
+        type: "error",
+    },
+    { inputs: [], name: "InvalidExpiry", type: "error" },
+    { inputs: [], name: "InvalidPrice", type: "error" },
+    { inputs: [], name: "InvalidQuantity", type: "error" },
+    {
+        inputs: [{ internalType: "uint256", name: "requestId", type: "uint256" }],
+        name: "InvalidRequestId",
+        type: "error",
+    },
+    { inputs: [], name: "InvalidRoyalty", type: "error" },
+    {
+        inputs: [
+            { internalType: "address", name: "tokenContract", type: "address" },
+            { internalType: "uint256", name: "tokenId", type: "uint256" },
+            { internalType: "uint256", name: "quantity", type: "uint256" },
+            { internalType: "address", name: "owner", type: "address" },
+        ],
+        name: "InvalidTokenApproval",
+        type: "error",
+    },
+    {
+        inputs: [
+            { internalType: "address", name: "contractAddress", type: "address" },
+            { internalType: "bytes4", name: "interfaceId", type: "bytes4" },
+        ],
+        name: "UnsupportedContractInterface",
+        type: "error",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "recipient",
+                type: "address",
+            },
+            { indexed: false, internalType: "uint96", name: "fee", type: "uint96" },
+        ],
+        name: "CustomRoyaltyChanged",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "previousOwner",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "newOwner",
+                type: "address",
+            },
+        ],
+        name: "OwnershipTransferred",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "uint256",
+                name: "requestId",
+                type: "uint256",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "buyer",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "quantity",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "quantityRemaining",
+                type: "uint256",
+            },
+        ],
+        name: "RequestAccepted",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "uint256",
+                name: "requestId",
+                type: "uint256",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+            },
+        ],
+        name: "RequestCancelled",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "uint256",
+                name: "requestId",
+                type: "uint256",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "creator",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "tokenContract",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "tokenId",
+                type: "uint256",
+            },
+            { indexed: false, internalType: "bool", name: "isListing", type: "bool" },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "quantity",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "currency",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "pricePerToken",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "expiry",
+                type: "uint256",
+            },
+        ],
+        name: "RequestCreated",
+        type: "event",
+    },
+    {
+        inputs: [
+            { internalType: "uint256", name: "requestId", type: "uint256" },
+            { internalType: "uint256", name: "quantity", type: "uint256" },
+            { internalType: "address", name: "receiver", type: "address" },
+            { internalType: "uint256[]", name: "additionalFees", type: "uint256[]" },
+            {
+                internalType: "address[]",
+                name: "additionalFeeReceivers",
+                type: "address[]",
+            },
+        ],
+        name: "acceptRequest",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "uint256[]", name: "requestIds", type: "uint256[]" },
+            { internalType: "uint256[]", name: "quantities", type: "uint256[]" },
+            { internalType: "address[]", name: "receivers", type: "address[]" },
+            { internalType: "uint256[]", name: "additionalFees", type: "uint256[]" },
+            {
+                internalType: "address[]",
+                name: "additionalFeeReceivers",
+                type: "address[]",
+            },
+        ],
+        name: "acceptRequestBatch",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "uint256", name: "requestId", type: "uint256" }],
+        name: "cancelRequest",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "uint256[]", name: "requestIds", type: "uint256[]" },
+        ],
+        name: "cancelRequestBatch",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                components: [
+                    { internalType: "bool", name: "isListing", type: "bool" },
+                    { internalType: "bool", name: "isERC1155", type: "bool" },
+                    { internalType: "address", name: "tokenContract", type: "address" },
+                    { internalType: "uint256", name: "tokenId", type: "uint256" },
+                    { internalType: "uint256", name: "quantity", type: "uint256" },
+                    { internalType: "uint96", name: "expiry", type: "uint96" },
+                    { internalType: "address", name: "currency", type: "address" },
+                    { internalType: "uint256", name: "pricePerToken", type: "uint256" },
+                ],
+                internalType: "struct ISequenceMarketStorage.RequestParams",
+                name: "request",
+                type: "tuple",
+            },
+        ],
+        name: "createRequest",
+        outputs: [{ internalType: "uint256", name: "requestId", type: "uint256" }],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                components: [
+                    { internalType: "bool", name: "isListing", type: "bool" },
+                    { internalType: "bool", name: "isERC1155", type: "bool" },
+                    { internalType: "address", name: "tokenContract", type: "address" },
+                    { internalType: "uint256", name: "tokenId", type: "uint256" },
+                    { internalType: "uint256", name: "quantity", type: "uint256" },
+                    { internalType: "uint96", name: "expiry", type: "uint96" },
+                    { internalType: "address", name: "currency", type: "address" },
+                    { internalType: "uint256", name: "pricePerToken", type: "uint256" },
+                ],
+                internalType: "struct ISequenceMarketStorage.RequestParams[]",
+                name: "requests",
+                type: "tuple[]",
+            },
+        ],
+        name: "createRequestBatch",
+        outputs: [
+            { internalType: "uint256[]", name: "requestIds", type: "uint256[]" },
+        ],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "", type: "address" }],
+        name: "customRoyalties",
+        outputs: [
+            { internalType: "address", name: "recipient", type: "address" },
+            { internalType: "uint96", name: "fee", type: "uint96" },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "uint256", name: "requestId", type: "uint256" }],
+        name: "getRequest",
+        outputs: [
+            {
+                components: [
+                    { internalType: "address", name: "creator", type: "address" },
+                    { internalType: "bool", name: "isListing", type: "bool" },
+                    { internalType: "bool", name: "isERC1155", type: "bool" },
+                    { internalType: "address", name: "tokenContract", type: "address" },
+                    { internalType: "uint256", name: "tokenId", type: "uint256" },
+                    { internalType: "uint256", name: "quantity", type: "uint256" },
+                    { internalType: "uint96", name: "expiry", type: "uint96" },
+                    { internalType: "address", name: "currency", type: "address" },
+                    { internalType: "uint256", name: "pricePerToken", type: "uint256" },
+                ],
+                internalType: "struct ISequenceMarketStorage.Request",
+                name: "request",
+                type: "tuple",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "uint256[]", name: "requestIds", type: "uint256[]" },
+        ],
+        name: "getRequestBatch",
+        outputs: [
+            {
+                components: [
+                    { internalType: "address", name: "creator", type: "address" },
+                    { internalType: "bool", name: "isListing", type: "bool" },
+                    { internalType: "bool", name: "isERC1155", type: "bool" },
+                    { internalType: "address", name: "tokenContract", type: "address" },
+                    { internalType: "uint256", name: "tokenId", type: "uint256" },
+                    { internalType: "uint256", name: "quantity", type: "uint256" },
+                    { internalType: "uint96", name: "expiry", type: "uint96" },
+                    { internalType: "address", name: "currency", type: "address" },
+                    { internalType: "uint256", name: "pricePerToken", type: "uint256" },
+                ],
+                internalType: "struct ISequenceMarketStorage.Request[]",
+                name: "requests",
+                type: "tuple[]",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "address", name: "tokenContract", type: "address" },
+            { internalType: "uint256", name: "tokenId", type: "uint256" },
+            { internalType: "uint256", name: "cost", type: "uint256" },
+        ],
+        name: "getRoyaltyInfo",
+        outputs: [
+            { internalType: "address", name: "recipient", type: "address" },
+            { internalType: "uint256", name: "royalty", type: "uint256" },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "uint256", name: "requestId", type: "uint256" },
+            { internalType: "uint256", name: "quantity", type: "uint256" },
+        ],
+        name: "isRequestValid",
+        outputs: [
+            { internalType: "bool", name: "valid", type: "bool" },
+            {
+                components: [
+                    { internalType: "address", name: "creator", type: "address" },
+                    { internalType: "bool", name: "isListing", type: "bool" },
+                    { internalType: "bool", name: "isERC1155", type: "bool" },
+                    { internalType: "address", name: "tokenContract", type: "address" },
+                    { internalType: "uint256", name: "tokenId", type: "uint256" },
+                    { internalType: "uint256", name: "quantity", type: "uint256" },
+                    { internalType: "uint96", name: "expiry", type: "uint96" },
+                    { internalType: "address", name: "currency", type: "address" },
+                    { internalType: "uint256", name: "pricePerToken", type: "uint256" },
+                ],
+                internalType: "struct ISequenceMarketStorage.Request",
+                name: "request",
+                type: "tuple",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "uint256[]", name: "requestIds", type: "uint256[]" },
+            { internalType: "uint256[]", name: "quantities", type: "uint256[]" },
+        ],
+        name: "isRequestValidBatch",
+        outputs: [
+            { internalType: "bool[]", name: "valid", type: "bool[]" },
+            {
+                components: [
+                    { internalType: "address", name: "creator", type: "address" },
+                    { internalType: "bool", name: "isListing", type: "bool" },
+                    { internalType: "bool", name: "isERC1155", type: "bool" },
+                    { internalType: "address", name: "tokenContract", type: "address" },
+                    { internalType: "uint256", name: "tokenId", type: "uint256" },
+                    { internalType: "uint256", name: "quantity", type: "uint256" },
+                    { internalType: "uint96", name: "expiry", type: "uint96" },
+                    { internalType: "address", name: "currency", type: "address" },
+                    { internalType: "uint256", name: "pricePerToken", type: "uint256" },
+                ],
+                internalType: "struct ISequenceMarketStorage.Request[]",
+                name: "requests",
+                type: "tuple[]",
+            },
+        ],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "owner",
+        outputs: [{ internalType: "address", name: "", type: "address" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "renounceOwnership",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "address", name: "tokenContract", type: "address" },
+            { internalType: "address", name: "recipient", type: "address" },
+            { internalType: "uint96", name: "fee", type: "uint96" },
+        ],
+        name: "setRoyaltyInfo",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "newOwner", type: "address" }],
+        name: "transferOwnership",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+];
+
 const ERC721_ABI = [
     {
         "type": "constructor",
@@ -6778,7 +7242,7 @@ function privateKeyToAccount(privateKey, options = {}) {
     };
 }
 
-const SequenceMarktetplace_V2_ABI = [
+const SequenceMarketplace_V2_ABI = [
     {
         "type": "constructor",
         "inputs": [],
@@ -7901,8 +8365,6 @@ const SequenceMarktetplace_V2_ABI = [
     }
 ];
 
-const SEQUENCE_MARKETPLACE_V1_ADDRESS = '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
-const SEQUENCE_MARKETPLACE_V2_ADDRESS = '0xfdb42A198a932C8D3B506Ffa5e855bC4b348a712';
 async function createListings(program, options) {
     let privateKey = options.key;
     let collectionAddress = options.address;
@@ -7971,33 +8433,36 @@ async function createListings(program, options) {
         account: privateKeyToAccount(privateKey),
         chain: {
             id: chainConfig.chainId,
-            name: chainConfig.name,
+            name: String(chainConfig.title),
             nativeCurrency: {
                 name: chainConfig.nativeToken.name,
                 decimals: chainConfig.nativeToken.decimals,
-                symbol: chainConfig.nativeToken.symbol
+                symbol: chainConfig.nativeToken.symbol,
             },
             rpcUrls: {
                 default: {
                     http: [nodeUrl],
-                }
-            }
+                },
+            },
         },
-        transport: http(nodeUrl)
+        transport: http(nodeUrl),
     });
     let walletAddress = wallet.address;
     if (!walletAddress.startsWith('0x')) {
         walletAddress = `0x${walletAddress}`;
     }
     let marketplaceAddress = SEQUENCE_MARKETPLACE_V2_ADDRESS;
-    if (options.marketplaceVersion === "v1") {
+    if (options.marketplaceVersion === 'v1') {
         marketplaceAddress = SEQUENCE_MARKETPLACE_V1_ADDRESS;
     }
+    const marketplaceABI = options.marketplaceVersion == 'v2'
+        ? SequenceMarketplace_V2_ABI
+        : SequenceMarketplace_V1_ABI;
     console.log(`Using EOA Wallet: ${walletAddress}`);
     console.log('Collection Address:', collectionAddress);
     console.log('Currency token address:', currency);
     console.log('Contract Type: %s, Is 1155', options.type, isERC1155);
-    console.log('Using marketplace version', marketplaceAddress);
+    console.log('Using marketplace version', options.marketplaceVersion);
     const listingRequest = {
         collectionAddress,
         walletAddress,
@@ -8028,7 +8493,7 @@ async function createListings(program, options) {
     }
     const marketplaceContract = getContract({
         address: listingRequest.marketplaceAddress,
-        abi: SequenceMarktetplace_V2_ABI,
+        abi: marketplaceABI,
         client: walletClient,
     });
     try {
@@ -8167,6 +8632,8 @@ async function createMarketplaceBoilerplate(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
+const SEQUENCE_MARKETPLACE_V1_ADDRESS = '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
+const SEQUENCE_MARKETPLACE_V2_ADDRESS = '0xfdb42A198a932C8D3B506Ffa5e855bC4b348a712';
 function makeCommandMarketplace(program) {
     const comm = new Command("marketplace");
     comm.action(() => {
@@ -8284,10 +8751,75 @@ async function identifySequenceWallet(program, options) {
     console.log(`Sequence Wallet Address: ${txExecutedLog.address}`);
 }
 
+async function sendTx(program, options) {
+    let privateKey = options.key;
+    let network = options.network;
+    let data = options.data;
+    let to = options.to;
+    if (!privateKey) {
+        privateKey = await password({
+            message: 'Enter the private key for the wallet that holds the tokens',
+        });
+        if (!isValidPrivateKey(privateKey) && privateKey) {
+            console.log('Please input a valid EVM Private key');
+            process.exit();
+        }
+    }
+    if (!to) {
+        console.log('Please provide target address');
+        to = await input({
+            message: 'Enter target address',
+        });
+    }
+    if (!network) {
+        console.log('Please provide the Network for your project as a Sequence chain handle');
+        console.log('Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support');
+        network = await input({
+            message: 'Enter the network to be used (mainnet, polygon, etc.)',
+        });
+    }
+    if (!data) {
+        console.log('Please provide the transaction data');
+        data = await input({
+            message: 'Please provide the transaction data',
+        });
+    }
+    const chainConfig = findSupportedNetwork(network);
+    if (chainConfig === undefined) {
+        program.error('Unsupported network, please select a valid network');
+        return;
+    }
+    let nodeUrl = chainConfig.rpcUrl;
+    if (options.projectAccessKey) {
+        nodeUrl += '/' + options.projectAccessKey;
+    }
+    const provider = new ethers.JsonRpcProvider(nodeUrl);
+    const wallet = new ethers.Wallet(privateKey, provider);
+    try {
+        const res = await wallet.sendTransaction({ data: data, to: to });
+        console.log("Transaction hash", res.hash);
+    }
+    catch (e) {
+        console.error(e);
+        return;
+    }
+}
+
 function makeCommandWallet(program) {
     const comm = new Command("wallet");
     comm.action(() => {
         comm.help();
+    });
+    comm
+        .command("send-tx")
+        .description("Sign tx data coming from marketplace API and send it to chain")
+        .option("-k, --key <private_key>", "Private key for the wallet that holds the tokens")
+        .option("-d, --data <data>", "TX data from marketplace API")
+        .option("--to <to>", "Target address")
+        .option("-n, --network <network>", "Network to be used (mainnet, polygon, etc.)")
+        .option("--marketplace-version <version>", "Marketplace version", "v2")
+        .action((options) => {
+        sendTx(program, options);
     });
     comm
         .command("create-single-signer")

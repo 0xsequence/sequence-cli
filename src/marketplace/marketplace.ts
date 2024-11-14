@@ -2,6 +2,11 @@ import { Command } from "commander";
 import { createListings } from "./create_listings";
 import { createMarketplaceBoilerplate } from "./create_marketplace_boilerplate";
 
+export const SEQUENCE_MARKETPLACE_V1_ADDRESS =
+    '0xB537a160472183f2150d42EB1c3DD6684A55f74c';
+
+export const SEQUENCE_MARKETPLACE_V2_ADDRESS =
+    '0xfdb42A198a932C8D3B506Ffa5e855bC4b348a712';
 
 export function makeCommandMarketplace(program: Command) {
     const comm = new Command("marketplace");

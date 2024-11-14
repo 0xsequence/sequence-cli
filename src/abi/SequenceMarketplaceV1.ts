@@ -1,4 +1,4 @@
-export const Orderbook_ABI = [
+export const SequenceMarketplace_V1_ABI = [
   {
     inputs: [{ internalType: "address", name: "_owner", type: "address" }],
     stateMutability: "nonpayable",

@@ -14,6 +14,11 @@ export function makeCommandMarketplace(program: Command) {
         .command("create-listings")
         .description("Create listings for tokens in your wallet using the Sequence Marketplace contract")
         .option(
+            "--type <type>",
+            "Collection type ERC1155 or ERC721",
+            "ERC1155"
+        )
+        .option(
             "-k, --key <private_key>",
             "Private key for the wallet that holds the tokens"
         )
@@ -46,6 +51,11 @@ export function makeCommandMarketplace(program: Command) {
         .option(
             "--project-access-key <access_key>",
             "Project access key for Sequence requests"
+        )
+        .option(
+            "--marketplace-version <version>",
+            "Marketplace version",
+            "v2"
         )
         .option(
             "--verbose",

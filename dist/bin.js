@@ -8756,6 +8756,7 @@ async function sendTx(program, options) {
     let network = options.network;
     let data = options.data;
     let to = options.to;
+    let value = options.value;
     if (!privateKey) {
         privateKey = await password({
             message: 'Enter the private key for the wallet that holds the tokens',
@@ -8796,7 +8797,8 @@ async function sendTx(program, options) {
     const provider = new ethers.JsonRpcProvider(nodeUrl);
     const wallet = new ethers.Wallet(privateKey, provider);
     try {
-        const res = await wallet.sendTransaction({ data: data, to: to });
+        const tx = { data: data, to: to, value: value };
+        const res = await wallet.sendTransaction(tx);
         console.log("Transaction hash", res.hash);
     }
     catch (e) {
@@ -8818,6 +8820,7 @@ function makeCommandWallet(program) {
         .option("--to <to>", "Target address")
         .option("-n, --network <network>", "Network to be used (mainnet, polygon, etc.)")
         .option("--marketplace-version <version>", "Marketplace version", "v2")
+        .option("-v, --value <value>", "Tx value", "0")
         .action((options) => {
         sendTx(program, options);
     });

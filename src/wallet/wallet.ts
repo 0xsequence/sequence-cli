@@ -35,6 +35,11 @@ export function makeCommandWallet(program: Command) {
             "Marketplace version",
             "v2"
         )
+        .option(
+            "-v, --value <value>",
+            "Tx value",
+            "0"
+        )
         .action((options) => {
             sendTx(program, options);
         });

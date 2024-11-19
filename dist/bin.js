@@ -4499,7 +4499,7 @@ const secp256k1 = createCurve({
 BigInt(0);
 secp256k1.ProjectivePoint;
 
-const version = '2.21.44';
+const version = '2.21.48';
 
 let errorConfig = {
     getDocsUrl: ({ docsBaseUrl, docsPath = '', docsSlug, }) => docsPath
@@ -6978,6 +6978,18 @@ function getArrayComponents(type) {
         : undefined;
 }
 
+const stringify = (value, replacer, space) => JSON.stringify(value, (key, value_) => {
+    const value = typeof value_ === 'bigint' ? value_.toString() : value_;
+    return value;
+}, space);
+
+class InvalidDomainError extends BaseError {
+    constructor({ domain }) {
+        super(`Invalid domain "${stringify(domain)}".`, {
+            metaMessages: ['Must be a valid EIP-712 domain.'],
+        });
+    }
+}
 class InvalidPrimaryTypeError extends BaseError {
     constructor({ primaryType, types, }) {
         super(`Invalid primary type \`${primaryType}\` must be one of \`${JSON.stringify(Object.keys(types))}\`.`, {
@@ -7038,8 +7050,11 @@ function validateTypedData(parameters) {
         }
     };
     // Validate domain types.
-    if (types.EIP712Domain && domain)
+    if (types.EIP712Domain && domain) {
+        if (typeof domain !== 'object')
+            throw new InvalidDomainError({ domain });
         validateData(types.EIP712Domain, domain);
+    }
     // Validate message types.
     if (primaryType !== 'EIP712Domain') {
         if (types[primaryType])
@@ -9393,7 +9408,7 @@ function makeCommandBoilerplates(program) {
 console.log(figlet.textSync("Sequence"));
 console.log("");
 const program = new Command();
-program.version("0.4.0", "-v, --version", "Display the current version").action(
+program.version("0.4.1", "-v, --version", "Display the current version").action(
   () => {
     program.help();
   }

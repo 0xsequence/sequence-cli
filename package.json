@@ -1,6 +1,6 @@
 {
   "name": "sequence-cli",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "type": "module",
@@ -27,27 +27,27 @@
   "devDependencies": {
     "@0xsequence/utils": "^2.0.0",
     "@commander-js/extra-typings": "^12.1.0",
-    "@types/figlet": "^1.5.8",
-    "@types/node": "^20.14.10",
+    "@types/figlet": "^1.7.0",
+    "@types/node": "^20.17.6",
     "@types/shelljs": "^0.8.15",
     "@types/webextension-polyfill": "^0.10.7",
     "prettier": "3.3.3",
-    "tsx": "^4.16.2",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.3"
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
   },
   "dependencies": {
     "0xsequence": "2.0.0",
     "@0xsequence/auth": "2.0.0",
     "@0xsequence/network": "2.0.0",
-    "@0xsequence/utils": "^2.0.0",
-    "@inquirer/prompts": "^5.1.2",
+    "@0xsequence/utils": "^2.0.26",
+    "@inquirer/prompts": "^5.5.0",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "ethers": "6.13.1",
-    "figlet": "^1.7.0",
+    "figlet": "^1.8.0",
     "shelljs": "^0.8.5",
-    "viem": "2.x"
+    "viem": "~2.21.48"
   },
   "packageManager": "pnpm@8.15.4+sha1.c85a4305534f76d461407b59277b954bac97b5c4"
 }

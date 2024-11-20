@@ -9,6 +9,7 @@ export async function sendTx(program: Command, options: any) {
     let network = options.network;
     let data = options.data
     let to = options.to
+    let value = options.value
 
     if (!privateKey) {
         privateKey = await password({
@@ -69,7 +70,9 @@ export async function sendTx(program: Command, options: any) {
     const wallet = new ethers.Wallet(privateKey, provider);
 
     try {
-        const res = await wallet.sendTransaction({data: data, to: to})
+        const tx = {data: data, to: to, value: value};
+
+        const res = await wallet.sendTransaction(tx)
         console.log("Transaction hash", res.hash)
     } catch (e) {
         console.error(e)

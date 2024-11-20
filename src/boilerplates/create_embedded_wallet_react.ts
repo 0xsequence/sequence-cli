@@ -6,7 +6,7 @@ import { EnvKeys } from "../utils/types";
 import shell from "shelljs";
 
 
-const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
+const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/kit-embedded-wallet-react-boilerplate/";
 
 
 export async function createEmbeddedWalletReact(program: Command, options: any) {

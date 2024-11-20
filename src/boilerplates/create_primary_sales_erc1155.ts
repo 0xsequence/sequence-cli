@@ -6,7 +6,7 @@ import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
-const PRIMARY_SALES_ERC1155_REPO_URL = "https://github.com/0xsequence/primary-sale-1155-boilerplate";
+const PRIMARY_SALES_ERC1155_REPO_URL = "https://github.com/0xsequence-demos/primary-sale-1155-boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 
 export async function createPrimarySalesErc1155(program: Command, options: any) {

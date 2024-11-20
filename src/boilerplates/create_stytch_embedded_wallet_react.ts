@@ -5,7 +5,7 @@ import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
-const STYTCH_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/stytch-embedded-wallet-react-boilerplate/";
+const STYTCH_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/stytch-embedded-wallet-react-boilerplate/";
 
 export async function createStytchEmbeddedWalletReact(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;

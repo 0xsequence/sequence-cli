@@ -4,7 +4,7 @@ import { checkIfDirectoryExists, cliConsole, promptForAppleClientIdWithLogs, pro
 import { EnvKeys } from "../utils/types";
 import shell from "shelljs";
 
-const PRIMARY_DROP_SALES_ERC721_REPO_URL = "https://github.com/0xsequence/primary-drop-sale-721-boilerplate";
+const PRIMARY_DROP_SALES_ERC721_REPO_URL = "https://github.com/0xsequence-demos/primary-drop-sale-721-boilerplate";
 const REPOSITORY_FILENAME = "primary-drop-sales-erc721-boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 

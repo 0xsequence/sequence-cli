@@ -6,7 +6,7 @@ import { EnvKeys, WalletTypes } from "../utils/types";
 
 import shell from "shelljs";
 
-const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence/marketplace-boilerplate/";
+const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence-demos/marketplace-boilerplate/";
 
 export async function createMarketplaceBoilerplate(program: Command, options: any) {
     let walletType = options.walletType;

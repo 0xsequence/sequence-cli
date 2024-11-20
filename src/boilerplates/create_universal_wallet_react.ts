@@ -5,7 +5,7 @@ import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
-const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/universal-wallet-react-boilerplate/";
+const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/universal-wallet-react-boilerplate/";
 
 export async function createUniversalWalletReact(program: Command, options: any) {
     let projectAccessKey = options.projectAccessKey;

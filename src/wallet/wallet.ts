@@ -31,9 +31,8 @@ export function makeCommandWallet(program: Command) {
             "Network to be used (mainnet, polygon, etc.)"
         )
         .option(
-            "--marketplace-version <version>",
-            "Marketplace version",
-            "v2"
+            "--value <value>",
+            "Value in wei"
         )
         .action((options) => {
             sendTx(program, options);

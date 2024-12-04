@@ -19,6 +19,7 @@ A collection of CLI commands to interface with Sequence services:
     - `create-universal-wallet-starter`: Clone a boilerplate for Sequence Universal Wallet starter
     - `create-primary-drop-sales-erc721-starter`: Clone a starter boilerplate for NFT Drops using primary sales for NFTs ERC721, integrated with Sequence Kit and Embedded Wallet, using React.
     - `create-primary-sales-erc1155-starter`: Clone a starter boilerplate for Primary Sales, integrated with Sequence Kit and Embedded Wallet, using React.
+    - `create-telegram-kit-embedded-wallet-react-starter`: Clone a starter boilerplate for telegram, integrated with Sequence Kit and Embedded Wallet, using React.
 
 ## Usage
 You can run via npx:

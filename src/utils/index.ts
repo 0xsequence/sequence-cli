@@ -265,8 +265,9 @@ export function writeDefaultKeysToEnvFileIfMissing(
 export function writeToWranglerEnvFile(envKeys: EnvKeys, options: EnvWriteOptions) {
     Object.entries(envKeys).forEach(([key, value]) => {
         if (value && value !== "") {
+            const formattedValue = typeof value === "string" ? `"${value}"` : value;
             shell.exec(
-                `echo ${key} = ${value} >> ${
+                `echo ${key} = ${formattedValue} >> ${
                     options.pathToWrite ? options.pathToWrite : "wrangler.toml"
                 }`,
                 { silent: !options.verbose }

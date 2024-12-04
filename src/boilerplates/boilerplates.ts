@@ -10,6 +10,7 @@ import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_veri
 import { createUniversalWalletReact } from "./create_universal_wallet_react";
 import { createPrimaryDropSalesErc721 } from "./create_primary_drop_sales_erc721";
 import { createPrimarySalesErc1155 } from "./create_primary_sales_erc1155";
+import { createNftCheckout } from "./create_nft_checkout";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -289,6 +290,37 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createPrimaryDropSalesErc721(program, options);
+        });
+
+    comm
+        .command("create-nft-checkout-starter")
+        .description("Clone a starter boilerplate for NFT Checkout, integrated with Sequence Kit and Embedded Wallet, using React")
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
+        )
+        .option(
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createNftCheckout(program, options);
         });
 
     return comm;

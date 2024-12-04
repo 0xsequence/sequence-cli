@@ -14,18 +14,18 @@ import {
 import { EnvKeys } from "../utils/types";
 import shell from "shelljs";
 
-const NFT_CHECKOUT_REPO_URL = "https://github.com/0xsequence-demos/nft-checkout-boilerplate";
-const REPOSITORY_FILENAME = "nft-checkout-boilerplate";
+const SEQUENCE_PAY_REPO_URL = "https://github.com/0xsequence-demos/sequence-pay-boilerplate";
+const REPOSITORY_FILENAME = "sequence-pay-boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 
-export async function createNftCheckout(program: Command, options: any) {
+export async function createSequencePay(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
     let appleClientId = options.appleClientId;
     let walletConnectId = options.walletConnectId;
 
-    cliConsole.sectionTitle("Initializing creation process for Nft Checkout boilerplate 🚀");
+    cliConsole.sectionTitle("Initializing creation process for Sequence Pay boilerplate 🚀");
 
     const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
     
@@ -39,7 +39,7 @@ export async function createNftCheckout(program: Command, options: any) {
 
     cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
-    shell.exec(`git clone ${NFT_CHECKOUT_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
+    shell.exec(`git clone ${SEQUENCE_PAY_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
 
     const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
 
@@ -71,7 +71,7 @@ export async function createNftCheckout(program: Command, options: any) {
 
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    cliConsole.done("Primary Drop Sales ERC721 boilerplate created successfully!");
+    cliConsole.done("Sequence Pay boilerplate created successfully!");
 
     cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. Here is the guide for the repository ${SEQUENCE_DOCS_URL}solutions/wallets/sequence-kit/checkout`);
 

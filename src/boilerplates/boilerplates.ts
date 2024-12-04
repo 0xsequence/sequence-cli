@@ -10,7 +10,7 @@ import { createEmbeddedWalletVerifySession } from "./create_embedded_wallet_veri
 import { createUniversalWalletReact } from "./create_universal_wallet_react";
 import { createPrimaryDropSalesErc721 } from "./create_primary_drop_sales_erc721";
 import { createPrimarySalesErc1155 } from "./create_primary_sales_erc1155";
-import { createNftCheckout } from "./create_nft_checkout";
+import { createSequencePay } from "./create_sequence_pay";
 import { createTelegramKitEmbeddedWalletReact } from "./create_kit_telegram_embedded_wallet_react";
 
 export function makeCommandBoilerplates(program: Command) {
@@ -333,8 +333,8 @@ export function makeCommandBoilerplates(program: Command) {
         });
 
     comm
-        .command("create-nft-checkout-starter")
-        .description("Clone a starter boilerplate for NFT Checkout, integrated with Sequence Kit and Embedded Wallet, using React")
+        .command("create-sequence-pay-starter")
+        .description("Clone a starter boilerplate for Sequence Pay, integrated with Sequence Kit and Embedded Wallet, using React")
         .option(
         "--waas-config-key <waas_key>",
         "WaaS config key for this project"
@@ -360,7 +360,7 @@ export function makeCommandBoilerplates(program: Command) {
         "Show additional information in the output"
         )
         .action((options) => {
-            createNftCheckout(program, options);
+            createSequencePay(program, options);
         });
 
     return comm;

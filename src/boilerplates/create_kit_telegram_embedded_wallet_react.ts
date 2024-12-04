@@ -117,7 +117,7 @@ export async function createTelegramKitEmbeddedWalletReact(program: Command, opt
 
     cliConsole.done("Telegram Kit Embedded Wallet React boilerplate created successfully! 🚀");
 
-    cliConsole.done(`Great! Now you can test the project with your WaaS. Here is the guide for the repository ${SEQUENCE_DOCS_URL}guides/telegram-integration/`);
+    cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. Here is the guide for the repository ${SEQUENCE_DOCS_URL}guides/telegram-integration/`);
 
     cliConsole.loading("Starting development server");
 

@@ -11,6 +11,7 @@ import { createUniversalWalletReact } from "./create_universal_wallet_react";
 import { createPrimaryDropSalesErc721 } from "./create_primary_drop_sales_erc721";
 import { createPrimarySalesErc1155 } from "./create_primary_sales_erc1155";
 import { createNftCheckout } from "./create_nft_checkout";
+import { createTelegramKitEmbeddedWalletReact } from "./create_kit_telegram_embedded_wallet_react";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -290,6 +291,45 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createPrimaryDropSalesErc721(program, options);
+        });
+
+    comm
+        .command("create-telegram-kit-embedded-wallet-react-starter")
+        .description("Clone a starter boilerplate for telegram, integrated with Sequence Kit and Embedded Wallet, using React")
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
+        )
+        .option(
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--bot-token <bot_token>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--bot-secret <bot_secret>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createTelegramKitEmbeddedWalletReact(program, options);
         });
 
     comm

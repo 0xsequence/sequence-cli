@@ -4,8 +4,8 @@ export enum WalletTypes {
 }
 
 export type EnvWriteOptions = {
-    verbose: boolean;
-    pathToWrite: string;
+    verbose?: boolean;
+    pathToWrite?: string;
 };
 
 export type PromptForKeysWithLogsOptions = {
@@ -13,7 +13,7 @@ export type PromptForKeysWithLogsOptions = {
 };
 
 export type EnvKeys = {
-    [key: string]: string | undefined;
+    [key: string]: string | number | undefined;
 };
 
 export type KeyPromptParams = {

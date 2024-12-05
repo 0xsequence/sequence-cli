@@ -164,6 +164,24 @@ function writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options) {
         }
     });
 }
+function writeToWranglerEnvFile(envKeys, options) {
+    Object.entries(envKeys).forEach(([key, value]) => {
+        if (value && value !== "") {
+            const formattedValue = typeof value === "string" ? `"${value}"` : value;
+            shell.exec(`echo ${key} = ${formattedValue} >> ${options.pathToWrite ? options.pathToWrite : "wrangler.toml"}`, { silent: !options.verbose });
+        }
+    });
+}
+function appendToWranglerConfig(section, wranglerConfigPath, verbose) {
+    const command = `echo ${section} >> ${wranglerConfigPath}`;
+    shell.exec(command, { silent: !verbose });
+}
+function addVarsToWranglerConfig(wranglerConfigPath, verbose) {
+    appendToWranglerConfig('[vars]', wranglerConfigPath, verbose);
+}
+function addDevToWranglerConfig(wranglerConfigPath, verbose) {
+    appendToWranglerConfig('[dev]', wranglerConfigPath, verbose);
+}
 function checkIfDirectoryExists(path) {
     return shell.test('-d', path);
 }
@@ -8576,7 +8594,7 @@ var WalletTypes;
     WalletTypes["UniversalWallet"] = "universal";
 })(WalletTypes || (WalletTypes = {}));
 
-const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence/marketplace-boilerplate/";
+const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence-demos/marketplace-boilerplate/";
 async function createMarketplaceBoilerplate(program, options) {
     let walletType = options.walletType;
     let waasConfigKey = options.waasConfigKey;
@@ -8899,7 +8917,7 @@ async function createServerSideTx(program, options) {
     shell.exec(`pnpm start`, { silent: false });
 }
 
-const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-react-boilerplate/";
+const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/kit-embedded-wallet-react-boilerplate/";
 async function createEmbeddedWalletReact(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
@@ -8969,7 +8987,7 @@ async function createGoogleEmbeddedWalletReact(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
-const EMAIL_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/email-embedded-wallet-react-boilerplate";
+const EMAIL_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/email-embedded-wallet-react-boilerplate";
 async function createEmailEmbeddedWalletReact(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
@@ -8998,7 +9016,7 @@ async function createEmailEmbeddedWalletReact(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
-const STYTCH_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/stytch-embedded-wallet-react-boilerplate/";
+const STYTCH_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/stytch-embedded-wallet-react-boilerplate/";
 async function createStytchEmbeddedWalletReact(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
@@ -9030,7 +9048,7 @@ async function createStytchEmbeddedWalletReact(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
-const EMBEDDED_WALLET_NEXTJS_REPO_URL = "https://github.com/0xsequence/kit-embedded-wallet-nextjs-boilerplate/";
+const EMBEDDED_WALLET_NEXTJS_REPO_URL = "https://github.com/0xsequence-demos/kit-embedded-wallet-nextjs-boilerplate/";
 async function createEmbeddedWalletNextjs(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
@@ -9151,7 +9169,7 @@ async function createEmbeddedWalletVerifySession(program, options) {
     shell.exec(`pnpm start`, { silent: false });
 }
 
-const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence/universal-wallet-react-boilerplate/";
+const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/universal-wallet-react-boilerplate/";
 async function createUniversalWalletReact(program, options) {
     let projectAccessKey = options.projectAccessKey;
     const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
@@ -9177,9 +9195,9 @@ async function createUniversalWalletReact(program, options) {
     shell.exec(`pnpm dev`, { silent: false });
 }
 
-const PRIMARY_DROP_SALES_ERC721_REPO_URL = "https://github.com/0xsequence/primary-drop-sale-721-boilerplate";
-const REPOSITORY_FILENAME = "primary-drop-sales-erc721-boilerplate";
-const SEQUENCE_DOCS_URL$1 = "https://docs.sequence.xyz/";
+const PRIMARY_DROP_SALES_ERC721_REPO_URL = "https://github.com/0xsequence-demos/primary-drop-sale-721-boilerplate";
+const REPOSITORY_FILENAME$2 = "primary-drop-sales-erc721-boilerplate";
+const SEQUENCE_DOCS_URL$3 = "https://docs.sequence.xyz/";
 async function createPrimaryDropSalesErc721(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
@@ -9202,14 +9220,14 @@ async function createPrimaryDropSalesErc721(program, options) {
             process.exit();
         }
     }
-    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
-    shell.exec(`git clone ${PRIMARY_DROP_SALES_ERC721_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
-    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME$2}'`);
+    shell.exec(`git clone ${PRIMARY_DROP_SALES_ERC721_REPO_URL} ${REPOSITORY_FILENAME$2}`, { silent: !options.verbose });
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME$2);
     if (!directoryExists) {
         cliConsole.error("Repository cloning failed. Please try again.");
         return;
     }
-    shell.cd(REPOSITORY_FILENAME);
+    shell.cd(REPOSITORY_FILENAME$2);
     shell.exec(`touch .env`, { silent: !options.verbose });
     cliConsole.loading("Configuring your project");
     const envExampleContent = shell.cat('.env.example').toString();
@@ -9228,14 +9246,14 @@ async function createPrimaryDropSalesErc721(program, options) {
     cliConsole.loading("Installing dependencies");
     shell.exec(`pnpm install`, { silent: !options.verbose });
     cliConsole.done("Primary Drop Sales ERC721 boilerplate created successfully!");
-    cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL$1}guides/primary-drop-sales-erc721`);
+    cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL$3}guides/primary-drop-sales-erc721`);
     cliConsole.loading("Starting development server");
-    cliConsole.info(`To know how to use this repository please go to the following link ${SEQUENCE_DOCS_URL$1}guides/primary-drop-sales-erc721`);
+    cliConsole.info(`To know how to use this repository please go to the following link ${SEQUENCE_DOCS_URL$3}guides/primary-drop-sales-erc721`);
     shell.exec(`pnpm dev`, { silent: false });
 }
 
-const PRIMARY_SALES_ERC1155_REPO_URL = "https://github.com/0xsequence/primary-sale-1155-boilerplate";
-const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
+const PRIMARY_SALES_ERC1155_REPO_URL = "https://github.com/0xsequence-demos/primary-sale-1155-boilerplate";
+const SEQUENCE_DOCS_URL$2 = "https://docs.sequence.xyz/";
 async function createPrimarySalesErc1155(program, options) {
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
@@ -9278,9 +9296,124 @@ async function createPrimarySalesErc1155(program, options) {
     console.log("Installing dependencies...");
     shell.exec(`pnpm install`, { silent: !options.verbose });
     console.log("Primary Sales ERC1155 boilerplate created successfully! 🚀");
-    console.log(`Great! Now you can test the project with your WaaS. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-sales`);
+    console.log(`Great! Now you can test the project with your WaaS. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL$2}guides/primary-sales`);
     console.log("Starting development server...");
     shell.exec(`pnpm dev`, { silent: false });
+}
+
+const SEQUENCE_PAY_REPO_URL = "https://github.com/0xsequence-demos/sequence-pay-boilerplate";
+const REPOSITORY_FILENAME$1 = "sequence-pay-boilerplate";
+const SEQUENCE_DOCS_URL$1 = "https://docs.sequence.xyz/";
+async function createSequencePay(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let googleClientId = options.googleClientId;
+    let appleClientId = options.appleClientId;
+    let walletConnectId = options.walletConnectId;
+    cliConsole.sectionTitle("Initializing creation process for Sequence Pay boilerplate 🚀");
+    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    if (userWantsToConfigureTheirKeys) {
+        waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
+        googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
+        appleClientId = await promptForAppleClientIdWithLogs(appleClientId);
+        walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId);
+        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
+    }
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME$1}'`);
+    shell.exec(`git clone ${SEQUENCE_PAY_REPO_URL} ${REPOSITORY_FILENAME$1}`, { silent: !options.verbose });
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME$1);
+    if (!directoryExists) {
+        cliConsole.error("Repository cloning failed. Please try again.");
+        return;
+    }
+    shell.cd(REPOSITORY_FILENAME$1);
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    cliConsole.loading("Configuring your project");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "VITE_GOOGLE_CLIENT_ID": googleClientId || undefined,
+        "VITE_APPLE_CLIENT_ID": appleClientId || undefined,
+        "VITE_WALLET_CONNECT_ID": walletConnectId || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    cliConsole.loading("Installing dependencies");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    cliConsole.done("Sequence Pay boilerplate created successfully!");
+    cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. Here is the guide for the repository ${SEQUENCE_DOCS_URL$1}solutions/wallets/sequence-kit/checkout`);
+    cliConsole.loading("Starting development server");
+    cliConsole.info(`To know how to use this repository please go to the following link ${SEQUENCE_DOCS_URL$1}solutions/wallets/sequence-kit/checkout`);
+    shell.exec(`pnpm dev`, { silent: false });
+}
+
+const TELEGRAM_KIT_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/telegram-kit-embedded-wallet-react-boilerplate";
+const REPOSITORY_FILENAME = "telegram-kit-embedded-wallet-react-boilerplate";
+const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
+async function createTelegramKitEmbeddedWalletReact(program, options) {
+    let waasConfigKey = options.waasConfigKey;
+    let projectAccessKey = options.projectAccessKey;
+    let googleClientId = options.googleClientId;
+    let appleClientId = options.appleClientId;
+    let botToken = options.botToken;
+    let botSecret = options.botSecret;
+    let wranglerEnvName = "telegrambot";
+    let compatibilityDate = "2024-03-25";
+    let pagesBuildOutputDir = "./dist";
+    let port = 4444;
+    cliConsole.sectionTitle("Initializing creation process for Kit Telegram Embedded Wallet React boilerplate 🚀");
+    waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey, { allowEmptyInput: false });
+    projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey, { allowEmptyInput: false });
+    googleClientId = await promptForGoogleClientIdWithLogs(googleClientId, { allowEmptyInput: false });
+    appleClientId = await promptForAppleClientIdWithLogs(appleClientId, { allowEmptyInput: false });
+    botToken = await executePromptWithRetry(promptForKeyWithLogs, { key: botToken, inputMessage: 'Bot token:' }, ['Bot token to access the HTTP API.'], { allowEmptyInput: false });
+    botSecret = await executePromptWithRetry(promptForKeyWithLogs, { key: botSecret, inputMessage: 'Bot secret:' }, ['Enter a random value of your choice. This value should be unique and generated by you.'], { allowEmptyInput: false });
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
+    shell.exec(`git clone ${TELEGRAM_KIT_EMBEDDED_WALLET_REACT_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+    if (!directoryExists) {
+        cliConsole.error("Repository cloning failed. Please try again.");
+        return;
+    }
+    shell.cd(REPOSITORY_FILENAME);
+    shell.exec(`touch .env`, { silent: !options.verbose });
+    cliConsole.loading("Configuring your project");
+    const envExampleContent = shell.cat('.env.example').toString();
+    const envExampleLines = envExampleContent.split('\n');
+    const envKeys = {
+        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
+        "VITE_GOOGLE_CLIENT_ID": googleClientId || undefined,
+        "VITE_APPLE_CLIENT_ID": appleClientId || undefined,
+    };
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+    const wranglerConfigPath = "wrangler.toml";
+    const globalConfigWrangler = {
+        "name": wranglerEnvName,
+        "compatibility_date": compatibilityDate,
+        "pages_build_output_dir": pagesBuildOutputDir,
+    };
+    const envKeysWrangler = {
+        "BOT_TOKEN": botToken || undefined,
+        "BOT_SECRET": botSecret || undefined,
+    };
+    const portWrangler = {
+        "port": port,
+    };
+    writeToWranglerEnvFile(globalConfigWrangler, { verbose: !options.verbose, pathToWrite: wranglerConfigPath });
+    addVarsToWranglerConfig(wranglerConfigPath, !options.verbose);
+    writeToWranglerEnvFile(envKeysWrangler, { verbose: !options.verbose, pathToWrite: wranglerConfigPath });
+    addDevToWranglerConfig(wranglerConfigPath, !options.verbose);
+    writeToWranglerEnvFile(portWrangler, { verbose: !options.verbose, pathToWrite: wranglerConfigPath });
+    cliConsole.loading("Installing dependencies");
+    shell.exec(`pnpm install`, { silent: !options.verbose });
+    cliConsole.done("Telegram Kit Embedded Wallet React boilerplate created successfully! 🚀");
+    cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. Here is the guide for the repository ${SEQUENCE_DOCS_URL}guides/telegram-integration/`);
+    cliConsole.loading("Starting development server");
+    shell.exec(`pnpm dev:vite`, { silent: false });
 }
 
 function makeCommandBoilerplates(program) {
@@ -9403,13 +9536,39 @@ function makeCommandBoilerplates(program) {
         .action((options) => {
         createPrimaryDropSalesErc721(program, options);
     });
+    comm
+        .command("create-telegram-kit-embedded-wallet-react-starter")
+        .description("Clone a starter boilerplate for telegram, integrated with Sequence Kit and Embedded Wallet, using React")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--apple-client-id <apple_client_id>", "Apple client ID to be used during authentication")
+        .option("--wallet-connect-id <wallet_connect_id>", "Wallet Connect ID to be used during authentication")
+        .option("--bot-token <bot_token>", "Wallet Connect ID to be used during authentication")
+        .option("--bot-secret <bot_secret>", "Wallet Connect ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createTelegramKitEmbeddedWalletReact(program, options);
+    });
+    comm
+        .command("create-sequence-pay-starter")
+        .description("Clone a starter boilerplate for Sequence Pay, integrated with Sequence Kit and Embedded Wallet, using React")
+        .option("--waas-config-key <waas_key>", "WaaS config key for this project")
+        .option("--project-access-key <access_key>", "Project access key for Sequence requests")
+        .option("--google-client-id <google_client_id>", "Google client ID to be used during authentication")
+        .option("--apple-client-id <apple_client_id>", "Apple client ID to be used during authentication")
+        .option("--wallet-connect-id <wallet_connect_id>", "Wallet Connect ID to be used during authentication")
+        .option("--verbose", "Show additional information in the output")
+        .action((options) => {
+        createSequencePay(program, options);
+    });
     return comm;
 }
 
 console.log(figlet.textSync("Sequence"));
 console.log("");
 const program = new Command();
-program.version("0.4.2", "-v, --version", "Display the current version").action(
+program.version("0.5.0", "-v, --version", "Display the current version").action(
   () => {
     program.help();
   }

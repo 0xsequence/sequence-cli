@@ -12,6 +12,7 @@ import { createPrimaryDropSalesErc721 } from "./create_primary_drop_sales_erc721
 import { createPrimarySalesErc1155 } from "./create_primary_sales_erc1155";
 import { createSequencePay } from "./create_sequence_pay";
 import { createTelegramKitEmbeddedWalletReact } from "./create_kit_telegram_embedded_wallet_react";
+import { createAllowlistStarter } from "./allowlist-starter";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -361,6 +362,49 @@ export function makeCommandBoilerplates(program: Command) {
         )
         .action((options) => {
             createSequencePay(program, options);
+        });
+
+    comm
+        .command("create-allowlist-starter")
+        .description("Clone a starter boilerplate for allowlist, integrated with Sequence Kit and Embedded Wallet or Universal Wallet, using React")
+        .option(
+        "-wt, --wallet-type <wallet_type>",
+        "Wallet type that you want to use. Possible values: 'waas' || 'universal'"
+        )
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
+        )
+        .option(
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--audience-id <audience_id>",
+        "Audience ID"
+        )
+        .option(
+        "--chain-id <chain_id>",
+        "Chain ID to be used"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createAllowlistStarter(program, options);
         });
 
     return comm;

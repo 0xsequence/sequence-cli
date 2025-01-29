@@ -62,23 +62,30 @@ export async function testGasSponsorERC1155(program: Command, options: any) {
     });
   }
 
+  console.log(`Make sure this wallet has mint permissions: ${session.account.address}`);
+
   // Create contract instance
   const contract = new ethers.Contract(contractAddress, ERC1155_ABI, signer);
 
   try {
     // Execute gas-sponsored transfer
-    const _operator = session.account.address;
-    const _approved = 'true';
+    const _address = session.account.address;
+    const _tokenId = 0;
+    const _amount = 1;
+    const _data = '0x00';
 
     console.log('Executing gas-sponsored transfer...');
-    const txn = await contract.setApprovalForAll.populateTransaction(
-      _operator,
-      _approved
+    const txn = await contract.mint.populateTransaction(
+      _address,
+      _tokenId,
+      _amount,
+      _data
     );
     const txnResponse = await signer.sendTransaction(txn);
     const txnReceipt = await txnResponse.wait();
     console.log(txnReceipt?.hash);
   } catch (error: any) {
+    console.log(error);
     program.error(`Transaction failed: ${error}`);
   }
 }

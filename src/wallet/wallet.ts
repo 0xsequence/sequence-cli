@@ -80,8 +80,6 @@ export function makeCommandWallet(program: Command) {
     )
     .option('-n, --network <network>', 'Network name')
     .option('-c, --contract <address>', 'ERC1155 contract address')
-    .option('-t, --token-id <id>', 'Token ID to transfer')
-    .option('-r, --recipient <address>', 'Recipient address')
     .action(options => {
       testGasSponsorERC1155(program, options);
     });

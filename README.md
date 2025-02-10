@@ -21,6 +21,7 @@ A collection of CLI commands to interface with Sequence services:
     - `create-primary-sales-erc1155-starter`: Clone a starter boilerplate for Primary Sales, integrated with Sequence Kit and Embedded Wallet, using React.
     - `create-telegram-kit-embedded-wallet-react-starter`: Clone a starter boilerplate for telegram, integrated with Sequence Kit and Embedded Wallet, using React.
     - `create-sequence-pay-starter`: Clone a starter boilerplate for Sequence Pay, integrated with Sequence Kit and Embedded Wallet, using React
+    - `create-crypto-onramp-starter`: Clone a starter boilerplate for Crypto Onramp integrated with Embedded Wallet, using React
 
 ## Usage
 You can run via npx:

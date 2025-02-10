@@ -13,6 +13,7 @@ import { createPrimarySalesErc1155 } from "./create_primary_sales_erc1155";
 import { createSequencePay } from "./create_sequence_pay";
 import { createTelegramKitEmbeddedWalletReact } from "./create_kit_telegram_embedded_wallet_react";
 import { createAllowlistStarter } from "./allowlist-starter";
+import { createCryptoOnramp } from "./create_crypto_onramp";
 
 export function makeCommandBoilerplates(program: Command) {
     const comm = new Command("boilerplates");
@@ -406,6 +407,38 @@ export function makeCommandBoilerplates(program: Command) {
         .action((options) => {
             createAllowlistStarter(program, options);
         });
+
+    comm
+        .command("create-crypto-onramp-starter")
+        .description("Clone a starter boilerplate for Crypto Onramp integrated with Embedded Wallet, using React")
+        .option(
+        "--waas-config-key <waas_key>",
+        "WaaS config key for this project"
+        )
+        .option(
+        "--project-access-key <access_key>",
+        "Project access key for Sequence requests"
+        )
+        .option(
+        "--google-client-id <google_client_id>",
+        "Google client ID to be used during authentication"
+        )
+        .option(
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
+        )
+        .option(
+        "--wallet-connect-id <wallet_connect_id>",
+        "Wallet Connect ID to be used during authentication"
+        )
+        .option(
+        "--verbose",
+        "Show additional information in the output"
+        )
+        .action((options) => {
+            createCryptoOnramp(program, options);
+        });
+
 
     return comm;
 }

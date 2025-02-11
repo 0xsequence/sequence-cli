@@ -321,4 +321,34 @@ export const ERC1155_ABI = [
     stateMutability: "pure",
     type: "function",
   },
+  {
+    type: "function",
+    name: "mint",
+    inputs: [
+        {
+            name: "to",
+            type: "address",
+            internalType: "address"
+        },
+        {
+            name: "tokenId",
+            type: "uint256",
+            internalType: "uint256"
+        },
+        {
+            name: "amount",
+            type: "uint256",
+            internalType: "uint256"
+        },
+        {
+            name: "data",
+            type: "bytes",
+            internalType: "bytes"
+        }
+    ],
+    outputs: [
+
+    ],
+    stateMutability: "nonpayable"
+}
 ] as const;

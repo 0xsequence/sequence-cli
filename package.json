@@ -15,7 +15,7 @@
     "dev": "tsx src/bin.ts",
     "build": "tsc && vite build && chmod +x dist/bin.js",
     "upload": "pnpm build && npm publish",
-    "format": "prettier --write \"packages/**/src/**/*.ts\" \"packages/**/tests/**/*.ts\""
+    "format": "prettier --write \"**/src/**/*.ts\" \"**/tests/**/*.ts\""
   },
   "keywords": [
     "sequence",
@@ -25,7 +25,7 @@
   "author": "Horizon Blockchain Games",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@0xsequence/utils": "^2.0.26",
+    "@0xsequence/utils": "^2.2.8",
     "@commander-js/extra-typings": "^12.1.0",
     "@types/figlet": "^1.7.0",
     "@types/node": "^20.17.6",
@@ -37,10 +37,10 @@
     "vite": "^5.4.11"
   },
   "dependencies": {
-    "0xsequence": "2.0.26",
-    "@0xsequence/auth": "2.0.26",
-    "@0xsequence/network": "2.0.26",
-    "@0xsequence/utils": "^2.0.26",
+    "0xsequence": "2.2.8",
+    "@0xsequence/auth": "2.2.8",
+    "@0xsequence/network": "2.2.8",
+    "@0xsequence/utils": "^2.2.8",
     "@inquirer/prompts": "^5.5.0",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",

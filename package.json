@@ -1,6 +1,6 @@
 {
   "name": "sequence-cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "type": "module",
@@ -49,5 +49,5 @@
     "shelljs": "^0.8.5",
     "viem": "~2.21.48"
   },
-  "packageManager": "pnpm@8.15.4+sha1.c85a4305534f76d461407b59277b954bac97b5c4"
+  "packageManager": "pnpm@10.7.1"
 }

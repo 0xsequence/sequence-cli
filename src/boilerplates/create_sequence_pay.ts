@@ -27,7 +27,7 @@ export async function createSequencePay(program: Command, options: any) {
 
     cliConsole.sectionTitle("Initializing creation process for Sequence Pay boilerplate 🚀");
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
     
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

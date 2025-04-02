@@ -17,7 +17,7 @@ export async function createPrimarySalesErc1155(program: Command, options: any) 
     let walletConnectId = options.walletConnectId;
     let builderProjectId;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
 
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

@@ -32,7 +32,7 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
         });
     }
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
 
     if (userWantsToConfigureTheirKeys) {
         {

@@ -12,7 +12,7 @@ export async function createStytchEmbeddedWalletReact(program: Command, options:
     let projectAccessKey = options.projectAccessKey;
     let stytchPublicToken = options.stytchPublicToken;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
     
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

@@ -16,7 +16,7 @@ export async function createEmbeddedWalletNextjs(program: Command, options: any)
     let appleClientId = options.appleClientId;
     let walletConnectId = options.walletConnectId;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
 
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

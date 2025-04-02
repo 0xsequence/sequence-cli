@@ -15,7 +15,7 @@ export async function createEmbeddedWalletVerifySession(program: Command, option
     let googleClientId = options.googleClientId;
     let builderProjectId;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
 
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

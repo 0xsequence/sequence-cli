@@ -10,7 +10,7 @@ const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/uni
 export async function createUniversalWalletReact(program: Command, options: any) {
     let projectAccessKey = options.projectAccessKey;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
     
     if (userWantsToConfigureTheirKeys) {
         projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);

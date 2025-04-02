@@ -11,7 +11,7 @@ export async function createServerSideTx(program: Command, options: any) {
     let privateKey = options.key;
     let projectAccessKey = options.projectAccessKey;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
 
     if (userWantsToConfigureTheirKeys) {
         privateKey = await promptForKeyWithLogs(

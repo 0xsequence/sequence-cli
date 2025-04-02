@@ -11,7 +11,7 @@ export async function createEmailEmbeddedWalletReact(program: Command, options: 
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
     
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

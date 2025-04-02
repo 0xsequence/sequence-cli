@@ -12,7 +12,7 @@ export async function createGoogleEmbeddedWalletReact(program: Command, options:
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
     
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

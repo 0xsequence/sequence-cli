@@ -13,7 +13,7 @@ export async function createWalletLinkingEmbeddedWallet(program: Command, option
     let googleClientId = options.googleClientId;
     let walletConnectId = options.walletConnectId;
 
-    const userWantsToConfigureTheirKeys = await promptUserKeyCustomizationDecision();
+    const userWantsToConfigureTheirKeys = false
     
     if (userWantsToConfigureTheirKeys) {
         waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);

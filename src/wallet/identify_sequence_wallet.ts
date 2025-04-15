@@ -6,7 +6,7 @@ import { findSupportedNetwork } from '@0xsequence/network';
 
 
 const TXN_EXECUTED_LOG_TOPIC = "0x5c4eeb02dabf8976016ab414d617f9a162936dcace3cdef8c69ef6e262ad5ae7";
-
+const GUEST_MODULE_ADDRESS = "0xfea230Ee243f88BC698dD8f1aE93F8301B6cdfaE";
 
 export async function identifySequenceWallet(program: Command, options: any) {
     let transactionHash = options.txn;
@@ -47,9 +47,9 @@ export async function identifySequenceWallet(program: Command, options: any) {
         program.error("Transaction not found");
     }
 
-    // Filter logs to find TxExecuted event log
+    // Filter logs to find TxExecuted event log, ignoring logs with the GUEST_MODULE_ADDRESS
     const txExecutedLog = txReceipt.logs.find(
-        (log) => log.topics[0] === TXN_EXECUTED_LOG_TOPIC
+        (log) => log.topics[0] === TXN_EXECUTED_LOG_TOPIC && log.address !== GUEST_MODULE_ADDRESS
     );
 
     if (!txExecutedLog) {

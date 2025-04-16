@@ -1,6 +1,6 @@
 
 import { Command } from "commander";
-import { promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys, WalletTypes } from "../utils/types";
 
 import shell from "shelljs";
@@ -32,7 +32,8 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
             
             if (walletType === WalletTypes.EmbeddedWallet) {
                 waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
-                googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);         
+                googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
+                appleClientId = await promptForAppleClientIdWithLogs(appleClientId);     
             }
         }
     }

@@ -369,10 +369,6 @@ export function makeCommandBoilerplates(program: Command) {
         .command("create-allowlist-starter")
         .description("Clone a starter boilerplate for allowlist, integrated with Sequence Kit and Embedded Wallet or Universal Wallet, using React")
         .option(
-        "-wt, --wallet-type <wallet_type>",
-        "Wallet type that you want to use. Possible values: 'waas' || 'universal'"
-        )
-        .option(
         "--waas-config-key <waas_key>",
         "WaaS config key for this project"
         )

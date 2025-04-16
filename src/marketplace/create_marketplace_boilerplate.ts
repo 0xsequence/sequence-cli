@@ -1,5 +1,4 @@
 
-import { select } from "@inquirer/prompts";
 import { Command } from "commander";
 import { promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys, WalletTypes } from "../utils/types";
@@ -9,28 +8,12 @@ import shell from "shelljs";
 const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence-demos/marketplace-boilerplate/";
 
 export async function createMarketplaceBoilerplate(program: Command, options: any) {
-    let walletType = options.walletType;
+    const walletType = WalletTypes.EmbeddedWallet;
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let googleClientId = options.googleClientId;
     let projectId = options.projectId;
-
-    if (!walletType) {
-        walletType = await select({
-            message:
-                "Please provide the Wallet Type for your project.\nFor more information on wallet types: https://docs.sequence.xyz/solutions/wallets/overview",
-            choices: [
-                {
-                    name: "Embedded Wallet",
-                    value: WalletTypes.EmbeddedWallet,
-                },
-                {
-                    name: "Universal Wallet",
-                    value: WalletTypes.UniversalWallet,
-                },
-            ],
-        });
-    }
+    let appleClientId = options.appleClientId;
 
     const userWantsToConfigureTheirKeys = false
 
@@ -66,27 +49,17 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
     const envExampleContent = shell.cat(".env.example").toString();
     const envExampleLines = envExampleContent.split("\n");
 
-    if (walletType === WalletTypes.EmbeddedWallet) {
-        const envKeys: EnvKeys = {
-            "NEXT_PUBLIC_WALLET_TYPE": walletType || undefined,
-            "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY": projectAccessKey || undefined,
-            "NEXT_PUBLIC_SEQUENCE_PROJECT_ID": projectId || undefined,
-            "NEXT_PUBLIC_WAAS_CONFIG_KEY": waasConfigKey || undefined,
-            "NEXT_PUBLIC_GOOGLE_CLIENT_ID": googleClientId || undefined,
-        };
+    const envKeys: EnvKeys = {
+        "NEXT_PUBLIC_WALLET_TYPE": walletType || undefined,
+        "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY": projectAccessKey || undefined,
+        "NEXT_PUBLIC_SEQUENCE_PROJECT_ID": projectId || undefined,
+        "NEXT_PUBLIC_WAAS_CONFIG_KEY": waasConfigKey || undefined,
+        "NEXT_PUBLIC_GOOGLE_CLIENT_ID": googleClientId || undefined,
+        "NEXT_PUBLIC_APPLE_CLIENT_ID": appleClientId || undefined,
+    };
 
-        writeToEnvFile(envKeys, options);
-        writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
-    } else if (walletType === WalletTypes.UniversalWallet) {
-        const envKeys: EnvKeys = {
-            "NEXT_PUBLIC_WALLET_TYPE": walletType || undefined,
-            "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY": projectAccessKey || undefined,
-            "NEXT_PUBLIC_SEQUENCE_PROJECT_ID": projectId || undefined,
-        };
-
-        writeToEnvFile(envKeys, options);
-        writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
-    }
+    writeToEnvFile(envKeys, options);
+    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
     
     console.log("Installing dependencies...");
     

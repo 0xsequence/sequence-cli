@@ -74,10 +74,6 @@ export function makeCommandMarketplace(program: Command) {
         .command("create-marketplace-boilerplate")
         .description("Clone a starter boilerplate for Marketplace integrated with Next.js")
         .option(
-        "-wt, --wallet-type <wallet_type>",
-        "Wallet type that you want to use. Possible values: 'waas' || 'universal'"
-        )
-        .option(
         "-pkey --project-access-key <access_key>",
         "Project access key for Sequence requests"
         )
@@ -92,6 +88,10 @@ export function makeCommandMarketplace(program: Command) {
         .option(
         "--google-client-id <google_client_id>",
         "Google client ID to be used during authentication"
+        )
+        .option(
+        "--apple-client-id <apple_client_id>",
+        "Apple client ID to be used during authentication"
         )
         .option(
         "--verbose",

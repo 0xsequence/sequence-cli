@@ -13,7 +13,7 @@ console.log("");
 const program = new Command();
 
 program
-  .version("0.5.3", "-v, --version", "Display the current version")
+  .version("0.5.4", "-v, --version", "Display the current version")
   .action(() => {
     program.help();
   }

@@ -46,6 +46,10 @@ export function makeCommandBoilerplates(program: Command) {
         "Wallet Connect ID to be used during authentication"
         )
         .option(
+        "--chains <chains>",
+        "Chain names to be used, separated by commas. Example: 'arbitrum-sepolia,mainnet'"
+        )
+        .option(
         "--verbose",
         "Show additional information in the output"
         )

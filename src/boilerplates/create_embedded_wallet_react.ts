@@ -1,6 +1,6 @@
 
 import { Command } from "commander";
-import { promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { promptForAppleClientIdWithLogs, promptForChainsWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
@@ -15,6 +15,7 @@ export async function createEmbeddedWalletReact(program: Command, options: any) 
     let googleClientId = options.googleClientId;
     let appleClientId = options.appleClientId;
     let walletConnectId = options.walletConnectId;
+    let chains = options.chains;
 
     const userWantsToConfigureTheirKeys = false
     
@@ -23,7 +24,7 @@ export async function createEmbeddedWalletReact(program: Command, options: any) 
         projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
         googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
         appleClientId = await promptForAppleClientIdWithLogs(appleClientId);
-        walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId);
+        chains = await promptForChainsWithLogs(chains);
     }
 
     console.log("Cloning the repo to `embedded-wallet-react-boilerplate`...");
@@ -46,7 +47,13 @@ export async function createEmbeddedWalletReact(program: Command, options: any) 
         "VITE_GOOGLE_CLIENT_ID": googleClientId || undefined,
         "VITE_APPLE_CLIENT_ID": appleClientId || undefined,
         "VITE_WALLET_CONNECT_ID": walletConnectId || undefined,
+        "VITE_CHAINS": chains || "arbitrum-sepolia",
     };
+
+    if (envKeys.VITE_CHAINS) {
+        const chainsArray = typeof envKeys.VITE_CHAINS === 'string' ? envKeys.VITE_CHAINS.split(',') : [];
+        envKeys.VITE_DEFAULT_CHAIN = chainsArray[0].trim();
+    }
 
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);

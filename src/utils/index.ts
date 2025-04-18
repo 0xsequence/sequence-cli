@@ -228,6 +228,28 @@ export async function promptForStytchWithLogs(
     );
 }
 
+export async function promptForChainsWithLogs(
+    chains: string | undefined,
+    options: PromptForKeysWithLogsOptions = { allowEmptyInput: true },
+): Promise<string | undefined> {
+    const logsArray = [
+        "Please provide chain names for your project.",
+        "A supported network list is available at:",
+        "https://github.com/0xsequence/sequence.js/tree/master/packages/network/networkNames.md"
+    ];
+
+    if (options.allowEmptyInput) {
+        logsArray.push("To skip and use the default test chain ID, press enter.")
+    }
+
+    return await executePromptWithRetry(
+        promptForKeyWithLogs,
+        { key: chains, inputMessage: "Chain names:" },
+        logsArray,
+        options
+    );
+}
+
 export function writeToEnvFile(envKeys: EnvKeys, options: EnvWriteOptions) {
     Object.entries(envKeys).forEach(([key, value]) => {
         if (value && value !== "") {

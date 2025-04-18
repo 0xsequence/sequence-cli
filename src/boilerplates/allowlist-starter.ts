@@ -14,13 +14,12 @@ import {
 } from '../utils';
 import { EnvKeys, WalletTypes } from "../utils/types";
 import shell from "shelljs";
-import { select } from "@inquirer/prompts";
 
 const ALLOWLIST_STARTER_REPO_URL = "https://github.com/0xsequence-demos/allowlist-starter-boilerplate";
 const REPOSITORY_FILENAME = "allowlist-starter-boilerplate";
 
 export async function createAllowlistStarter(program: Command, options: any) {
-    let walletType = options.walletType;
+    const walletType = WalletTypes.EmbeddedWallet;
     let waasConfigKey = options.waasConfigKey;
     let projectAccessKey = options.projectAccessKey;
     let audienceId = options.audienceId;
@@ -31,23 +30,6 @@ export async function createAllowlistStarter(program: Command, options: any) {
     let builderProjectId;
 
     cliConsole.sectionTitle("Initializing creation process for Allowlist Starter boilerplate 🚀");
-
-    if (!walletType) {
-        walletType = await select({
-            message:
-                "Please provide the Wallet Type for your project.\nFor more information on wallet types: https://docs.sequence.xyz/solutions/wallets/overview",
-            choices: [
-                {
-                    name: "Embedded Wallet",
-                    value: WalletTypes.EmbeddedWallet,
-                },
-                {
-                    name: "Universal Wallet",
-                    value: WalletTypes.UniversalWallet,
-                },
-            ],
-        });
-    }
 
     projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
 
@@ -103,15 +85,7 @@ export async function createAllowlistStarter(program: Command, options: any) {
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
 
-    const envKeysUniversal: EnvKeys = {
-        "VITE_WALLET_TYPE": walletType || undefined,
-        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
-        "VITE_PROJECT_ID": builderProjectId?.toString() || undefined,
-        "VITE_AUDIENCE_ID": audienceId || undefined,
-        "VITE_CHAIN_ID": chainId || undefined,
-    };
-
-    const envKeysWaaS: EnvKeys = {
+    const envKeys: EnvKeys = {
         "VITE_WALLET_TYPE": walletType || undefined,
         "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
         "VITE_PROJECT_ID": builderProjectId?.toString() || undefined,
@@ -122,8 +96,6 @@ export async function createAllowlistStarter(program: Command, options: any) {
         "VITE_APPLE_CLIENT_ID": appleClientId || undefined,
         "VITE_WALLET_CONNECT_ID": walletConnectId || undefined,
     };
-
-    const envKeys = walletType === WalletTypes.UniversalWallet ? envKeysUniversal : envKeysWaaS;
 
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);

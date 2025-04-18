@@ -272,14 +272,17 @@ export function writeDefaultKeysToEnvFileIfMissing(
         .filter(([_, value]) => value === undefined || value === "")
         .map(([key, _]) => key);
 
+    const envFilePath = options.pathToWrite ? options.pathToWrite : ".env";
+    const envFileContent = shell.cat(envFilePath).toString();
+
     envExampleLines.forEach((line) => {
         if (missingKeys.some((key) => line.includes(key))) {
-            shell.exec(
-                `echo ${line} >> ${
-                    options.pathToWrite ? options.pathToWrite : ".env"
-                }`,
-                { silent: !options.verbose }
-            );
+            if (!envFileContent.includes(line)) {
+                shell.exec(
+                    `echo ${line} >> ${envFilePath}`,
+                    { silent: !options.verbose }
+                );
+            }
         }
     });
 }

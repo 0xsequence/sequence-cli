@@ -1,14 +1,18 @@
 
 import { Command } from "commander";
-import { promptForProjectAccessKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { checkIfDirectoryExists, cliConsole, promptForProjectAccessKeyWithLogs, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
 const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/universal-wallet-react-boilerplate/";
+const REPOSITORY_FILENAME = "universal-wallet-react-boilerplate";
+const REPOSITORY_REFERENCE = "Universal Wallet React boilerplate";
 
 export async function createUniversalWalletReact(program: Command, options: any) {
     let projectAccessKey = options.projectAccessKey;
+
+    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     const userWantsToConfigureTheirKeys = false
     
@@ -16,15 +20,22 @@ export async function createUniversalWalletReact(program: Command, options: any)
         projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
     }
 
-    console.log("Cloning the repo to `universal-wallet-react-boilerplate`...");
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
-    shell.exec(`git clone ${UNIVERSAL_WALLET_REACT_REPO_URL} universal-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${UNIVERSAL_WALLET_REACT_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
     
-    shell.cd("universal-wallet-react-boilerplate");
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+            
+    if (!directoryExists) {
+        cliConsole.error("Repository cloning failed. Please try again.");
+        return;
+    }
+
+    shell.cd(REPOSITORY_FILENAME);
 
     shell.exec(`touch .env`, { silent: !options.verbose });
 
-    console.log("Configuring your project...");
+    cliConsole.loading("Configuring your project");
 
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
@@ -36,12 +47,12 @@ export async function createUniversalWalletReact(program: Command, options: any)
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
 
-    console.log("Installing dependencies...");
+    cliConsole.loading("Installing dependencies");
     
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    console.log("Universal Wallet React boilerplate created successfully! 🚀");
-    console.log("Starting development server...");
+    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
+    cliConsole.loading("Starting development server");
 
     shell.exec(`pnpm dev`, { silent: false });
 }

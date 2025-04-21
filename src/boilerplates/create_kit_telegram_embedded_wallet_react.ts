@@ -20,6 +20,7 @@ import shell from "shelljs";
 
 const TELEGRAM_KIT_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/telegram-kit-embedded-wallet-react-boilerplate";
 const REPOSITORY_FILENAME = "telegram-kit-embedded-wallet-react-boilerplate";
+const REPOSITORY_REFERENCE = "Telegram Kit Embedded Wallet React boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 
 export async function createTelegramKitEmbeddedWalletReact(program: Command, options: any) {
@@ -34,7 +35,7 @@ export async function createTelegramKitEmbeddedWalletReact(program: Command, opt
     let pagesBuildOutputDir = "./dist";
     let port = 4444;
 
-    cliConsole.sectionTitle("Initializing creation process for Kit Telegram Embedded Wallet React boilerplate 🚀");
+    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey, { allowEmptyInput: false });
     projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey, { allowEmptyInput: false });
@@ -111,7 +112,7 @@ export async function createTelegramKitEmbeddedWalletReact(program: Command, opt
 
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    cliConsole.done("Telegram Kit Embedded Wallet React boilerplate created successfully! 🚀");
+    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
 
     cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. Here is the guide for the repository ${SEQUENCE_DOCS_URL}guides/telegram-integration/`);
 

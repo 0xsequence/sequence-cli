@@ -1,13 +1,14 @@
 
 import { Command } from "commander";
-import { promptForAppleClientIdWithLogs, promptForChainsWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { checkIfDirectoryExists, cliConsole, promptForAppleClientIdWithLogs, promptForChainsWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
 
 const EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/kit-embedded-wallet-react-boilerplate/";
-
+const REPOSITORY_FILENAME = "kit-embedded-wallet-react-boilerplate";
+const REPOSITORY_REFERENCE = "Kit Embedded Wallet React boilerplate";
 
 export async function createEmbeddedWalletReact(program: Command, options: any) {
     let waasConfigKey = options.waasConfigKey;
@@ -16,6 +17,8 @@ export async function createEmbeddedWalletReact(program: Command, options: any) 
     let appleClientId = options.appleClientId;
     let walletConnectId = options.walletConnectId;
     let chains = options.chains;
+
+    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     const userWantsToConfigureTheirKeys = false
     
@@ -27,16 +30,21 @@ export async function createEmbeddedWalletReact(program: Command, options: any) 
         chains = await promptForChainsWithLogs(chains);
     }
 
-    console.log("Cloning the repo to `embedded-wallet-react-boilerplate`...");
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
-    shell.exec(`git clone ${EMBEDDED_WALLET_REACT_REPO_URL} embedded-wallet-react-boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${EMBEDDED_WALLET_REACT_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
     
-    shell.cd("embedded-wallet-react-boilerplate");
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+    if (!directoryExists) {
+        cliConsole.error("Repository cloning failed. Please try again.");
+        return;
+    }
+    
+    shell.cd(REPOSITORY_FILENAME);
 
-    
     shell.exec(`touch .env`, { silent: !options.verbose });
 
-    console.log("Configuring your project...");
+    cliConsole.loading("Configuring your project");
 
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
@@ -58,12 +66,12 @@ export async function createEmbeddedWalletReact(program: Command, options: any) 
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
 
-    console.log("Installing dependencies...");
+    cliConsole.loading("Installing dependencies");
     
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    console.log("Embedded Wallet React boilerplate created successfully! 🚀");
-    console.log("Starting development server...");
+    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
+    cliConsole.loading("Starting development server");
 
     shell.exec(`pnpm dev`, { silent: false });
 }

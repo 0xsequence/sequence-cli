@@ -1,11 +1,13 @@
 
 import { Command } from "commander";
-import { promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { checkIfDirectoryExists, cliConsole, promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys, WalletTypes } from "../utils/types";
 
 import shell from "shelljs";
 
 const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence-demos/marketplace-boilerplate/";
+const REPOSITORY_FILENAME = "marketplace-boilerplate";
+const REPOSITORY_REFERENCE = "Marketplace boilerplate";
 
 export async function createMarketplaceBoilerplate(program: Command, options: any) {
     const walletType = WalletTypes.EmbeddedWallet;
@@ -14,6 +16,8 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
     let googleClientId = options.googleClientId;
     let projectId = options.projectId;
     let appleClientId = options.appleClientId;
+
+    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     const userWantsToConfigureTheirKeys = false
 
@@ -38,14 +42,21 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
         }
     }
 
-    console.log("Cloning the repo to `marketplace-boilerplate`...");
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
-    shell.exec(`git clone ${MARKETPLACE_BOILERPLATE_REPO_URL} marketplace-boilerplate`, { silent: !options.verbose });
-    
-    shell.cd("marketplace-boilerplate");
+    shell.exec(`git clone ${MARKETPLACE_BOILERPLATE_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
+
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+
+    if (!directoryExists) {
+        cliConsole.error("Repository cloning failed. Please try again.");
+        return;
+    }
+
+    shell.cd(REPOSITORY_FILENAME);
     shell.exec(`touch .env`, { silent: !options.verbose });
 
-    console.log("Configuring your project...");
+    cliConsole.loading("Configuring your project");
 
     const envExampleContent = shell.cat(".env.example").toString();
     const envExampleLines = envExampleContent.split("\n");
@@ -62,12 +73,12 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
     
-    console.log("Installing dependencies...");
+    cliConsole.loading("Installing dependencies");
     
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    console.log("Marketplace boilerplate created successfully! 🚀");
-    console.log("Starting development server...");
+    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
+    cliConsole.loading("Starting development server");
 
     shell.exec(`pnpm dev`, { silent: false });
 }

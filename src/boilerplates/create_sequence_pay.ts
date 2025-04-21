@@ -7,7 +7,6 @@ import {
     promptForProjectAccessKeyWithLogs,
     promptForWaaSConfigKeyWithLogs,
     promptForWalletConnectIdWithLogs,
-    promptUserKeyCustomizationDecision,
     writeDefaultKeysToEnvFileIfMissing,
     writeToEnvFile,
 } from '../utils';
@@ -16,6 +15,7 @@ import shell from "shelljs";
 
 const SEQUENCE_PAY_REPO_URL = "https://github.com/0xsequence-demos/sequence-pay-boilerplate";
 const REPOSITORY_FILENAME = "sequence-pay-boilerplate";
+const REPOSITORY_REFERENCE = "Sequence Pay boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 
 export async function createSequencePay(program: Command, options: any) {
@@ -25,7 +25,7 @@ export async function createSequencePay(program: Command, options: any) {
     let appleClientId = options.appleClientId;
     let walletConnectId = options.walletConnectId;
 
-    cliConsole.sectionTitle("Initializing creation process for Sequence Pay boilerplate 🚀");
+    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     const userWantsToConfigureTheirKeys = false
     
@@ -71,7 +71,7 @@ export async function createSequencePay(program: Command, options: any) {
 
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    cliConsole.done("Sequence Pay boilerplate created successfully!");
+    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully!`);
 
     cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. Here is the guide for the repository ${SEQUENCE_DOCS_URL}solutions/wallets/sequence-kit/checkout`);
 

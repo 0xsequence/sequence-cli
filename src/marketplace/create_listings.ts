@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import { input, password, number } from '@inquirer/prompts';
 import { ethers, Numeric } from 'ethers';
 import { findSupportedNetwork } from '@0xsequence/network';
-import { isValidPrivateKey } from '../utils/';
+import { cliConsole, isValidPrivateKey } from '../utils/';
 import { ERC1155_ABI } from '../abi/ERC_1155';
 import { SequenceMarketplace_V1_ABI } from '../abi/SequenceMarketplaceV1';
 import { ERC721_ABI } from '../abi/ERC_721';
@@ -16,7 +16,7 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { SequenceMarketplace_V2_ABI } from '../abi/SequenceMarketplaceV2';
-import {SEQUENCE_MARKETPLACE_V1_ADDRESS, SEQUENCE_MARKETPLACE_V2_ADDRESS} from "./marketplace";
+import {  SEQUENCE_MARKETPLACE_V1_ADDRESS, SEQUENCE_MARKETPLACE_V2_ADDRESS  } from "./marketplace";
 
 
 type ListingRequest = {
@@ -41,6 +41,8 @@ export async function createListings(program: Command, options: any) {
   let quantity = options.quantity;
   const isERC1155 = options.type === 'ERC1155';
 
+  cliConsole.sectionTitle(`Initializing creation process for Create Listings 🚀`);
+
   if (!isERC1155) {
     // ERC721 must be always quantity = 1
     quantity = 1;
@@ -52,7 +54,7 @@ export async function createListings(program: Command, options: any) {
     });
 
     if (!isValidPrivateKey(privateKey) && privateKey) {
-      console.log('Please input a valid EVM Private key');
+      cliConsole.error('Please input a valid EVM Private key');
       process.exit();
     }
   }
@@ -70,10 +72,10 @@ export async function createListings(program: Command, options: any) {
   }
 
   if (!network) {
-    console.log(
+    cliConsole.info(
       'Please provide the Network for your project as a Sequence chain handle'
     );
-    console.log(
+    cliConsole.info(
       'Possible networks can be found at https://docs.sequence.xyz/solutions/technical-references/chain-support'
     );
 
@@ -108,7 +110,7 @@ export async function createListings(program: Command, options: any) {
   }
 
   if (options.verbose) {
-    console.log(`Using node URL: ${nodeUrl}`);
+    cliConsole.info(`Using node URL: ${nodeUrl}`);
   }
 
   const provider = new ethers.JsonRpcProvider(nodeUrl);
@@ -149,11 +151,11 @@ export async function createListings(program: Command, options: any) {
       ? SequenceMarketplace_V2_ABI
       : SequenceMarketplace_V1_ABI;
 
-  console.log(`Using EOA Wallet: ${walletAddress}`);
-  console.log('Collection Address:', collectionAddress);
-  console.log('Currency token address:', currency);
-  console.log('Contract Type: %s, Is 1155', options.type, isERC1155);
-  console.log('Using marketplace version', options.marketplaceVersion);
+  cliConsole.info(`Using EOA Wallet: ${walletAddress}`);
+  cliConsole.info(`Collection Address: ${collectionAddress}`);
+  cliConsole.info(`Currency token address: ${currency}`);
+  cliConsole.info(`Contract Type: ${options.type}, Is 1155: ${isERC1155}`);
+  cliConsole.info(`Using marketplace version: ${options.marketplaceVersion}`);
 
   const listingRequest = {
     collectionAddress,
@@ -192,7 +194,7 @@ export async function createListings(program: Command, options: any) {
     const currentTimeInSeconds = Math.floor(Date.now() / 1000);
     const expiryInSeconds = listingRequest.expiry * 24 * 60 * 60;
 
-    console.log('Creating listing');
+    cliConsole.loading('Creating listing');
 
     const res = await marketplaceContract.write.createRequest(
       [
@@ -213,13 +215,13 @@ export async function createListings(program: Command, options: any) {
       }
     );
 
-    console.log('Listing created', res);
+    cliConsole.done(`Listing created: ${res}`);
   } catch (error) {
     console.dir(error, { depth: null });
     program.error('Error processing transaction, please try again.');
   }
 
-  console.log(`Listing created successfully for token ID ${tokenId}`);
+  cliConsole.done(`Listing created successfully for token ID ${tokenId}`);
 }
 
 async function approvalERC1155(client: WalletClient, input: ListingRequest) {
@@ -244,7 +246,7 @@ async function approvalERC1155(client: WalletClient, input: ListingRequest) {
         chain: client.chain,
       }
     );
-    console.log('ERC1155 setApprovalForAll executed successfully');
+    cliConsole.done('ERC1155 setApprovalForAll executed successfully');
   }
 }
 
@@ -267,6 +269,6 @@ async function approvalERC721(client: WalletClient, input: ListingRequest) {
       [input.marketplaceAddress, true],
       { account: client.account as any, chain: client.chain }
     );
-    console.log('ERC721 setApprovalForAll executed successfully');
+    cliConsole.done('ERC721 setApprovalForAll executed successfully');
   }
 }

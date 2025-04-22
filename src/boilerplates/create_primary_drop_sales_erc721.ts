@@ -1,6 +1,6 @@
 import { extractProjectIdFromAccessKey } from "@0xsequence/utils";
 import { Command } from "commander";
-import { checkIfDirectoryExists, cliConsole, promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForJwtAccessKeyWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile, writeToWranglerEnvFile } from "../utils";
+import { checkIfDirectoryExists, cliConsole, executePromptWithRetry, promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForJwtAccessKeyWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys } from "../utils/types";
 import shell from "shelljs";
 
@@ -15,17 +15,55 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
     let googleClientId = options.googleClientId;
     let appleClientId = options.appleClientId;
     let walletConnectId = options.walletConnectId;
+    let chains = options.chains;
+    let defaultChain = options.defaultChain;
+    let salesContractAddress = options.salesContractAddress;
+    let nftTokenAddress = options.nftTokenAddress;
     let builderProjectId;
     let jwtAccessKey;
 
     cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey, { allowEmptyInput: false });
+    projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey, { allowEmptyInput: false });
     googleClientId = await promptForGoogleClientIdWithLogs(googleClientId, { allowEmptyInput: true });
     appleClientId = await promptForAppleClientIdWithLogs(appleClientId, { allowEmptyInput: true });
     walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId, { allowEmptyInput: true });
-    projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey, { allowEmptyInput: false });
     jwtAccessKey = await promptForJwtAccessKeyWithLogs(jwtAccessKey, { allowEmptyInput: false });
+    chains = await executePromptWithRetry(
+        promptForKeyWithLogs,
+        { key: chains, inputMessage: "Chains:" },
+        [
+            "Please list the available chains for your project.",
+            "You can find the available chains here: https://status.sequence.info/.",
+            "Example format: polygon, amoy, arbitrum-sepolia"
+        ],
+        options,
+    );
+    defaultChain =  await executePromptWithRetry(
+        promptForKeyWithLogs,
+        { key: defaultChain, inputMessage: "Default chain:" },
+        [
+            "Please provide the default chain for your project.",
+        ],
+        options,
+    );
+    salesContractAddress = await executePromptWithRetry(
+        promptForKeyWithLogs,
+        { key: salesContractAddress, inputMessage: "Sales Contract Address:" },
+        [
+            "Please provide the Sales Contract Address for your project.",
+        ],
+        options,
+    );
+    nftTokenAddress = await executePromptWithRetry(
+        promptForKeyWithLogs,
+        { key: nftTokenAddress, inputMessage: "Nft Token Address:" },
+        [
+            "Please provide the NFT token address linked to your Primary Sales contract.",
+        ],
+        options,
+    );
     
     if (projectAccessKey) {
         builderProjectId = extractProjectIdFromAccessKey(projectAccessKey);
@@ -59,6 +97,10 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
         "VITE_WALLET_CONNECT_ID": walletConnectId || undefined,
         "VITE_PROJECT_ID": builderProjectId?.toString() || undefined,
         "JWT_ACCESS_KEY": jwtAccessKey || undefined,
+        "VITE_CHAINS": chains || undefined,
+        "VITE_DEFAULT_CHAIN": defaultChain || undefined,
+        "VITE_SALES_CONTRACT_ADDRESS": salesContractAddress || undefined,
+        "VITE_NFT_TOKEN_ADDRESS": nftTokenAddress || undefined,
     };
 
     writeToEnvFile(envKeys, options);

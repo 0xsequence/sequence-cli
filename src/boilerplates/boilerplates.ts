@@ -292,6 +292,22 @@ export function makeCommandBoilerplates(program: Command) {
         "Wallet Connect ID to be used during authentication"
         )
         .option(
+        "--chains <chains> chains",
+        "List of the available chains for your project"
+        )
+        .option(
+        "--default-chain <default_chain> defaultChain",
+        "Default chain for your project"
+        )
+        .option(
+        "--sales-contract-address <sales_contract_address> salesContractAddress",
+        "Sales Contract Address for your project"
+        )
+        .option(
+        "--nft-token-address <nft-token-address> nftTokenAddress",
+        "Nft Token Address linked to your Primary Sales Contract"
+        )
+        .option(
         "--verbose",
         "Show additional information in the output"
         )

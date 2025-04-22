@@ -6,6 +6,7 @@ import shell from "shelljs";
 
 const PRIMARY_DROP_SALES_ERC721_REPO_URL = "https://github.com/0xsequence-demos/primary-drop-sale-721-boilerplate";
 const REPOSITORY_FILENAME = "primary-drop-sales-erc721-boilerplate";
+const REPOSITORY_REFERENCE = "Primary Drop Sales ERC721 boilerplate";
 const SEQUENCE_DOCS_URL = "https://docs.sequence.xyz/";
 
 export async function createPrimaryDropSalesErc721(program: Command, options: any) {
@@ -17,7 +18,7 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
     let builderProjectId;
     let jwtAccessKey;
 
-    cliConsole.sectionTitle("Initializing creation process for Primary Drop Sales ERC721 boilerplate 🚀");
+    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey, { allowEmptyInput: false });
     googleClientId = await promptForGoogleClientIdWithLogs(googleClientId, { allowEmptyInput: true });
@@ -67,7 +68,7 @@ export async function createPrimaryDropSalesErc721(program: Command, options: an
 
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    cliConsole.done("Primary Drop Sales ERC721 boilerplate created successfully!");
+    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully!`);
 
     cliConsole.done(`Great! Now you can test the project with your Embedded Wallet. If you want to take it to the next level by using your own Primary Sales Contracts in the project, go to the following link and we can set it up: ${SEQUENCE_DOCS_URL}guides/primary-drop-sales-erc721`);
 

@@ -1,15 +1,18 @@
-import { input, confirm } from "@inquirer/prompts";
 import { Command } from "commander";
-import { isValidPrivateKey, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { checkIfDirectoryExists, cliConsole, isValidPrivateKey, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
 
 const TX_MANAGER_REPO_URL = "https://github.com/0xsequence-demos/server-side-transactions-boilerplate";
+const REPOSITORY_FILENAME = "server-side-transactions-boilerplate";
+const REPOSITORY_REFERENCE = "Server side transactions boilerplate";
 
 export async function createServerSideTx(program: Command, options: any) {
     let privateKey = options.key;
     let projectAccessKey = options.projectAccessKey;
+
+    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
     const userWantsToConfigureTheirKeys = false
 
@@ -34,15 +37,22 @@ export async function createServerSideTx(program: Command, options: any) {
         projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
     }
 
-    console.log("Cloning the repo to `server-side-transactions-boilerplate`...");
+    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
-    shell.exec(`git clone ${TX_MANAGER_REPO_URL} server-side-transactions-boilerplate`, { silent: !options.verbose });
+    shell.exec(`git clone ${TX_MANAGER_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
     
-    shell.cd("server-side-transactions-boilerplate");
+    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+    
+    if (!directoryExists) {
+        cliConsole.error("Repository cloning failed. Please try again.");
+        return;
+    }
+
+    shell.cd(REPOSITORY_FILENAME);
     
     shell.exec(`touch .env`, { silent: !options.verbose });
 
-    console.log("Configuring your project...");
+    cliConsole.loading("Configuring your project");
     
     const envExampleContent = shell.cat('.env.example').toString();
     const envExampleLines = envExampleContent.split('\n');
@@ -55,12 +65,12 @@ export async function createServerSideTx(program: Command, options: any) {
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
 
-    console.log("Installing dependencies...");
+    cliConsole.loading("Installing dependencies");
     
     shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    console.log("Server side transactions boilerplate created successfully! 🔄");
-    console.log("Starting development server...");
+    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
+    cliConsole.loading("Starting development server");
     
     shell.exec(`pnpm start`, { silent: false });
 }

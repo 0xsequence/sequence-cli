@@ -1,6 +1,6 @@
 
 import { Command } from "commander";
-import { checkIfDirectoryExists, cliConsole, promptForAppleClientIdWithLogs, promptForGoogleClientIdWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
+import { checkIfDirectoryExists, cliConsole, promptForAppleClientIdWithLogs, promptForChainsWithLogs, promptForGoogleClientIdWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
 import { EnvKeys } from "../utils/types";
 
 import shell from "shelljs";
@@ -15,6 +15,7 @@ export async function createEmbeddedWalletNextjs(program: Command, options: any)
     let googleClientId = options.googleClientId;
     let appleClientId = options.appleClientId;
     let walletConnectId = options.walletConnectId;
+    let chains = options.chains;
 
     cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
 
@@ -26,6 +27,7 @@ export async function createEmbeddedWalletNextjs(program: Command, options: any)
         googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
         appleClientId = await promptForAppleClientIdWithLogs(appleClientId);
         walletConnectId = await promptForWalletConnectIdWithLogs(walletConnectId);
+        chains = await promptForChainsWithLogs(chains);
     }
 
     cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
@@ -52,7 +54,13 @@ export async function createEmbeddedWalletNextjs(program: Command, options: any)
         "NEXT_PUBLIC_GOOGLE_CLIENT_ID": googleClientId || undefined,
         "NEXT_PUBLIC_APPLE_CLIENT_ID": appleClientId || undefined,
         "NEXT_PUBLIC_WALLET_CONNECT_ID": walletConnectId || undefined,
+        "NEXT_PUBLIC_CHAINS": chains || "arbitrum-sepolia",
     };
+
+    if (envKeys.NEXT_PUBLIC_CHAINS) {
+        const chainsArray = typeof envKeys.NEXT_PUBLIC_CHAINS === 'string' ? envKeys.NEXT_PUBLIC_CHAINS.split(',') : [];
+        envKeys.NEXT_PUBLIC_DEFAULT_CHAIN = chainsArray[0].trim();
+    }
 
     writeToEnvFile(envKeys, options);
     writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);

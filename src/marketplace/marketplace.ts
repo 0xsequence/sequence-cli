@@ -81,18 +81,6 @@ export function makeCommandMarketplace(program: Command) {
         "-pid --project-id <project_id>",
         "Project ID from your project"
         )
-        // .option(
-        // "--waas-config-key <waas_key>",
-        // "WaaS config key for this project"
-        // )
-        // .option(
-        // "--google-client-id <google_client_id>",
-        // "Google client ID to be used during authentication"
-        // )
-        // .option(
-        // "--apple-client-id <apple_client_id>",
-        // "Apple client ID to be used during authentication"
-        // )
         .option(
         "--verbose",
         "Show additional information in the output"

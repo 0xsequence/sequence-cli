@@ -66,12 +66,8 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
     const envExampleLines = envExampleContent.split("\n");
 
     const envKeys: EnvKeys = {
-        // "NEXT_PUBLIC_WALLET_TYPE": walletType || undefined,
         "NEXT_PUBLIC_ACCESS_KEY": projectAccessKey || envKeysExample.projectAccessKey || undefined,
         "NEXT_PUBLIC_PROJECT_ID": projectId || envKeysExample.projectId || undefined,
-        // "NEXT_PUBLIC_WAAS_CONFIG_KEY": waasConfigKey || undefined,
-        // "NEXT_PUBLIC_GOOGLE_CLIENT_ID": googleClientId || undefined,
-        // "NEXT_PUBLIC_APPLE_CLIENT_ID": appleClientId || undefined,
     };
 
     writeToEnvFile(envKeys, options);

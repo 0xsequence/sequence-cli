@@ -5,9 +5,13 @@ import { EnvKeys, WalletTypes } from "../utils/types";
 
 import shell from "shelljs";
 
-const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence-demos/marketplace-boilerplate/";
+const MARKETPLACE_BOILERPLATE_REPO_URL = "https://github.com/0xsequence/marketplace-boilerplate";
 const REPOSITORY_FILENAME = "marketplace-boilerplate";
 const REPOSITORY_REFERENCE = "Marketplace boilerplate";
+const envKeysExample = {
+    projectAccessKey: "AQAAAAAAAKD0thGRWyQ1qA4y857JdoKLNs4",
+    projectId: "41204"
+};
 
 export async function createMarketplaceBoilerplate(program: Command, options: any) {
     const walletType = WalletTypes.EmbeddedWallet;
@@ -62,12 +66,8 @@ export async function createMarketplaceBoilerplate(program: Command, options: an
     const envExampleLines = envExampleContent.split("\n");
 
     const envKeys: EnvKeys = {
-        "NEXT_PUBLIC_WALLET_TYPE": walletType || undefined,
-        "NEXT_PUBLIC_SEQUENCE_ACCESS_KEY": projectAccessKey || undefined,
-        "NEXT_PUBLIC_SEQUENCE_PROJECT_ID": projectId || undefined,
-        "NEXT_PUBLIC_WAAS_CONFIG_KEY": waasConfigKey || undefined,
-        "NEXT_PUBLIC_GOOGLE_CLIENT_ID": googleClientId || undefined,
-        "NEXT_PUBLIC_APPLE_CLIENT_ID": appleClientId || undefined,
+        "NEXT_PUBLIC_ACCESS_KEY": projectAccessKey || envKeysExample.projectAccessKey || undefined,
+        "NEXT_PUBLIC_PROJECT_ID": projectId || envKeysExample.projectId || undefined,
     };
 
     writeToEnvFile(envKeys, options);

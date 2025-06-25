@@ -23,9 +23,9 @@ export function makeCommandBoilerplates(program: Command) {
   });
 
   comm
-    .command('create-kit-embedded-wallet-react-starter')
+    .command('create-embedded-wallet-react-starter')
     .description(
-      'Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and React'
+      'Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Web SDK and React'
     )
     .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
     .option(
@@ -91,9 +91,9 @@ export function makeCommandBoilerplates(program: Command) {
     });
 
   comm
-    .command('create-kit-embedded-wallet-nextjs-starter')
+    .command('create-embedded-wallet-nextjs-starter')
     .description(
-      'Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Kit and Next.js'
+      'Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Web SDK and Next.js'
     )
     .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
     .option(
@@ -239,7 +239,7 @@ export function makeCommandBoilerplates(program: Command) {
   comm
     .command('create-primary-drop-sales-erc721-starter')
     .description(
-      'Clone a starter boilerplate for NFT Drops using primary sales for NFTs ERC721, integrated with Sequence Kit and Embedded Wallet, using React'
+      'Clone a starter boilerplate for NFT Drops using primary sales for NFTs ERC721, integrated with Sequence Web SDK and Embedded Wallet, using React'
     )
     .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
     .option(
@@ -280,9 +280,9 @@ export function makeCommandBoilerplates(program: Command) {
     });
 
   comm
-    .command('create-telegram-kit-embedded-wallet-react-starter')
+    .command('create-telegram-embedded-wallet-react-starter')
     .description(
-      'Clone a starter boilerplate for telegram, integrated with Sequence Kit and Embedded Wallet, using React'
+      'Clone a starter boilerplate for telegram, integrated with Sequence Web SDK and Embedded Wallet, using React'
     )
     .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
     .option(
@@ -317,7 +317,7 @@ export function makeCommandBoilerplates(program: Command) {
   comm
     .command('create-sequence-pay-starter')
     .description(
-      'Clone a starter boilerplate for Sequence Pay, integrated with Sequence Kit and Embedded Wallet, using React'
+      'Clone a starter boilerplate for Sequence Pay, integrated with Sequence Web SDK and Embedded Wallet, using React'
     )
     .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
     .option(
@@ -344,7 +344,7 @@ export function makeCommandBoilerplates(program: Command) {
   comm
     .command('create-allowlist-starter')
     .description(
-      'Clone a starter boilerplate for allowlist, integrated with Sequence Kit and Embedded Wallet or Universal Wallet, using React'
+      'Clone a starter boilerplate for allowlist, integrated with Sequence Web SDK and Embedded Wallet or Universal Wallet, using React'
     )
     .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
     .option(

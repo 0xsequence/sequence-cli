@@ -1,22 +1,22 @@
 export enum WalletTypes {
-    EmbeddedWallet = "waas",
-    UniversalWallet = "universal",
+  EmbeddedWallet = 'waas',
+  UniversalWallet = 'universal',
 }
 
 export type EnvWriteOptions = {
-    verbose?: boolean;
-    pathToWrite?: string;
+  verbose?: boolean;
+  pathToWrite?: string;
 };
 
 export type PromptForKeysWithLogsOptions = {
-    allowEmptyInput: boolean;
+  allowEmptyInput: boolean;
 };
 
 export type EnvKeys = {
-    [key: string]: string | number | undefined;
+  [key: string]: string | number | undefined;
 };
 
 export type KeyPromptParams = {
-    key: string | undefined;
-    inputMessage: string;
+  key: string | undefined;
+  inputMessage: string;
 };

@@ -16,8 +16,10 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { SequenceMarketplace_V2_ABI } from '../abi/SequenceMarketplaceV2';
-import {  SEQUENCE_MARKETPLACE_V1_ADDRESS, SEQUENCE_MARKETPLACE_V2_ADDRESS  } from "./marketplace";
-
+import {
+  SEQUENCE_MARKETPLACE_V1_ADDRESS,
+  SEQUENCE_MARKETPLACE_V2_ADDRESS,
+} from './marketplace';
 
 type ListingRequest = {
   collectionAddress: Address;
@@ -41,7 +43,9 @@ export async function createListings(program: Command, options: any) {
   let quantity = options.quantity;
   const isERC1155 = options.type === 'ERC1155';
 
-  cliConsole.sectionTitle(`Initializing creation process for Create Listings 🚀`);
+  cliConsole.sectionTitle(
+    `Initializing creation process for Create Listings 🚀`
+  );
 
   if (!isERC1155) {
     // ERC721 must be always quantity = 1

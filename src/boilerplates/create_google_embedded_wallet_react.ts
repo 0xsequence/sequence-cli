@@ -1,63 +1,84 @@
+import { Command } from 'commander';
+import {
+  checkIfDirectoryExists,
+  cliConsole,
+  promptForGoogleClientIdWithLogs,
+  promptForKeyWithLogs,
+  promptForProjectAccessKeyWithLogs,
+  promptForWaaSConfigKeyWithLogs,
+  promptForWalletConnectIdWithLogs,
+  promptUserKeyCustomizationDecision,
+  writeDefaultKeysToEnvFileIfMissing,
+  writeToEnvFile,
+} from '../utils';
+import { EnvKeys } from '../utils/types';
 
-import { Command } from "commander";
-import { checkIfDirectoryExists, cliConsole, promptForGoogleClientIdWithLogs, promptForKeyWithLogs, promptForProjectAccessKeyWithLogs, promptForWaaSConfigKeyWithLogs, promptForWalletConnectIdWithLogs, promptUserKeyCustomizationDecision, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
-import { EnvKeys } from "../utils/types";
+import shell from 'shelljs';
 
-import shell from "shelljs";
+const GOOGLE_EMBEDDED_WALLET_REACT_REPO_URL =
+  'https://github.com/0xsequence-demos/google-embedded-wallet-react-boilerplate';
+const REPOSITORY_FILENAME = 'google-embedded-wallet-react-boilerplate';
+const REPOSITORY_REFERENCE =
+  'Google Authenticated Embedded Wallet React boilerplate';
 
-const GOOGLE_EMBEDDED_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/google-embedded-wallet-react-boilerplate";
-const REPOSITORY_FILENAME = "google-embedded-wallet-react-boilerplate";
-const REPOSITORY_REFERENCE = "Google Authenticated Embedded Wallet React boilerplate";
+export async function createGoogleEmbeddedWalletReact(
+  program: Command,
+  options: any
+) {
+  let waasConfigKey = options.waasConfigKey;
+  let projectAccessKey = options.projectAccessKey;
+  let googleClientId = options.googleClientId;
 
-export async function createGoogleEmbeddedWalletReact(program: Command, options: any) {
-    let waasConfigKey = options.waasConfigKey;
-    let projectAccessKey = options.projectAccessKey;
-    let googleClientId = options.googleClientId;
+  cliConsole.sectionTitle(
+    `Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`
+  );
 
-    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
+  const userWantsToConfigureTheirKeys = false;
 
-    const userWantsToConfigureTheirKeys = false
-    
-    if (userWantsToConfigureTheirKeys) {
-        waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
-        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
-        googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
-    }
+  if (userWantsToConfigureTheirKeys) {
+    waasConfigKey = await promptForWaaSConfigKeyWithLogs(waasConfigKey);
+    projectAccessKey =
+      await promptForProjectAccessKeyWithLogs(projectAccessKey);
+    googleClientId = await promptForGoogleClientIdWithLogs(googleClientId);
+  }
 
-    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
+  cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
-    shell.exec(`git clone ${GOOGLE_EMBEDDED_WALLET_REACT_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
-    
-    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
-    if (!directoryExists) {
-        cliConsole.error("Repository cloning failed. Please try again.");
-        return;
-    }
+  shell.exec(
+    `git clone ${GOOGLE_EMBEDDED_WALLET_REACT_REPO_URL} ${REPOSITORY_FILENAME}`,
+    { silent: !options.verbose }
+  );
 
-    shell.cd(REPOSITORY_FILENAME);
+  const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
+  if (!directoryExists) {
+    cliConsole.error('Repository cloning failed. Please try again.');
+    return;
+  }
 
-    shell.exec(`touch .env`, { silent: !options.verbose });
+  shell.cd(REPOSITORY_FILENAME);
 
-    cliConsole.loading("Configuring your project");
+  shell.exec(`touch .env`, { silent: !options.verbose });
 
-    const envExampleContent = shell.cat('.env.example').toString();
-    const envExampleLines = envExampleContent.split('\n');
+  cliConsole.loading('Configuring your project');
 
-    const envKeys: EnvKeys = {
-        "VITE_WAAS_CONFIG_KEY": waasConfigKey || undefined,
-        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
-        "VITE_GOOGLE_CLIENT_ID": googleClientId || undefined,
-    };
+  const envExampleContent = shell.cat('.env.example').toString();
+  const envExampleLines = envExampleContent.split('\n');
 
-    writeToEnvFile(envKeys, options);
-    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+  const envKeys: EnvKeys = {
+    VITE_WAAS_CONFIG_KEY: waasConfigKey || undefined,
+    VITE_PROJECT_ACCESS_KEY: projectAccessKey || undefined,
+    VITE_GOOGLE_CLIENT_ID: googleClientId || undefined,
+  };
 
-    cliConsole.loading("Installing dependencies");
+  writeToEnvFile(envKeys, options);
+  writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
 
-    shell.exec(`pnpm install`, { silent: !options.verbose });
+  cliConsole.loading('Installing dependencies');
 
-    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
-    cliConsole.loading("Starting development server");
+  shell.exec(`pnpm install`, { silent: !options.verbose });
 
-    shell.exec(`pnpm dev`, { silent: false });
+  cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
+  cliConsole.loading('Starting development server');
+
+  shell.exec(`pnpm dev`, { silent: false });
 }

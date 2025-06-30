@@ -1,58 +1,73 @@
+import { Command } from 'commander';
+import {
+  checkIfDirectoryExists,
+  cliConsole,
+  promptForProjectAccessKeyWithLogs,
+  writeDefaultKeysToEnvFileIfMissing,
+  writeToEnvFile,
+} from '../utils';
+import { EnvKeys } from '../utils/types';
 
-import { Command } from "commander";
-import { checkIfDirectoryExists, cliConsole, promptForProjectAccessKeyWithLogs, writeDefaultKeysToEnvFileIfMissing, writeToEnvFile } from "../utils";
-import { EnvKeys } from "../utils/types";
+import shell from 'shelljs';
 
-import shell from "shelljs";
+const UNIVERSAL_WALLET_REACT_REPO_URL =
+  'https://github.com/0xsequence-demos/universal-wallet-react-boilerplate/';
+const REPOSITORY_FILENAME = 'universal-wallet-react-boilerplate';
+const REPOSITORY_REFERENCE = 'Universal Wallet React boilerplate';
 
-const UNIVERSAL_WALLET_REACT_REPO_URL = "https://github.com/0xsequence-demos/universal-wallet-react-boilerplate/";
-const REPOSITORY_FILENAME = "universal-wallet-react-boilerplate";
-const REPOSITORY_REFERENCE = "Universal Wallet React boilerplate";
+export async function createUniversalWalletReact(
+  program: Command,
+  options: any
+) {
+  let projectAccessKey = options.projectAccessKey;
 
-export async function createUniversalWalletReact(program: Command, options: any) {
-    let projectAccessKey = options.projectAccessKey;
+  cliConsole.sectionTitle(
+    `Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`
+  );
 
-    cliConsole.sectionTitle(`Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`);
+  const userWantsToConfigureTheirKeys = false;
 
-    const userWantsToConfigureTheirKeys = false
-    
-    if (userWantsToConfigureTheirKeys) {
-        projectAccessKey = await promptForProjectAccessKeyWithLogs(projectAccessKey);
-    }
+  if (userWantsToConfigureTheirKeys) {
+    projectAccessKey =
+      await promptForProjectAccessKeyWithLogs(projectAccessKey);
+  }
 
-    cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
+  cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
-    shell.exec(`git clone ${UNIVERSAL_WALLET_REACT_REPO_URL} ${REPOSITORY_FILENAME}`, { silent: !options.verbose });
-    
-    const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
-            
-    if (!directoryExists) {
-        cliConsole.error("Repository cloning failed. Please try again.");
-        return;
-    }
+  shell.exec(
+    `git clone ${UNIVERSAL_WALLET_REACT_REPO_URL} ${REPOSITORY_FILENAME}`,
+    { silent: !options.verbose }
+  );
 
-    shell.cd(REPOSITORY_FILENAME);
+  const directoryExists = checkIfDirectoryExists(REPOSITORY_FILENAME);
 
-    shell.exec(`touch .env`, { silent: !options.verbose });
+  if (!directoryExists) {
+    cliConsole.error('Repository cloning failed. Please try again.');
+    return;
+  }
 
-    cliConsole.loading("Configuring your project");
+  shell.cd(REPOSITORY_FILENAME);
 
-    const envExampleContent = shell.cat('.env.example').toString();
-    const envExampleLines = envExampleContent.split('\n');
+  shell.exec(`touch .env`, { silent: !options.verbose });
 
-    const envKeys: EnvKeys = {
-        "VITE_PROJECT_ACCESS_KEY": projectAccessKey || undefined,
-    };
+  cliConsole.loading('Configuring your project');
 
-    writeToEnvFile(envKeys, options);
-    writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
+  const envExampleContent = shell.cat('.env.example').toString();
+  const envExampleLines = envExampleContent.split('\n');
 
-    cliConsole.loading("Installing dependencies");
-    
-    shell.exec(`pnpm install`, { silent: !options.verbose });
+  const envKeys: EnvKeys = {
+    VITE_PROJECT_ACCESS_KEY: projectAccessKey || undefined,
+  };
 
-    cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
-    cliConsole.loading("Starting development server");
+  writeToEnvFile(envKeys, options);
+  writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
 
-    shell.exec(`pnpm dev`, { silent: false });
+  cliConsole.loading('Installing dependencies');
+
+  shell.exec(`pnpm install`, { silent: !options.verbose });
+
+  cliConsole.done(`${REPOSITORY_REFERENCE} created successfully! 🚀`);
+  cliConsole.loading('Starting development server');
+
+  shell.exec(`pnpm dev`, { silent: false });
 }

@@ -15,7 +15,7 @@
     "dev": "tsx src/bin.ts",
     "build": "tsc && vite build && chmod +x dist/bin.js",
     "upload": "pnpm build && npm publish",
-    "format": "prettier --write \"packages/**/src/**/*.ts\" \"packages/**/tests/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [
     "sequence",

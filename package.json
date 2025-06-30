@@ -1,6 +1,6 @@
 {
   "name": "sequence-cli",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "CLI for Sequence",
   "main": "./dist/bin.js",
   "type": "module",

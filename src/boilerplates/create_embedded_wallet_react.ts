@@ -5,11 +5,8 @@ import {
   promptForAppleClientIdWithLogs,
   promptForChainsWithLogs,
   promptForGoogleClientIdWithLogs,
-  promptForKeyWithLogs,
   promptForProjectAccessKeyWithLogs,
   promptForWaaSConfigKeyWithLogs,
-  promptForWalletConnectIdWithLogs,
-  promptUserKeyCustomizationDecision,
   writeDefaultKeysToEnvFileIfMissing,
   writeToEnvFile,
 } from '../utils';
@@ -18,9 +15,9 @@ import { EnvKeys } from '../utils/types';
 import shell from 'shelljs';
 
 const EMBEDDED_WALLET_REACT_REPO_URL =
-  'https://github.com/0xsequence-demos/kit-embedded-wallet-react-boilerplate/';
-const REPOSITORY_FILENAME = 'kit-embedded-wallet-react-boilerplate';
-const REPOSITORY_REFERENCE = 'Kit Embedded Wallet React boilerplate';
+  'https://github.com/0xsequence-demos/websdk-embedded-wallet-react-boilerplate/';
+const REPOSITORY_FILENAME = 'websdk-embedded-wallet-react-boilerplate';
+const REPOSITORY_REFERENCE = 'Web SDK Embedded Wallet React boilerplate';
 
 export async function createEmbeddedWalletReact(
   program: Command,

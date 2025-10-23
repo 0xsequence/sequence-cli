@@ -16,9 +16,9 @@ import { EnvKeys } from '../utils/types';
 import shell from 'shelljs';
 
 const EMBEDDED_WALLET_NEXTJS_REPO_URL =
-  'https://github.com/0xsequence-demos/kit-embedded-wallet-nextjs-boilerplate/';
-const REPOSITORY_FILENAME = 'kit-embedded-wallet-nextjs-boilerplate';
-const REPOSITORY_REFERENCE = 'Kit Embedded Wallet Nextjs boilerplate';
+  'https://github.com/0xsequence-demos/websdk-embedded-wallet-nextjs-boilerplate/';
+const REPOSITORY_FILENAME = 'websdk-embedded-wallet-nextjs-boilerplate';
+const REPOSITORY_REFERENCE = 'Web SDK Embedded Wallet Nextjs boilerplate';
 
 export async function createEmbeddedWalletNextjs(
   program: Command,

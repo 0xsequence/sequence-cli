@@ -14,6 +14,9 @@ import { createSequencePay } from './create_sequence_pay';
 import { createTelegramKitEmbeddedWalletReact } from './create_kit_telegram_embedded_wallet_react';
 import { createAllowlistStarter } from './allowlist-starter';
 import { createCryptoOnramp } from './create_crypto_onramp';
+import { createTrailsStarter } from './create_trails';
+import { createTrailsNextjsStarter } from './create_trails_nextjs';
+import { createEmbeddedWalletEpicNextjs } from './create_embedded_wallet_epic_nextjs';
 
 export function makeCommandBoilerplates(program: Command) {
   const comm = new Command('boilerplates');
@@ -88,6 +91,33 @@ export function makeCommandBoilerplates(program: Command) {
     .option('--verbose', 'Show additional information in the output')
     .action(options => {
       createServerSideTx(program, options);
+    });
+
+  comm
+    .command('create-embedded-wallet-epic-nextjs-starter')
+    .description(
+      'Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Web SDK and Next.js — includes Epic Games (EPIC) login support.'
+    )
+    .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
+    .option(
+      '--project-access-key <access_key>',
+      'Project access key for Sequence requests'
+    )
+    .option(
+      '--chains <chains>',
+      "Chain names to be used, separated by commas. Example: 'arbitrum-sepolia,mainnet'"
+    )
+    .option(
+      '--epic-client-id <epic_client_id>',
+      'Epic Client ID required for the app API to perform login with Epic Games.'
+    )
+    .option(
+      '--epic-client-secret <epic_client_secret>',
+      'Epic Client Secret required for the app API to perform login with Epic Games.'
+    )
+    .option('--verbose', 'Show additional information in the output')
+    .action(options => {
+      createEmbeddedWalletEpicNextjs(program, options);
     });
 
   comm
@@ -395,6 +425,22 @@ export function makeCommandBoilerplates(program: Command) {
     .option('--verbose', 'Show additional information in the output')
     .action(options => {
       createCryptoOnramp(program, options);
+    });
+
+  comm
+    .command('create-trails-starter')
+    .description('Clone a starter boilerplate for Trails, using React')
+    .option('--verbose', 'Show additional information in the output')
+    .action(options => {
+      createTrailsStarter(program, options);
+    });
+
+  comm
+    .command('create-trails-nextjs-starter')
+    .description('Clone a starter boilerplate for Trails, using Nextjs')
+    .option('--verbose', 'Show additional information in the output')
+    .action(options => {
+      createTrailsNextjsStarter(program, options);
     });
 
   return comm;

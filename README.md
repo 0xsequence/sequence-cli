@@ -11,6 +11,7 @@ A collection of CLI commands to interface with Sequence services:
 - `boilerplates`: Collection of Sequence boilerplate starter projects
   - `create-embedded-wallet-react-starter`: Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Web SDK and React
   - `create-embedded-wallet-nextjs-starter`: Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Web SDK and Next.js
+  - `create-embedded-wallet-epic-nextjs-starter`: Clone a starter boilerplate for Sequence Embedded Wallet integrated with Sequence Web SDK and Next.js — includes Epic Games (EPIC) login support
   - `create-google-embedded-wallet-react-starter`: Clone a starter boilerplate for Google widget authenticated Sequence Embedded Wallet integrated with React
   - `create-email-embedded-wallet-react-starter`: Clone a starter boilerplate for email authenticated Sequence Embedded Wallet and React
   - `create-stytch-embedded-wallet-react-starter`: Clone a starter boilerplate for Stytch authenticated Sequence Embedded Wallet and React
@@ -23,6 +24,8 @@ A collection of CLI commands to interface with Sequence services:
   - `create-telegram-embedded-wallet-react-starter`: Clone a starter boilerplate for telegram, integrated with Sequence Web SDK and Embedded Wallet, using React.
   - `create-sequence-pay-starter`: Clone a starter boilerplate for Sequence Pay, integrated with Sequence Web SDK and Embedded Wallet, using React
   - `create-crypto-onramp-starter`: Clone a starter boilerplate for Crypto Onramp integrated with Embedded Wallet, using React
+  - `create-trails-starter`: Clone a starter boilerplate for Trails, using React
+  - `create-trails-nextjs-starter`: Clone a starter boilerplate for Trails, using Nextjs
 
 ## Usage
 

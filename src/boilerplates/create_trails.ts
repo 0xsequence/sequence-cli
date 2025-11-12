@@ -1,16 +1,37 @@
 import { Command } from 'commander';
-import { checkIfDirectoryExists, cliConsole } from '../utils';
+import {
+  checkIfDirectoryExists,
+  cliConsole,
+  promptForTrailsApiKeyWithLogs,
+  writeDefaultKeysToEnvFileIfMissing,
+  writeToEnvFile,
+} from '../utils';
 
 import shell from 'shelljs';
+import { EnvKeys } from '../utils/types';
 
 const TRAILS_REPO_URL = 'https://github.com/0xsequence-demos/trails-starter/';
 const REPOSITORY_FILENAME = 'trails-starter';
 const REPOSITORY_REFERENCE = 'Trails starter';
 
 export async function createTrailsStarter(program: Command, options: any) {
+  let trailsApiKey = options.trailsApiKey;
+
   cliConsole.sectionTitle(
     `Initializing creation process for ${REPOSITORY_REFERENCE} 🚀`
   );
+
+  const userWantsToConfigureTheirKeys = true;
+
+  if (userWantsToConfigureTheirKeys) {
+    trailsApiKey = await promptForTrailsApiKeyWithLogs(trailsApiKey);
+    if (!trailsApiKey) {
+      cliConsole.info('You left the Trails API key empty in your .env file.');
+      cliConsole.info(
+        'Remember to go back and add your API key later so the project works properly.'
+      );
+    }
+  }
 
   cliConsole.loading(`Cloning the repo to '${REPOSITORY_FILENAME}'`);
 
@@ -25,6 +46,20 @@ export async function createTrailsStarter(program: Command, options: any) {
   }
 
   shell.cd(REPOSITORY_FILENAME);
+
+  shell.exec(`touch .env`, { silent: !options.verbose });
+
+  cliConsole.loading('Configuring your project');
+
+  const envExampleContent = shell.cat('.env.example').toString();
+  const envExampleLines = envExampleContent.split('\n');
+
+  const envKeys: EnvKeys = {
+    VITE_TRAILS_API_KEY: trailsApiKey || undefined,
+  };
+
+  writeToEnvFile(envKeys, options);
+  writeDefaultKeysToEnvFileIfMissing(envExampleLines, envKeys, options);
 
   cliConsole.loading('Installing dependencies');
 

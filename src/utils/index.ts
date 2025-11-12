@@ -256,6 +256,27 @@ export async function promptForChainsWithLogs(
   );
 }
 
+export async function promptForTrailsApiKeyWithLogs(
+  trailsApiKey: string | undefined,
+  options: PromptForKeysWithLogsOptions = { allowEmptyInput: true }
+): Promise<string | undefined> {
+  const logsArray = [
+    'Please provide your Trails API key for your project.',
+    'Request an access key at https://t.me/build_with_trails',
+  ];
+
+  if (options.allowEmptyInput) {
+    logsArray.push('Press Enter to skip.');
+  }
+
+  return await executePromptWithRetry(
+    promptForKeyWithLogs,
+    { key: trailsApiKey, inputMessage: 'Trails API key:' },
+    logsArray,
+    options
+  );
+}
+
 export function writeToEnvFile(envKeys: EnvKeys, options: EnvWriteOptions) {
   Object.entries(envKeys).forEach(([key, value]) => {
     if (value && value !== '') {

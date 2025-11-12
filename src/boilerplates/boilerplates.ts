@@ -430,6 +430,10 @@ export function makeCommandBoilerplates(program: Command) {
   comm
     .command('create-trails-starter')
     .description('Clone a starter boilerplate for Trails, using React')
+    .option(
+      '--trails-api-key <trails_api_key>',
+      'Trails API key to be used in the project. Request an access key at https://t.me/build_with_trails'
+    )
     .option('--verbose', 'Show additional information in the output')
     .action(options => {
       createTrailsStarter(program, options);
@@ -438,6 +442,10 @@ export function makeCommandBoilerplates(program: Command) {
   comm
     .command('create-trails-nextjs-starter')
     .description('Clone a starter boilerplate for Trails, using Nextjs')
+    .option(
+      '--trails-api-key <trails_api_key>',
+      'Trails API key to be used in the project. Request an access key at https://t.me/build_with_trails'
+    )
     .option('--verbose', 'Show additional information in the output')
     .action(options => {
       createTrailsNextjsStarter(program, options);

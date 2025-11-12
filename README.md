@@ -105,11 +105,11 @@ This project is intended to be consumed via `npx`. To release a new version:
    ```
 4) Publish to npm:
    ```bash
-   npm publish --access public
+   npm publish --scope=0xsequence --access=public
    ```
 5) Push commits and tags:
    ```bash
-   git push origin main --follow-tags
+   git push origin main --tags
    ```
 6) Sanity check the release:
    ```bash

@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { makeCommandMarketplace } from './marketplace/marketplace';
 import { makeCommandWallet } from './wallet/wallet';
 import { makeCommandBoilerplates } from './boilerplates/boilerplates';
+import packageJson from '../package.json' with { type: 'json' };
 
 import figlet from 'figlet';
 
@@ -13,7 +14,7 @@ console.log('');
 const program = new Command();
 
 program
-  .version('0.6.0', '-v, --version', 'Display the current version')
+  .version(packageJson.version, '-v, --version', 'Display the current version')
   .action(() => {
     program.help();
   });

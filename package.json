@@ -22,8 +22,8 @@
     "cli",
     "0xsequence"
   ],
-  "author": "Horizon Blockchain Games",
-  "license": "Apache-2.0",
+  "author": "Sequence Platforms Inc.",
+  "license": "MIT",
   "devDependencies": {
     "@0xsequence/utils": "^2.3.8",
     "@commander-js/extra-typings": "^12.1.0",

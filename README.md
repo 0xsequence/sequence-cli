@@ -54,6 +54,7 @@ Clone ready-to-run starter projects that integrate Sequence SDKs and features:
 - **create-crypto-onramp-starter**
 - **create-trails-starter**
 - **create-trails-nextjs-starter**
+- **create-websdk-trails-starter**
 
 Example usage:
 

@@ -17,6 +17,7 @@ import { createCryptoOnramp } from './create_crypto_onramp';
 import { createTrailsStarter } from './create_trails';
 import { createTrailsNextjsStarter } from './create_trails_nextjs';
 import { createEmbeddedWalletEpicNextjs } from './create_embedded_wallet_epic_nextjs';
+import { createWebSdkTrailsStarter } from './create_websdk_trails';
 
 export function makeCommandBoilerplates(program: Command) {
   const comm = new Command('boilerplates');
@@ -449,6 +450,27 @@ export function makeCommandBoilerplates(program: Command) {
     .option('--verbose', 'Show additional information in the output')
     .action(options => {
       createTrailsNextjsStarter(program, options);
+    });
+
+  comm
+    .command('create-websdk-trails-starter')
+    .description('Clone a starter boilerplate for Trails, using Sequence Web SDK and React')
+    .option(
+      '--trails-api-key <trails_api_key>',
+      'Trails API key to be used in the project. Request an access key at https://t.me/build_with_trails'
+    )
+    .option('--waas-config-key <waas_key>', 'WaaS config key for this project')
+    .option(
+      '--project-access-key <access_key>',
+      'Project access key for Sequence requests'
+    )
+    .option(
+      '--google-client-id <google_client_id>',
+      'Google client ID to be used during authentication'
+    )
+    .option('--verbose', 'Show additional information in the output')
+    .action(options => {
+      createWebSdkTrailsStarter(program, options);
     });
 
   return comm;

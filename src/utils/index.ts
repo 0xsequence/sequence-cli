@@ -201,6 +201,27 @@ export async function promptForWalletConnectIdWithLogs(
   );
 }
 
+export async function promptForWalletAppUrlWithLogs(
+  walletAppUrl: string | undefined,
+  options: PromptForKeysWithLogsOptions = { allowEmptyInput: true }
+): Promise<string | undefined> {
+  const logsArray = [
+    'Please provide the Wallet App URL for your project.',
+    'Default: https://acme.ecosystem-demo.xyz',
+  ];
+
+  if (options.allowEmptyInput) {
+    logsArray.push('To skip and use the default wallet app URL, press enter.');
+  }
+
+  return await executePromptWithRetry(
+    promptForKeyWithLogs,
+    { key: walletAppUrl, inputMessage: 'Wallet App URL:' },
+    logsArray,
+    options
+  );
+}
+
 export async function promptForJwtAccessKeyWithLogs(
   jwtAccessKey: string | undefined,
   options: PromptForKeysWithLogsOptions = { allowEmptyInput: true }

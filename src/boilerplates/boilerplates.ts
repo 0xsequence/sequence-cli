@@ -17,6 +17,7 @@ import { createCryptoOnramp } from './create_crypto_onramp';
 import { createTrailsStarter } from './create_trails';
 import { createTrailsNextjsStarter } from './create_trails_nextjs';
 import { createEmbeddedWalletEpicNextjs } from './create_embedded_wallet_epic_nextjs';
+import { createEcosystemWalletReact } from './create_ecosystem_wallet_react';
 
 export function makeCommandBoilerplates(program: Command) {
   const comm = new Command('boilerplates');
@@ -24,6 +25,28 @@ export function makeCommandBoilerplates(program: Command) {
   comm.action(() => {
     comm.help();
   });
+
+  comm
+    .command('create-ecosystem-wallet-react-starter')
+    .description(
+      'Clone a starter boilerplate for Sequence Ecosystem Wallet integrated with Sequence Web SDK and React'
+    )
+    .option(
+      '--project-access-key <access_key>',
+      'Project access key for Sequence requests'
+    )
+    .option(
+      '--wallet-app-url <wallet_app_url>',
+      'Wallet app URL to be used in the project'
+    )
+    .option(
+      '--chains <chains>',
+      "Chain names to be used, separated by commas. Example: 'arbitrum-sepolia,mainnet'"
+    )
+    .option('--verbose', 'Show additional information in the output')
+    .action(options => {
+      createEcosystemWalletReact(program, options);
+    });
 
   comm
     .command('create-embedded-wallet-react-starter')

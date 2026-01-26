@@ -38,6 +38,7 @@ Most commands are interactive and will prompt for any missing options.
 Clone ready-to-run starter projects that integrate Sequence SDKs and features:
 
 - **create-embedded-wallet-react-starter**
+- **create-ecosystem-wallet-react-starter**
 - **create-embedded-wallet-nextjs-starter**
 - **create-embedded-wallet-epic-nextjs-starter** (includes Epic Games login support)
 - **create-google-embedded-wallet-react-starter**

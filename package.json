@@ -22,7 +22,7 @@
     "cli",
     "0xsequence"
   ],
-  "author": "Sequence Platforms Inc.",
+  "author": "Sequence Platforms ULC",
   "license": "MIT",
   "devDependencies": {
     "@0xsequence/utils": "^2.3.8",
